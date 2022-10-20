@@ -1,0 +1,10 @@
+influxdb:
+  influxdbName: influxdb
+  influxdbUrl: url
+  influxdbOrg: org
+  influxdbToken: token
+  influxdbTimeout: 600000
+  influxdbBucket: bucket
+  influxdbMeasurement: mes
+  influxdbField: field
+  verify_ssl=False

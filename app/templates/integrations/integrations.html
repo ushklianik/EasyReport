@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<!-- Primary Meta Tags -->
+<title>
+    Flask and Bootstrap - Presentation | AppSeed
+</title>
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="120x120" href="/static/assets/img/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/assets/img/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/assets/img/favicon/favicon-16x16.png">
+<link rel="manifest" href="/static/assets/img/favicon/site.webmanifest">
+<link rel="mask-icon" href="/static/assets/img/favicon/safari-pinned-tab.svg" color="#ffffff">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="theme-color" content="#ffffff">
+
+<!-- Fontawesome -->
+<link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+
+<!-- Pixel CSS -->
+<link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
+
+<link type="text/css" href="/static/assets/css/sidebars.css" rel="stylesheet">
+
+</head>
+<body>
+    <main>
+
+        {% include 'includes/preloader.html' %}
+
+        <div class="sidebar">
+            <div class="flex-shrink-0 p-3 text-white" style="width: 280px;">
+                <a href="/" class="d-flex align-items-center pb-3 mb-3 border-bottom">
+                  <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
+                  <span class="fs-5 fw-semibold">Menu</span>
+                </a>
+                <ul class="list-unstyled ps-0">
+                  <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed " data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
+                      Reports
+                    </button>
+                  </li>
+                  <li class="mb-1 ">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
+                      Integrations
+                    </button>
+                    <div class="collapse" id="orders-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="#" class="link-dark rounded">InfluDB</a></li>
+                        <li><a href="#" class="link-dark rounded">Grafana</a></li>
+                        <li><a href="#" class="link-dark rounded">Azure</a></li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
+                      Account
+                    </button>
+                    <div class="collapse" id="account-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="#" class="link-dark rounded">Sign out</a></li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+        </div>
+
+        <div class="section section-sm pb-0 mb-n4">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <h3 class="text-center">InfluxDB</h3>
+                </div>
+            </div>
+        </div>
+
+        <!--End of Title section-->
+        <div class="section section-md">
+            <div class="container">
+                <div class="row mb-5">
+                    {% for influxdbConfig in influxdbConfigs %}
+                    <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0 text-md-center">
+                        <div class="card shadow">
+                            <img src="/static/assets/img/blog/influxdb.jpg" class="card-img-top rounded-top"
+                                alt="Themesberg office">
+                            <div class="card-body">
+                                <h3 class="h5 card-title mt-3">{{ influxdbConfig }}</h3>
+                                <p class="card-text">TO DO: Some info about config</p>
+                                <a href="/influxdb?influxdbConfig={{ influxdbConfig }}" class="btn btn-primary">Configure</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0 text-md-center">
+                      <div class="card shadow">
+                          <img src="/static/assets/img/blog/influxdb_new.jpg" class="card-img-top rounded-top"
+                              alt="Themesberg office">
+                          <div class="card-body">
+                              <a href="/influxdb" class="btn btn-primary">Add new config</a>
+                          </div>
+                      </div>
+                   </div>
+                </div>
+            </div>
+         </div>
+
+
+      <div class="section section-sm pb-0 mb-n4">
+          <div class="container">
+              <div class="row justify-content-center">
+                  <h3 class="text-center">Grafana</h3>
+              </div>
+          </div>
+      </div>
+
+      <!--End of Title section-->
+      <div class="section section-md">
+          <div class="container">
+              <div class="row mb-5">
+                  {% for grafanaConfig in grafanaConfigs %}
+                  <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0 text-md-center">
+                      <div class="card shadow">
+                          <img src="/static/assets/img/blog/grafana.jpeg" class="card-img-top rounded-top"
+                              alt="Themesberg office">
+                          <div class="card-body">
+                              <h3 class="h5 card-title mt-3">{{ grafanaConfig }}</h3>
+                              <p class="card-text">TO DO: Some info about test</p>
+                              <a href="/grafana?grafanaConfig={{ grafanaConfig }}" class="btn btn-primary">Configure</a>
+                          </div>
+                      </div>
+                  </div>
+                  {% endfor %}
+                  <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0 text-md-center">
+                    <div class="card shadow">
+                        <img src="/static/assets/img/blog/influxdb_new.jpg" class="card-img-top rounded-top"
+                            alt="Themesberg office">
+                        <div class="card-body">
+                            <a href="/grafana" class="btn btn-primary">Add new config</a>
+                        </div>
+                    </div>
+                 </div>
+              </div>
+          </div>
+       </div>
+
+
+    <div class="section section-sm pb-0 mb-n4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <h3 class="text-center">Azure</h3>
+            </div>
+        </div>
+    </div>
+
+    <!--End of Title section-->
+    <div class="section section-md">
+        <div class="container">
+            <div class="row mb-5">
+                {% for azure in azures %}
+                <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0 text-md-center">
+                    <div class="card shadow">
+                        <img src="/static/assets/img/blog/image-1.jpg" class="card-img-top rounded-top"
+                            alt="Themesberg office">
+                        <div class="card-body">
+                            <h3 class="h5 card-title mt-3">{{ azure }}</h3>
+                            <p class="card-text">TO DO: Some info about test</p>
+                            <a href="#" class="btn btn-primary">Configure</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0 text-md-center">
+                  <div class="card shadow">
+                      <img src="/static/assets/img/blog/image-1.jpg" class="card-img-top rounded-top"
+                          alt="Themesberg office">
+                      <div class="card-body">
+                          <a href="#" class="btn btn-primary">Add new test</a>
+                      </div>
+                  </div>
+               </div>
+            </div>
+        </div>
+     </div>
+            
+    </main>
+
+    {% include 'includes/footer.html' %}
+
+    {% include 'includes/scripts.html' %}
+
+</body>
+</html>
