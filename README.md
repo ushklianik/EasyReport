@@ -94,7 +94,7 @@ The project has a super simple structure, represented as bellow:
    |    |--  |-- influxdb                        # Configuration files with data for connecting the tool to influxdb, grafana, etc.
    |    |--  |-- grafana
    |    |--  |-- azure
-   |    |-- reporst/
+   |    |-- reports/
    |    |--  |-- <config files, JSON, YAML>      # Configuration files for reports
    |    |-- static/
    |    |    |-- <css, JS, images>               # CSS files, Javascripts files
