@@ -90,20 +90,29 @@ The project has a super simple structure, represented as bellow:
 < PROJECT ROOT >
    |
    |-- app/
+   |    |-- integrations/
+   |    |--  |-- influxdb                        # Configuration files with data for connecting the tool to influxdb, grafana, etc.
+   |    |--  |-- grafana
+   |    |--  |-- azure
+   |    |-- reporst/
+   |    |--  |-- <config files, JSON, YAML>      # Configuration files for reports
    |    |-- static/
-   |    |    |-- <css, JS, images>    # CSS files, Javascripts files
+   |    |    |-- <css, JS, images>               # CSS files, Javascripts files
    |    |
    |    |-- templates/
    |    |    |
-   |    |    |-- index.html           # Index File
-   |    |    |-- login.html           # Login Page
-   |    |    |-- register.html        # Registration Page
+   |    |    |-- index.html                      # Index File
+   |    |    |-- login.html                      # Login Page
+   |    |    |-- register.html                   # Registration Page
+   |    |-- tools/
+   |    |    |
+   |    |    |-- tools.py                        # Custom python lib with functions
    |    |    
    |    |
-   |   config.py                      # Provides APP Configuration 
-   |   forms.py                       # Defines Forms (login, register) 
-   |   models.py                      # Defines app models 
-   |   views.py                       # Application Routes 
+   |   config.py                                 # Provides APP Configuration 
+   |   forms.py                                  # Defines Forms (login, register) 
+   |   models.py                                 # Defines app models 
+   |   views.py                                  # Application Routes 
    |
    |-- requirements.txt
    |-- run.py
