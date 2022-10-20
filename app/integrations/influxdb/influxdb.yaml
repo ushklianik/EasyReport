@@ -7,4 +7,4 @@ influxdb:
   influxdbBucket: bucket
   influxdbMeasurement: mes
   influxdbField: field
-  verify_ssl=False
+  verify_ssl: False
