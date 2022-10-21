@@ -24,6 +24,14 @@ def getGrafanaConfigs():
         grafanaConfigs.append(config)
     return grafanaConfigs
 
+
+def getAzureConfigs():
+    config_list = os.listdir("./app/integrations/azure/")
+    azureConfigs = []
+    for config in config_list:
+        azureConfigs.append(config)
+    return azureConfigs
+
 def saveInfluxDB(influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdbTimeout, influxdbBucket, influxdbMeasurement, influxdbField):
     config_list = os.listdir("./app/integrations/influxdb")
     for config in config_list:
@@ -80,12 +88,47 @@ def deleteGrafana(grafanaConfig):
     if grafanaConfig in grafanaConfigs:
         os.remove("./app/integrations/grafana/"+grafanaConfig)
 
-def getGrafnaConfigValues(influxdbConfig):
+def getGrafnaConfigValues(grafanaConfig):
     config = {}
-    with open("./app/integrations/grafana/"+influxdbConfig, "r") as f:
+    with open("./app/integrations/grafana/"+grafanaConfig, "r") as f:
         config = yaml.safe_load(f)
     output = MultiDict()
     config = config["grafana"]
+    for item in config:
+        output.add(item, config[item])
+    return output
+
+
+def saveAzure(azureName, personalAccessToken, wikiOrganizationUrl, wikiProject, wikiIdentifier, wikiPathToReport, appInsighsLogsServer, appInsighsAppId, appInsighsApiKey):
+    config_list = os.listdir("./app/integrations/azure")
+    for config in config_list:
+        if azureName in config:
+            return "Such name alrwady exixts"
+    else:
+        f = open("./app/integrations/azure/"+azureName+".yaml", "a")
+        f.write("azure:"                                             +"\n")
+        f.write("  azureName: "               + azureName               +"\n")
+        f.write("  personalAccessToken: "             + personalAccessToken             +"\n")
+        f.write("  wikiOrganizationUrl: "              + wikiOrganizationUrl              +"\n")
+        f.write("  wikiProject: "          + wikiProject          +"\n")
+        f.write("  wikiIdentifier: "              + wikiIdentifier              +"\n")
+        f.write("  wikiPathToReport: "     + wikiPathToReport     +"\n")
+        f.write("  appInsighsLogsServer: " + appInsighsLogsServer +"\n")
+        f.write("  appInsighsAppId: " + appInsighsAppId +"\n")
+        f.write("  appInsighsApiKey: " + appInsighsApiKey +"\n")
+        return "Azure added"
+
+def deleteAzure(azureConfig):
+    azureConfigs = getAzureConfigs()
+    if azureConfig in azureConfigs:
+        os.remove("./app/integrations/azure/"+azureConfig)
+
+def getAzureConfigValues(azureConfig):
+    config = {}
+    with open("./app/integrations/azure/"+azureConfig, "r") as f:
+        config = yaml.safe_load(f)
+    output = MultiDict()
+    config = config["azure"]
     for item in config:
         output.add(item, config[item])
     return output

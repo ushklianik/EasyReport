@@ -37,4 +37,16 @@ class grafanaForm(FlaskForm):
 	grafanaDashRenderPath      = StringField  (u'Render path'      , validators=[DataRequired()])
 	grafanaDashRenderCompPath  = StringField  (u'Render path comp' , validators=[DataRequired()])
 
+class azureForm(FlaskForm):
+	azureName             = StringField  (u'Name'                    , validators=[DataRequired()])
+	personalAccessToken   = StringField  (u'Personal Access Token'   , validators=[DataRequired()])
+	wikiOrganizationUrl   = StringField  (u'Wiki Organization Url'   , validators=[DataRequired()])
+	wikiProject           = StringField  (u'Wiki Project'            , validators=[DataRequired()])
+	wikiIdentifier        = StringField  (u'Wiki Identifier'         , validators=[DataRequired()])
+	wikiPathToReport      = StringField  (u'Wiki Path To Report'     , validators=[DataRequired()])
+	appInsighsLogsServer  = StringField  (u'App Insighs Logs Server' , validators=[DataRequired()])
+	appInsighsAppId       = StringField  (u'App Insighs App Id'      , validators=[DataRequired()])
+	appInsighsApiKey      = StringField  (u'App Insighs Api Key'     , validators=[DataRequired()])
+
+
 

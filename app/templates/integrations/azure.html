@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="120x120" href="/static/assets/img/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/assets/img/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/assets/img/favicon/favicon-16x16.png">
+<link rel="manifest" href="/static/assets/img/favicon/site.webmanifest">
+<link rel="mask-icon" href="/static/assets/img/favicon/safari-pinned-tab.svg" color="#ffffff">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="theme-color" content="#ffffff">
+
+<!-- Fontawesome -->
+<link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+
+<!-- Pixel CSS -->
+<link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
+
+<link type="text/css" href="/static/assets/css/sidebars.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <main>
+        {% block content %}
+        <div class="sidebar">
+            <div class="flex-shrink-0 p-3 text-white" style="width: 280px;">
+                <a href="/" class="d-flex align-items-center pb-3 mb-3 border-bottom">
+                  <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
+                  <span class="fs-5 fw-semibold">Menu</span>
+                </a>
+                <ul class="list-unstyled ps-0">
+                  <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed " data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
+                      Reports
+                    </button>
+                  </li>
+                  <li class="mb-1 ">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
+                      Integrations
+                    </button>
+                    <div class="collapse" id="orders-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="/integrations" class="link-dark rounded">InfluDB</a></li>
+                        <li><a href="/integrations" class="link-dark rounded">Grafana</a></li>
+                        <li><a href="/integrations" class="link-dark rounded">Azure</a></li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="mb-1">
+                    <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
+                      Account
+                    </button>
+                    <div class="collapse" id="account-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a href="#" class="link-dark rounded">Sign out</a></li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+        </div>
+
+        <div class="section section-md pb-0">
+            <div class="container">
+                <!-- Title -->
+                <div class="row">
+                    <div class="col">
+                        <h2 class="h5">Azure configuration</h2>
+                    </div>
+                    <span class="font-weight-normal">
+                        {% if msg %}
+                            {{ msg | safe }}
+                        {% else %}
+                            Add your Azure configuration
+                        {% endif %}                                  
+                    </span>
+                </div>
+                <!-- End of Title -->
+            </div>
+        </div>
+
+        <!-- Section -->
+        <div class="section section-md pt-4">
+            <div class="container">
+                <form method="POST" action="/azure">
+                    {{ form.hidden_tag() }}
+                    <div class="row mb-4 mb-lg-5">
+                        <div class="col-lg-4 col-sm-6">
+                            <!-- Form -->
+                            <div class="mb-4">
+                                <label for="azureName">Name</label>
+                                {{ form.azureName(class="form-control") }}
+                            </div>
+                            <!-- End of Form -->
+                            <!-- Form -->
+                            <div class="mb-3">
+                                <label for="personalAccessToken">Personal Access Token</label>
+                                <div class="input-group">
+                                    {{ form.personalAccessToken(class="form-control", type="password") }}
+                                    <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
+                                </div>
+                            </div>
+                            <!-- End of Form -->
+                            <!-- Form -->
+                            <div class="mb-4">
+                                <label for="wikiOrganizationUrl">Wiki Organization Url</label>
+                                {{ form.wikiOrganizationUrl(class="form-control") }}
+                            </div>
+                            <!-- End of Form -->
+                            <!-- Form -->
+                            <div class="mb-4">
+                                <label for="wikiProject">Wiki Project</label>
+                                {{ form.wikiProject(class="form-control") }}
+                            </div>
+                            <!-- End of Form -->
+                            <!-- Form -->
+                            <div class="mb-4">
+                                <label for="wikiIdentifier">Wiki Identifier</label>
+                                {{ form.wikiIdentifier(class="form-control") }}
+                            </div>
+                            <!-- End of Form -->
+
+                
+            
+                            <button class="btn btn-primary" type="submit">Save</button>
+                            {% if azureConfig %}
+                                <a href="/delete/azure?azureConfig={{ azureConfig }}" class="btn btn-danger">Delete</a>
+                            {% else %}
+                                <a class="btn btn-gray">Delete</a>
+                            {% endif %}   
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <!-- Form -->
+                            <div class="mb-4">
+                                <label for="wikiPathToReport">Wiki Path To Report</label>
+                                {{ form.wikiPathToReport(class="form-control") }}
+                            </div>
+                            <!-- End of Form -->
+                            <!-- Form -->
+                            <div class="mb-4">
+                                <label for="appInsighsLogsServer">App Insighs Logs Server</label>
+                                {{ form.appInsighsLogsServer(class="form-control") }}
+                            </div>
+                            <div class="mb-4">
+                                <label for="appInsighsAppId">App Insighs App Id</label>
+                                {{ form.appInsighsAppId(class="form-control") }}
+                            </div>
+                            <div class="mb-4">
+                                <label for="appInsighsApiKey">App Insighs Api Key</label>
+                                {{ form.appInsighsApiKey(class="form-control") }}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- End of Section -->
+
+    </main>
+    {% endblock content %}
+
+    {% include 'includes/footer.html' %}
+
+    {% include 'includes/scripts.html' %}
+
+    {% block javascripts %}{% endblock javascripts %}
+
+</body>
+</html>

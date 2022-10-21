@@ -1,6 +1,6 @@
 # Python modules
 import os, logging 
-from app.tools.tools import saveInfluxDB, getReports, getInfluxdbConfigs, getInfluxdbConfigValues, deleteInfluxdbConfig, getGrafanaConfigs, saveGrafana, getGrafnaConfigValues, deleteGrafana
+from app.tools.tools import saveAzure, saveInfluxDB, getReports, getInfluxdbConfigs, getInfluxdbConfigValues, deleteInfluxdbConfig, getGrafanaConfigs, saveGrafana, getGrafnaConfigValues, deleteGrafana, getAzureConfigValues, deleteAzure, getAzureConfigs
 
 # Flask modules
 from flask                   import render_template, request, url_for, redirect, flash
@@ -12,7 +12,7 @@ from jinja2                  import TemplateNotFound
 # App modules
 from app         import app, lm, db, bc
 from app.models  import Users
-from app.forms   import LoginForm, RegisterForm, InfluxDBForm, grafanaForm
+from app.forms   import LoginForm, RegisterForm, InfluxDBForm, grafanaForm, azureForm
 
 # provide login manager with load_user callback
 @lm.user_loader
@@ -130,7 +130,8 @@ def index(path):
 def integrations():
     influxdbConfigs = getInfluxdbConfigs()
     grafanaConfigs  = getGrafanaConfigs()
-    return render_template('integrations/integrations.html', influxdbConfigs = influxdbConfigs, grafanaConfigs = grafanaConfigs)
+    azureConfigs = getAzureConfigs()
+    return render_template('integrations/integrations.html', influxdbConfigs = influxdbConfigs, grafanaConfigs = grafanaConfigs, azureConfigs = azureConfigs)
     
 @app.route('/influxdb', methods=['GET', 'POST'])
 def addInfluxdb():
@@ -178,13 +179,13 @@ def deleteInfluxdb():
 @app.route('/grafana', methods=['GET', 'POST'])
 def addGrafana():
 
-    # Declare the Influxdb form
+    # Declare the grafana form
     form = grafanaForm(request.form)
 
     # Flask message injected into the page, in case of any errors
     msg = None
 
-    # get influxdb parameter if provided
+    # get grafana parameter if provided
     grafanaConfig = None
     grafanaConfig = request.args.get('grafanaConfig')
 
@@ -208,11 +209,56 @@ def addGrafana():
 
 @app.route('/delete/grafana', methods=['GET'])
 def deleteGrafanaConfig():
-    # get influxdb parameter if provided
+    # get grafana parameter if provided
     grafanaConfig = None
     grafanaConfig = request.args.get('grafanaConfig')
 
     if grafanaConfig != None:
         deleteGrafana(grafanaConfig)
+
+    return redirect(url_for('integrations'))
+
+
+@app.route('/azure', methods=['GET', 'POST'])
+def addAzure():
+
+    # Declare the azure form
+    form = azureForm(request.form)
+
+    # Flask message injected into the page, in case of any errors
+    msg = None
+
+    # get azure parameter if provided
+    azureConfig = None
+    azureConfig = request.args.get('azureConfig')
+
+    if azureConfig != None:
+        output = getAzureConfigValues(azureConfig)
+        form = azureForm(output)
+                    
+    if form.validate_on_submit():
+        # assign form data to variables
+        azureName            = request.form.get("azureName")
+        personalAccessToken  = request.form.get("personalAccessToken")
+        wikiOrganizationUrl  = request.form.get("wikiOrganizationUrl")
+        wikiProject          = request.form.get("wikiProject")
+        wikiIdentifier       = request.form.get("wikiIdentifier")
+        wikiPathToReport     = request.form.get("wikiPathToReport")
+        appInsighsLogsServer = request.form.get("appInsighsLogsServer")
+        appInsighsAppId      = request.form.get("appInsighsAppId")
+        appInsighsApiKey     = request.form.get("appInsighsApiKey")
+        msg = saveAzure( azureName, personalAccessToken, wikiOrganizationUrl, wikiProject, wikiIdentifier, wikiPathToReport, appInsighsLogsServer, appInsighsAppId, appInsighsApiKey )
+
+    return render_template('integrations/azure.html', form = form, msg = msg, azureConfig = azureConfig)
+
+
+@app.route('/delete/azure', methods=['GET'])
+def deleteAzureConfig():
+    # get azure parameter if provided
+    azureConfig = None
+    azureConfig = request.args.get('azureConfig')
+
+    if azureConfig != None:
+        deleteAzure(azureConfig)
 
     return redirect(url_for('integrations'))
