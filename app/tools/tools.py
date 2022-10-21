@@ -65,7 +65,8 @@ def saveGrafana(grafanaName, grafanaServer, grafanaToken, grafanaDashboard, graf
             return "Such name alrwady exixts"
     else:
         f = open("./app/integrations/grafana/"+grafanaName+".yaml", "a")
-        f.write(grafanaName+":"                                             +"\n")
+        f.write("grafana:"                                             +"\n")
+        f.write("  grafanaName: "               + grafanaName               +"\n")
         f.write("  grafanaServer: "             + grafanaServer             +"\n")
         f.write("  grafanaToken: "              + grafanaToken              +"\n")
         f.write("  grafanaDashboard: "          + grafanaDashboard          +"\n")
