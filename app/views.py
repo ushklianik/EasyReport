@@ -1,6 +1,6 @@
 # Python modules
 import os, logging 
-from app.tools.tools import saveAzure, saveInfluxDB, getReports, getInfluxdbConfigs, getInfluxdbConfigValues, deleteInfluxdbConfig, getGrafanaConfigs, saveGrafana, getGrafnaConfigValues, deleteGrafana, getAzureConfigValues, deleteAzure, getAzureConfigs
+from app.tools.tools import saveAzure, saveInfluxDB, getReports, getInfluxdbConfigs, getInfluxdbConfigValues, deleteInfluxdbConfig, getGrafanaConfigs, saveGrafana, getGrafnaConfigValues, deleteGrafana, getAzureConfigValues, deleteAzure, getAzureConfigs, getMetrics
 
 # Flask modules
 from flask                   import render_template, request, url_for, redirect, flash
@@ -12,7 +12,7 @@ from jinja2                  import TemplateNotFound
 # App modules
 from app         import app, lm, db, bc
 from app.models  import Users
-from app.forms   import LoginForm, RegisterForm, InfluxDBForm, grafanaForm, azureForm
+from app.forms   import LoginForm, RegisterForm, InfluxDBForm, grafanaForm, azureForm, reportForm
 
 # provide login manager with load_user callback
 @lm.user_loader
@@ -262,3 +262,14 @@ def deleteAzureConfig():
         deleteAzure(azureConfig)
 
     return redirect(url_for('integrations'))
+
+
+@app.route('/report', methods=['GET', 'POST'])
+def report():
+
+    # Declare the Influxdb form
+    form = reportForm(request.form)
+    if request.method == "POST":
+        print(request.form.listvalues)
+    metrics = getMetrics()
+    return render_template('home/report.html', form = form, metrics = metrics)

@@ -18,4 +18,6 @@ app/__pycache__
 app/tools/__pycache__
 app/integrations/grafana/
 app/integrations/influxdb/
+app/integrations/azure/
 app/reports/
+app/metrics/

@@ -132,3 +132,10 @@ def getAzureConfigValues(azureConfig):
     for item in config:
         output.add(item, config[item])
     return output
+
+def getMetrics():
+    metric_list = os.listdir("./app/metrics/")
+    metrics = []
+    for metric in metric_list:
+        metrics.append(metric)
+    return metrics

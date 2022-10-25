@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<!-- Primary Meta Tags -->
+<title>
+    Flask and Bootstrap - Presentation | AppSeed
+</title>
+
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="120x120" href="/static/assets/img/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/assets/img/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/assets/img/favicon/favicon-16x16.png">
+<link rel="manifest" href="/static/assets/img/favicon/site.webmanifest">
+<link rel="mask-icon" href="/static/assets/img/favicon/safari-pinned-tab.svg" color="#ffffff">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="theme-color" content="#ffffff">
+
+<!-- Fontawesome -->
+<link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+
+<!-- Pixel CSS -->
+<link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
+
+<link type="text/css" href="/static/assets/css/sidebars.css" rel="stylesheet">
+
+</head>
+<body>
+    <main>
+
+        {% include 'includes/preloader.html' %}
+        {% include 'includes/sidebar.html' %}
+
+        <div class="section section-sm pb-0 mb-n4">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <h3 class="text-center">New report</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section -->
+        <div class="section section-md pt-4">
+            <div class="container">
+                <form method="POST" action="/report">
+                    <div class="row mb-4 mb-lg-5">
+                        {{ form.hidden_tag() }}
+                        <div class="col-lg-4 col-sm-6">
+                            <!-- Form -->
+                            <div class="mb-4">
+                                <label for="influxdbName">Influxdb name</label>
+                                {{ form.influxdbName(class="form-control") }}
+                            </div>
+                            <!-- End of Form -->
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <!-- Form -->
+                            <div class="mb-4">
+                                <label for="grafanaName">Grafana name</label>
+                                {{ form.grafanaName(class="form-control") }}
+                            </div>
+                            <!-- End of Form -->
+                        </div>
+                        <div class="col-lg-4 col-sm-6">
+                            <!-- Form -->
+                            <div class="mb-4">
+                                <label for="azureName">Azure name</label>
+                                {{ form.azureName(class="form-control") }}
+                            </div>
+                            <!-- End of Form -->
+                        </div>
+                    </div>
+                    <div class="input-group mb-2 search-metric" id='search' onkeyup='searchFilter()'>
+                        <span class="input-group-text" id="basic-addon1"><span class="fas fa-search"></span></span>
+                        <input type="text" class="form-control" id="exampleInputIconLeft" placeholder="Search"
+                            aria-label="Search" aria-describedby="basic-addon1">
+                    </div>
+                    <div id='options' class='search-container d-none mb-2'>
+                        {% for metric in metrics %}
+                        <div class='each-search'>
+                            <div class='details'>
+                                <div class='name'>{{ metric }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div id='wrapper' class='wrapper'> 
+                        {% for metric in form.metrics %}
+                            <div class="toast fade show toast-header mb-2" aria-atomic="true">
+                                <button type="button" class="btn-close-right btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                {{ metric(class="form-control-metric") }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button class="btn btn-primary" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+        <script>
+            var wrapper = document.getElementById('wrapper');
+            var search = document.getElementById('search');
+            var options = document.getElementById('options');
+            var metric = document.querySelectorAll('.each-search');
+            var txtVal, filter;
+            var card_id = 0;
+
+            function searchFilter(){
+                for(var i = 0; i < metric.length; i++){
+                    txtVal = metric[i].children[0].children[0].innerText;
+                    filter = search.value.toUpperCase();
+                    if(txtVal.toUpperCase().indexOf(filter) > -1){
+                        metric[i].style.display = '';
+                    }else{
+                        metric[i].style.display = 'none';
+                    }    
+                }
+            }
+
+            search.onclick = function(){
+                options.classList.toggle('d-none');
+            }
+
+            for (var i = 0; i < metric.length; i++) {
+                
+                metric[i].onclick = function() {
+
+                    const name = this.children[0].children[0].innerHTML;
+                    id = "metrics-" + card_id;
+                    card_id = card_id + 1;
+                    
+                    const cardElement = "<div class='toast fade show toast-header mb-2' aria-atomic='true'>" +
+                                "<button type='button' class='btn-close-right btn-close' data-bs-dismiss='toast' aria-label='Close'></button>" +
+                                "<input class='form-control-metric' id='"+id+"' name='"+id+"' type='text' value='"+name+"'>" +
+                            "</div>"
+  
+                    wrapper.insertAdjacentHTML("beforeend", cardElement);
+
+                    const cardName = document.querySelector('.card .details .name');
+
+                    document.getElementById('options').classList.add('d-none');
+
+                    var closeBtn = document.getElementsByClassName('btn-close-right');
+                    for(var i = 0; i < closeBtn.length; i++){
+                        closeBtn[i].onclick = function(){
+                            this.parentElement.remove();
+                        }
+                    }
+                }
+            }
+        </script>
+
+
+        <!-- Section will be used to add new metric -->
+        <div class="section section-md pt-4">
+            <div class="container">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    Add new metric (in progress)
+                </button>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Add metric</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                {% for metric in metrics %}
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="{{ metric }}">
+                                    <label class="form-check-label" for="{{ metric }}">{{ metric }}</label>
+                                </div> 
+                                {% endfor %}     
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    {% include 'includes/footer.html' %}
+    {% include 'includes/scripts.html' %}
+</body>
+</html>
