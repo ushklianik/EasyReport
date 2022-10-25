@@ -738,6 +738,12 @@ progress {
   margin-right: auto;
   margin-left: 160px; }
 
+.container-login {
+  width: 100%;
+  padding-right: var(--bs-gutter-x, 2rem);
+  padding-left: var(--bs-gutter-x, 2rem);
+  margin: auto; }
+
 @media (min-width: 576px) {
   .container, .container-sm {
     max-width: 540px; } }
@@ -19526,3 +19532,14 @@ blockquote {
   pointer-events: none; }
 
 /*# sourceMappingURL=pixel.css.map */
+
+.gradient-custom {
+  /* fallback for old browsers */
+  background: #6a11cb;
+  
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+  
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
+  }
