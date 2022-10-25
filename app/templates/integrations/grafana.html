@@ -31,14 +31,14 @@
 
         {% include 'includes/sidebar.html' %}
 
-        <div class="section section-md pb-0">
-            <div class="container">
+        <div class="section section-md pb-0 ms-12 bg-info-dark text-white">
+            <div class="container-0">
                 <!-- Title -->
-                <div class="row">
-                    <div class="col">
+                <div class="row justify-content-center">
+                    <div class="col d-flex align-items-center justify-content-center">
                         <h2 class="h5">Grafana configuration</h2>
                     </div>
-                    <span class="font-weight-normal">
+                    <span class="font-weight-normal d-flex align-items-center justify-content-center">
                         {% if msg %}
                             {{ msg | safe }}
                         {% else %}
@@ -51,32 +51,32 @@
         </div>
 
         <!-- Section -->
-        <div class="section section-md pt-4">
-            <div class="container">
+        <div class="section section-md pt-4 ms-12 bg-info-dark text-white">
+            <div class="container-0">
                 <form method="POST" action="/grafana">
                     {{ form.hidden_tag() }}
-                    <div class="row mb-4 mb-lg-5">
+                    <div class="row mb-4 mb-lg-5 justify-content-center">
                         <div class="col-lg-4 col-sm-6">
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="grafanaName">Name</label>
                                 {{ form.grafanaName(class="form-control") }}
                             </div>
                             <!-- End of Form -->
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="grafanaServer">Grafana server</label>
                                 {{ form.grafanaServer(class="form-control") }}
                             </div>
                             <!-- End of Form -->
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="grafanaOrgId">Grafana org ID</label>
                                 {{ form.grafanaOrgId(class="form-control") }}
                             </div>
                             <!-- End of Form -->
                             <!-- Form -->
-                            <div class="mb-3">
+                            <div class="mb-3 text-center">
                                 <label for="grafanaToken">Token</label>
                                 <div class="input-group">
                                     {{ form.grafanaToken(class="form-control", type="password") }}
@@ -94,17 +94,17 @@
                         </div>
                         <div class="col-lg-4 col-sm-6">
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="grafanaDashboard">Grafana dashboard</label>
                                 {{ form.grafanaDashboard(class="form-control") }}
                             </div>
                             <!-- End of Form -->
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="grafanaDashRenderPath">grafanaDashRenderPath</label>
                                 {{ form.grafanaDashRenderPath(class="form-control") }}
                             </div>
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="grafanaDashRenderCompPath">grafanaDashRenderCompPath</label>
                                 {{ form.grafanaDashRenderCompPath(class="form-control") }}
                             </div>

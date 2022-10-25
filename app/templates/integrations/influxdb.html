@@ -31,14 +31,14 @@
 
         {% include 'includes/sidebar.html' %}
 
-        <div class="section section-md pb-0">
-            <div class="container">
+        <div class="section section-md pb-0 ms-12 bg-info-dark text-white">
+            <div class="container-0">
                 <!-- Title -->
-                <div class="row">
-                    <div class="col">
+                <div class="row d-flex justify-content-center">
+                    <div class="col d-flex align-items-center justify-content-center">
                         <h2 class="h5">Influxdb configuration</h2>
                     </div>
-                    <span class="font-weight-normal">
+                    <span class="font-weight-normal d-flex align-items-center justify-content-center">
                         {% if msg %}
                             {{ msg | safe }}
                         {% else %}
@@ -51,32 +51,32 @@
         </div>
 
         <!-- Section -->
-        <div class="section section-md pt-4">
-            <div class="container">
+        <div class="section section-md pt-4 ms-12 bg-info-dark text-white">
+            <div class="container-0">
                 <form method="POST" action="/influxdb">
                     {{ form.hidden_tag() }}
-                    <div class="row mb-4 mb-lg-5">
+                    <div class="row mb-4 mb-lg-5 justify-content-center">
                         <div class="col-lg-4 col-sm-6">
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="influxdbName">Name</label>
                                 {{ form.influxdbName(class="form-control") }}
                             </div>
                             <!-- End of Form -->
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="influxdbUrl">Url</label>
                                 {{ form.influxdbUrl(class="form-control") }}
                             </div>
                             <!-- End of Form -->
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="influxdbOrg">Org</label>
                                 {{ form.influxdbOrg(class="form-control") }}
                             </div>
                             <!-- End of Form -->
                             <!-- Form -->
-                            <div class="mb-3">
+                            <div class="mb-3 text-center">
                                 <label for="influxdbToken">Token</label>
                                 <div class="input-group">
                                     {{ form.influxdbToken(class="form-control", type="password") }}
@@ -94,21 +94,21 @@
                         </div>
                         <div class="col-lg-4 col-sm-6">
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="influxdbTimeout">Timeout</label>
                                 {{ form.influxdbTimeout(class="form-control") }}
                             </div>
                             <!-- End of Form -->
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="influxdbBucket">Bucket</label>
                                 {{ form.influxdbBucket(class="form-control") }}
                             </div>
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="influxdbMeasurement">Measurement</label>
                                 {{ form.influxdbMeasurement(class="form-control") }}
                             </div>
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="influxdbField">Field</label>
                                 {{ form.influxdbField(class="form-control") }}
                             </div>
@@ -122,7 +122,7 @@
     </main>
     
     {% endblock content %}
-
+    
     {% include 'includes/footer.html' %}
 
     {% include 'includes/scripts.html' %}

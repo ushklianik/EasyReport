@@ -31,14 +31,14 @@
 
         {% include 'includes/sidebar.html' %}
 
-        <div class="section section-md pb-0">
-            <div class="container">
+        <div class="section section-md pb-0 ms-12 bg-info-dark text-white">
+            <div class="container-0">
                 <!-- Title -->
-                <div class="row">
-                    <div class="col">
+                <div class="row justify-content-center">
+                    <div class="col d-flex align-items-center justify-content-center">
                         <h2 class="h5">Azure configuration</h2>
                     </div>
-                    <span class="font-weight-normal">
+                    <span class="font-weight-normal d-flex align-items-center justify-content-center">
                         {% if msg %}
                             {{ msg | safe }}
                         {% else %}
@@ -51,20 +51,20 @@
         </div>
 
         <!-- Section -->
-        <div class="section section-md pt-4">
-            <div class="container">
+        <div class="section section-md pt-4 ms-12 bg-info-dark text-white">
+            <div class="container-0">
                 <form method="POST" action="/azure">
                     {{ form.hidden_tag() }}
-                    <div class="row mb-4 mb-lg-5">
+                    <div class="row mb-4 mb-lg-5 d-flex justify-content-center">
                         <div class="col-lg-4 col-sm-6">
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="azureName">Name</label>
                                 {{ form.azureName(class="form-control") }}
                             </div>
                             <!-- End of Form -->
                             <!-- Form -->
-                            <div class="mb-3">
+                            <div class="mb-3 text-center">
                                 <label for="personalAccessToken">Personal Access Token</label>
                                 <div class="input-group">
                                     {{ form.personalAccessToken(class="form-control", type="password") }}
@@ -73,19 +73,19 @@
                             </div>
                             <!-- End of Form -->
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="wikiOrganizationUrl">Wiki Organization Url</label>
                                 {{ form.wikiOrganizationUrl(class="form-control") }}
                             </div>
                             <!-- End of Form -->
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="wikiProject">Wiki Project</label>
                                 {{ form.wikiProject(class="form-control") }}
                             </div>
                             <!-- End of Form -->
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="wikiIdentifier">Wiki Identifier</label>
                                 {{ form.wikiIdentifier(class="form-control") }}
                             </div>
@@ -102,21 +102,21 @@
                         </div>
                         <div class="col-lg-4 col-sm-6">
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="wikiPathToReport">Wiki Path To Report</label>
                                 {{ form.wikiPathToReport(class="form-control") }}
                             </div>
                             <!-- End of Form -->
                             <!-- Form -->
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="appInsighsLogsServer">App Insighs Logs Server</label>
                                 {{ form.appInsighsLogsServer(class="form-control") }}
                             </div>
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="appInsighsAppId">App Insighs App Id</label>
                                 {{ form.appInsighsAppId(class="form-control") }}
                             </div>
-                            <div class="mb-4">
+                            <div class="mb-4 text-center">
                                 <label for="appInsighsApiKey">App Insighs Api Key</label>
                                 {{ form.appInsighsApiKey(class="form-control") }}
                             </div>
