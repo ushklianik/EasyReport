@@ -72,19 +72,16 @@
                             <!-- End of Form -->
                         </div>
                     </div>
-                    <div class="input-group mb-2 search-metric" id='search' onkeyup='searchFilter()'>
+                    <div class="input-group mb-2 search-metric">
                         <span class="input-group-text" id="basic-addon1"><span class="fas fa-search"></span></span>
-                        <input type="text" class="form-control" id="exampleInputIconLeft" placeholder="Search"
-                            aria-label="Search" aria-describedby="basic-addon1">
+                        <input type="text" class="form-control" id="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" onkeyup='searchFilter()'>
                     </div>
-                    <div id='options' class='search-container d-none mb-2'>
-                        {% for metric in metrics %}
-                        <div class='each-search'>
-                            <div class='details'>
-                                <div class='name'>{{ metric }}</div>
-                            </div>
-                        </div>
-                        {% endfor %}
+                    <div id='options' class='search-container d-none form-control-metric'>
+                        <select class="form-select" multiple="">
+                            {% for metric in metrics %}
+                                <option class='each-search name'>{{ metric }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div id='wrapper' class='wrapper'> 
                         {% for metric in form.metrics %}
@@ -108,7 +105,7 @@
 
             function searchFilter(){
                 for(var i = 0; i < metric.length; i++){
-                    txtVal = metric[i].children[0].children[0].innerText;
+                    txtVal = metric[i].innerText;
                     filter = search.value.toUpperCase();
                     if(txtVal.toUpperCase().indexOf(filter) > -1){
                         metric[i].style.display = '';
@@ -126,7 +123,7 @@
                 
                 metric[i].onclick = function() {
 
-                    const name = this.children[0].children[0].innerHTML;
+                    const name = this.innerHTML;
                     id = "metrics-" + card_id;
                     card_id = card_id + 1;
                     
