@@ -108,8 +108,6 @@ def login():
 @app.route('/', defaults={'path': 'index.html'})
 @app.route('/<path>')
 def index(path):
-    
-    reports = tools.getReports()
 
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
@@ -117,7 +115,7 @@ def index(path):
     try:
         
         # Serve the file (if exists) from app/templates/FILE.html
-        return render_template( 'home/' + path, reports = reports)
+        return render_template( 'home/' + path)
     
     except TemplateNotFound:
         return render_template('home/page-404.html'), 404
@@ -300,8 +298,5 @@ def deleteReportConfig():
 
 @app.route('/all-reports', methods=['GET'])
 def allReports():
-    return render_template('home/all-reports.html')
-
-@app.route('/sidebardemo', methods=['GET'])
-def sidebardemo():
-    return render_template('includes/sidebardemo.html')
+    reports = tools.getReports()
+    return render_template('home/all-reports.html', reports = reports)
