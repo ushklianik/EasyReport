@@ -1,6 +1,6 @@
 # Python modules
 import os, logging 
-from app.tools.tools import saveAzure, saveInfluxDB, getReports, getInfluxdbConfigs, getInfluxdbConfigValues, deleteInfluxdbConfig, getGrafanaConfigs, saveGrafana, getGrafnaConfigValues, deleteGrafana, getAzureConfigValues, deleteAzure, getAzureConfigs, getMetrics
+from app.tools import tools
 
 # Flask modules
 from flask                   import render_template, request, url_for, redirect, flash
@@ -109,7 +109,7 @@ def login():
 @app.route('/<path>')
 def index(path):
     
-    reports = getReports()
+    reports = tools.getReports()
 
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
@@ -128,9 +128,9 @@ def index(path):
 
 @app.route('/integrations')
 def integrations():
-    influxdbConfigs = getInfluxdbConfigs()
-    grafanaConfigs  = getGrafanaConfigs()
-    azureConfigs = getAzureConfigs()
+    influxdbConfigs = tools.getInfluxdbConfigs()
+    grafanaConfigs  = tools.getGrafanaConfigs()
+    azureConfigs    = tools.getAzureConfigs()
     return render_template('integrations/integrations.html', influxdbConfigs = influxdbConfigs, grafanaConfigs = grafanaConfigs, azureConfigs = azureConfigs)
     
 @app.route('/influxdb', methods=['GET', 'POST'])
@@ -147,7 +147,7 @@ def addInfluxdb():
     influxdbConfig = request.args.get('influxdbConfig')
 
     if influxdbConfig != None:
-        output = getInfluxdbConfigValues(influxdbConfig)
+        output = tools.getInfluxdbConfigValues(influxdbConfig)
         form = InfluxDBForm(output)
                     
     if form.validate_on_submit():
@@ -160,7 +160,7 @@ def addInfluxdb():
         influxdbBucket      = request.form.get("influxdbBucket")
         influxdbMeasurement = request.form.get("influxdbMeasurement")
         influxdbField       = request.form.get("influxdbField")
-        msg = saveInfluxDB(influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdbTimeout, influxdbBucket, influxdbMeasurement, influxdbField)
+        msg = tools.saveInfluxDB(influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdbTimeout, influxdbBucket, influxdbMeasurement, influxdbField)
 
     return render_template('integrations/influxdb.html', form = form, msg = msg, influxdbConfig = influxdbConfig)
 
@@ -171,7 +171,7 @@ def deleteInfluxdb():
     influxdbConfig = request.args.get('influxdbConfig')
 
     if influxdbConfig != None:
-        deleteInfluxdbConfig(influxdbConfig)
+        tools.deleteInfluxdbConfig(influxdbConfig)
 
     return redirect(url_for('integrations'))
 
@@ -190,7 +190,7 @@ def addGrafana():
     grafanaConfig = request.args.get('grafanaConfig')
 
     if grafanaConfig != None:
-        output = getGrafnaConfigValues(grafanaConfig)
+        output = tools.getGrafnaConfigValues(grafanaConfig)
         form = grafanaForm(output)
                     
     if form.validate_on_submit():
@@ -202,7 +202,7 @@ def addGrafana():
         grafanaOrgId              = request.form.get("grafanaOrgId")
         grafanaDashRenderPath     = request.form.get("grafanaDashRenderPath")
         grafanaDashRenderCompPath = request.form.get("grafanaDashRenderCompPath")
-        msg = saveGrafana( grafanaName, grafanaServer, grafanaToken, grafanaDashboard, grafanaOrgId, grafanaDashRenderPath, grafanaDashRenderCompPath )
+        msg = tools.saveGrafana( grafanaName, grafanaServer, grafanaToken, grafanaDashboard, grafanaOrgId, grafanaDashRenderPath, grafanaDashRenderCompPath )
 
     return render_template('integrations/grafana.html', form = form, msg = msg, grafanaConfig = grafanaConfig)
 
@@ -214,7 +214,7 @@ def deleteGrafanaConfig():
     grafanaConfig = request.args.get('grafanaConfig')
 
     if grafanaConfig != None:
-        deleteGrafana(grafanaConfig)
+        tools.deleteGrafana(grafanaConfig)
 
     return redirect(url_for('integrations'))
 
@@ -233,7 +233,7 @@ def addAzure():
     azureConfig = request.args.get('azureConfig')
 
     if azureConfig != None:
-        output = getAzureConfigValues(azureConfig)
+        output = tools.getAzureConfigValues(azureConfig)
         form = azureForm(output)
                     
     if form.validate_on_submit():
@@ -247,7 +247,7 @@ def addAzure():
         appInsighsLogsServer = request.form.get("appInsighsLogsServer")
         appInsighsAppId      = request.form.get("appInsighsAppId")
         appInsighsApiKey     = request.form.get("appInsighsApiKey")
-        msg = saveAzure( azureName, personalAccessToken, wikiOrganizationUrl, wikiProject, wikiIdentifier, wikiPathToReport, appInsighsLogsServer, appInsighsAppId, appInsighsApiKey )
+        msg = tools.saveAzure( azureName, personalAccessToken, wikiOrganizationUrl, wikiProject, wikiIdentifier, wikiPathToReport, appInsighsLogsServer, appInsighsAppId, appInsighsApiKey )
 
     return render_template('integrations/azure.html', form = form, msg = msg, azureConfig = azureConfig)
 
@@ -259,7 +259,7 @@ def deleteAzureConfig():
     azureConfig = request.args.get('azureConfig')
 
     if azureConfig != None:
-        deleteAzure(azureConfig)
+        tools.deleteAzure(azureConfig)
 
     return redirect(url_for('integrations'))
 
@@ -267,9 +267,33 @@ def deleteAzureConfig():
 @app.route('/report', methods=['GET', 'POST'])
 def report():
 
+    metrics = tools.getMetrics()
+
+    # Flask message injected into the page, in case of any errors
+    msg = None
+
     # Declare the Influxdb form
     form = reportForm(request.form)
-    if request.method == "POST":
-        print(request.form.listvalues)
-    metrics = getMetrics()
-    return render_template('home/report.html', form = form, metrics = metrics)
+    if form.validate_on_submit():
+        msg = tools.saveReport(request.form.to_dict())
+    
+    # get grafana parameter if provided
+    reportConfig = None
+    reportConfig = request.args.get('reportConfig')
+
+    if reportConfig != None:
+        output = tools.getReportConfigValues(reportConfig)
+        form = reportForm(output)
+
+    return render_template('home/report.html', form = form, reportConfig = reportConfig, metrics = metrics, msg = msg)
+
+@app.route('/delete/report', methods=['GET'])
+def deleteReportConfig():
+    # get azure parameter if provided
+    reportConfig = None
+    reportConfig = request.args.get('reportConfig')
+
+    if reportConfig != None:
+        tools.deleteReport(reportConfig)
+
+    return redirect(url_for('integrations'))

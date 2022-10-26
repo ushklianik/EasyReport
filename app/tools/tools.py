@@ -1,3 +1,4 @@
+from distutils.command.config import config
 import os
 from configparser import ConfigParser
 from werkzeug.datastructures import MultiDict
@@ -139,3 +140,56 @@ def getMetrics():
     for metric in metric_list:
         metrics.append(metric)
     return metrics
+
+def saveReport(configs):
+    if all(elem in configs for elem in ["influxdbName","grafanaName","azureName","reportName"]) and \
+       any("metrics" in elem for elem in configs):
+        reportName   =   configs["reportName"]
+        influxdbName =   configs["influxdbName"]
+        grafanaName  =   configs["grafanaName"]
+        azureName    =   configs["azureName"]
+        metrics      =   []
+        for elem in configs: 
+            if "metrics" in elem:
+                metrics.append(configs[elem])
+        if (len(metrics)>0):
+            config_list = os.listdir("./app/reports/")
+            for config in config_list:
+                 if reportName in config:
+                    return "Such report name already exixts"
+            else:
+                f = open("./app/reports/"+reportName+".yaml", "a")
+                f.write("  reportName: "     + reportName          +"\n")
+                f.write("  influxdbName: "   + influxdbName        +"\n")
+                f.write("  grafanaName: "    + grafanaName         +"\n")
+                f.write("  azureName: "      + azureName           +"\n")
+                f.write("  metrics: "        + str(metrics)        +"\n")
+                return "Report added"
+        else:
+            return "No metrics provided"
+
+def getReportConfigValues(reportConfig):
+    config = {}
+    with open("./app/reports/"+reportConfig, "r") as f:
+        config = yaml.safe_load(f)
+    output = MultiDict()
+    for item in config:
+        if item == "metrics":
+            for x in range(len(config[item])):
+                output.add(item+"-"+str(x), config[item][x])
+        else:
+            output.add(item, config[item])
+    return output
+
+
+def deleteReport(reportConfig):
+    reportConfigs = getReportConfigs()
+    if reportConfig in reportConfigs:
+        os.remove("./app/reports/"+reportConfig)
+
+def getReportConfigs():
+    config_list = os.listdir("./app/reports/")
+    reportConfigs = []
+    for config in config_list:
+        reportConfigs.append(config)
+    return reportConfigs

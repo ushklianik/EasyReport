@@ -50,7 +50,8 @@ class azureForm(FlaskForm):
 	appInsighsApiKey      = StringField  (u'App Insighs Api Key'     , validators=[DataRequired()])
 
 class reportForm(FlaskForm):
-	metrics               = FieldList(StringField())
+	reportName            = StringField         (u'Name'             , validators=[DataRequired()])
+	metrics               = FieldList           (StringField()                                    )
 	influxdbName          = SelectMultipleField (u'Influxdb config'  , validators=[DataRequired()], choices=getInfluxdbConfigs())
 	grafanaName           = SelectMultipleField (u'Grafana config'   , validators=[DataRequired()], choices=getGrafanaConfigs())
 	azureName             = SelectMultipleField (u'Azure config'     , validators=[DataRequired()], choices=getAzureConfigs())
