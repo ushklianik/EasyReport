@@ -297,3 +297,11 @@ def deleteReportConfig():
         tools.deleteReport(reportConfig)
 
     return redirect(url_for('integrations'))
+
+@app.route('/all-reports', methods=['GET'])
+def allReports():
+    return render_template('home/all-reports.html')
+
+@app.route('/sidebardemo', methods=['GET'])
+def sidebardemo():
+    return render_template('includes/sidebardemo.html')
