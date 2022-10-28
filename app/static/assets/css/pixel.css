@@ -24,7 +24,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 20rem !important;
+  width: 11rem !important;
   height: 100%;
   transition: all 0.5s ease;
   background-color: #212529 !important;
@@ -736,13 +736,7 @@ progress {
   padding-right: var(--bs-gutter-x, 2rem);
   padding-left: var(--bs-gutter-x, 2rem);
   margin-right: auto;
-  margin-left: 160px; }
-
-.container-0 {
-  width: 100%;
-  padding-right: var(--bs-gutter-x, 2rem);
-  padding-left: var(--bs-gutter-x, 2rem);
-  margin: auto; }
+  margin-left: auto; }
 
 @media (min-width: 576px) {
   .container, .container-sm {
@@ -2799,6 +2793,60 @@ textarea.form-control-lg {
 .form-check-inline .form-check-input ~ .invalid-feedback {
   margin-left: .5em; }
 
+.btn-sidebar {
+  display: inline-block;
+  width: 8.5rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #1F2937;
+  text-align: left;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+          user-select: none;
+  background-color: transparent;
+  border: 0.0625rem solid transparent;
+  padding: 0.55rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 1rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
+
+.btn-sidebar-small {
+  display: inline-block;
+  width: 6.5rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #1F2937;
+  text-align: left;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+          user-select: none;
+  background-color: transparent;
+  border: 0.0625rem solid transparent;
+  padding: 0.55rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 1rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
+
+  .btn-sidebar-dropdown {
+    display: inline-block;
+    width: 2rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #1F2937;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+            user-select: none;
+    background-color: transparent;
+    border: 0.0625rem solid transparent;
+    padding: 0.55rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 1rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
+
 .btn {
   display: inline-block;
   font-weight: 600;
@@ -4055,7 +4103,7 @@ textarea.form-control-lg {
   color: #1F2937;
   text-align: left;
   list-style: none;
-  background-color: #ffffff;
+  background-color: #212529 !important;
   background-clip: padding-box;
   border: 0.0625rem solid #E5E7EB;
   border-radius: 1rem;
@@ -7840,6 +7888,9 @@ textarea.form-control-lg {
 .ms-n6 {
   margin-left: -5rem !important; }
 
+.ms-n6-5 {
+  margin-left: -6.5rem !important; }
+
 .ms-n7 {
   margin-left: -8rem !important; }
 
@@ -8436,7 +8487,7 @@ textarea.form-control-lg {
   background-color: #0d6efd !important; }
 
 .bg-info-dark {
-  background-color: #1d264e !important; }
+  background-color: #1e2024 !important; }
 
 .bg-warning {
   background-color: #ffc107 !important; }
@@ -16045,28 +16096,31 @@ textarea.form-control-lg {
   position: relative;
   padding-top: 3rem;
   padding-bottom: 3rem; 
-  margin-left: 160px;
+  margin-left: 11rem;
 }
 
 .section-header {
   position: relative;
   padding-top: 7rem;
-  padding-bottom: 3rem; }
+  padding-bottom: 3rem;
+  margin-left: 11rem; }
 
 @media (min-width: 576px) {
   .section {
     position: relative;
     padding-top: 6rem;
     padding-bottom: 6rem; 
-    margin-left: 160px;
+    margin-left: 11rem;
   }
   .section-header {
     position: relative;
     padding-top: 10rem;
-    padding-bottom: 10rem; }
+    padding-bottom: 10rem;
+    margin-left: 11rem; }
     .section-header.section-sm {
       padding-top: 4rem;
-      padding-bottom: 3rem; }
+      padding-bottom: 3rem;
+      margin-left: 11rem; }
   .section-xl {
     padding-top: 10rem;
     padding-bottom: 10rem; }
@@ -16134,6 +16188,7 @@ textarea.form-control-lg {
   position: relative; 
   width: 100%;
   bottom: 0px;
+  margin-left: 11rem;
 }
   .footer h3, .footer .h3,
   .footer h5,
@@ -17161,7 +17216,7 @@ label {
  * = Dropdowns
  */
 .dropdown-menu {
-  min-width: 12rem; }
+  min-width: 9rem; }
   .dropdown-menu .dropdown-header,
   .dropdown-menu .dropdown-item {
     padding: .5rem 1rem;
