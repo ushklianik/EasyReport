@@ -51,7 +51,7 @@
         <!-- Section -->
         <div class="section section-md pt-4">
             <div class="container">
-                <form method="POST" action="/report">
+                <form method="POST" action="/report?project={{ project }}">
                     {{ form.hidden_tag() }}
                     <div class="col-lg-4 col-sm-6">
                         <!-- Form -->
@@ -108,7 +108,7 @@
                     </div>
                     <button class="btn btn-primary" type="submit">Save</button>
                     {% if reportConfig %}
-                        <a href="/delete/report?reportConfig={{ reportConfig }}" class="btn btn-danger">Delete</a>
+                        <a href="/delete/report?reportConfig={{ reportConfig }}&project={{ project }}" class="btn btn-danger">Delete</a>
                     {% else %}
                         <a class="btn btn-gray">Delete</a>
                     {% endif %}   

@@ -1,7 +1,0 @@
-grafana:
-  grafanaServer: serv
-  grafanaToken: scdscsdc
-  grafanaDashboard: dash
-  grafanaOrgId: dcscsdc
-  grafanaDashRenderPath: decsc
-  grafanaDashRenderCompPath: dcsc

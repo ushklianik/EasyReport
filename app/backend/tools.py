@@ -4,42 +4,65 @@ from configparser import ConfigParser
 from werkzeug.datastructures import MultiDict
 import yaml
 
-def getReports():
-    report_list = os.listdir("./app/reports/")
-    reports = []
-    for report in report_list:
-        reports.append(report)
-    return reports
+def getFilesInDir(elem):
+    listOfValues = os.listdir(elem)
+    output = []
+    for elem in listOfValues:
+        output.append(elem)
+    return output
 
-def getInfluxdbConfigs():
-    config_list = os.listdir("./app/integrations/influxdb/")
-    influxdbConfigs = []
-    for config in config_list:
-        influxdbConfigs.append(config)
-    return influxdbConfigs
+def getReports(project):
+    return getFilesInDir("./app/projects/" + project + "/reports/")
 
-def getGrafanaConfigs():
-    config_list = os.listdir("./app/integrations/grafana/")
-    grafanaConfigs = []
-    for config in config_list:
-        grafanaConfigs.append(config)
-    return grafanaConfigs
+def getInfluxdbConfigs(project):
+    return getFilesInDir("./app/projects/" + project + "/integrations/influxdb/")
 
+def getGrafanaConfigs(project):
+    return getFilesInDir("./app/projects/" + project + "/integrations/grafana/")
 
-def getAzureConfigs():
-    config_list = os.listdir("./app/integrations/azure/")
-    azureConfigs = []
-    for config in config_list:
-        azureConfigs.append(config)
-    return azureConfigs
+def getAzureConfigs(project):
+    return getFilesInDir("./app/projects/" + project + "/integrations/azure/")
 
-def saveInfluxDB(influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdbTimeout, influxdbBucket, influxdbMeasurement, influxdbField):
-    config_list = os.listdir("./app/integrations/influxdb")
+def getReportConfigs(project):
+    return getFilesInDir("./app/projects/" + project + "/reports/")
+
+def getProjects():
+    return getFilesInDir("./app/projects/")
+
+def deleteConfig(path, config):
+    configs = getFilesInDir(path)
+    if config in configs:
+        os.remove(path+config)
+
+def deleteInfluxdbConfig(project, influxdbConfig):
+    deleteConfig("./app/projects/" + project + "/integrations/influxdb/", influxdbConfig)
+
+def deleteGrafana(project, grafanaConfig):
+    deleteConfig("./app/projects/" + project + "/integrations/grafana/", grafanaConfig)
+
+def deleteAzure(project, azureConfig):
+    deleteConfig("./app/projects/" + project + "/integrations/azure/", azureConfig)
+
+def deleteReport(project, reportConfig):
+    deleteConfig("./app/projects/" + project + "/reports/", reportConfig)
+
+def getInfluxdbConfigValues(project, influxdbConfig):
+    config = {}
+    with open("./app/projects/" + project + "/integrations/influxdb/"+influxdbConfig, "r") as f:
+        config = yaml.safe_load(f)
+    output = MultiDict()
+    config = config["influxdb"]
+    for item in config:
+        output.add(item, config[item])
+    return output
+
+def saveInfluxDB(project, influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdbTimeout, influxdbBucket, influxdbMeasurement, influxdbField):
+    config_list = os.listdir("./app/projects/" + project + "/integrations/influxdb")
     for config in config_list:
         if influxdbName in config:
             return "Such name alrwady exixts"
     else:
-        f = open("./app/integrations/influxdb/"+influxdbName+".yaml", "a")
+        f = open("./app/projects/" + project + "/integrations/influxdb/"+influxdbName+".yaml", "a")
         f.write("influxdb:"                                     +"\n")
         f.write("  influxdbName: "        + influxdbName        +"\n")
         f.write("  influxdbUrl: "         + influxdbUrl         +"\n")
@@ -51,29 +74,14 @@ def saveInfluxDB(influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdb
         f.write("  influxdbField: "       + influxdbField       +"\n")
         f.write("  verify_ssl: False")
         return "Influxdb added"
-    
-def getInfluxdbConfigValues(influxdbConfig):
-    config = {}
-    with open("./app/integrations/influxdb/"+influxdbConfig, "r") as f:
-        config = yaml.safe_load(f)
-    output = MultiDict()
-    config = config["influxdb"]
-    for item in config:
-        output.add(item, config[item])
-    return output
 
-def deleteInfluxdbConfig(influxdbConfig):
-    influxdbConfigs = getInfluxdbConfigs()
-    if influxdbConfig in influxdbConfigs:
-        os.remove("./app/integrations/influxdb/"+influxdbConfig)
-
-def saveGrafana(grafanaName, grafanaServer, grafanaToken, grafanaDashboard, grafanaOrgId, grafanaDashRenderPath, grafanaDashRenderCompPath):
-    config_list = os.listdir("./app/integrations/grafana")
+def saveGrafana(project, grafanaName, grafanaServer, grafanaToken, grafanaDashboard, grafanaOrgId, grafanaDashRenderPath, grafanaDashRenderCompPath):
+    config_list = os.listdir("./app/projects/" + project + "/integrations/grafana")
     for config in config_list:
         if grafanaName in config:
             return "Such name alrwady exixts"
     else:
-        f = open("./app/integrations/grafana/"+grafanaName+".yaml", "a")
+        f = open("./app/projects/" + project + "/integrations/grafana/"+grafanaName+".yaml", "a")
         f.write("grafana:"                                             +"\n")
         f.write("  grafanaName: "               + grafanaName               +"\n")
         f.write("  grafanaServer: "             + grafanaServer             +"\n")
@@ -84,14 +92,9 @@ def saveGrafana(grafanaName, grafanaServer, grafanaToken, grafanaDashboard, graf
         f.write("  grafanaDashRenderCompPath: " + grafanaDashRenderCompPath +"\n")
         return "Grafana added"
 
-def deleteGrafana(grafanaConfig):
-    grafanaConfigs = getGrafanaConfigs()
-    if grafanaConfig in grafanaConfigs:
-        os.remove("./app/integrations/grafana/"+grafanaConfig)
-
-def getGrafnaConfigValues(grafanaConfig):
+def getGrafnaConfigValues(project, grafanaConfig):
     config = {}
-    with open("./app/integrations/grafana/"+grafanaConfig, "r") as f:
+    with open("./app/projects/" + project + "/integrations/grafana/"+grafanaConfig, "r") as f:
         config = yaml.safe_load(f)
     output = MultiDict()
     config = config["grafana"]
@@ -100,13 +103,13 @@ def getGrafnaConfigValues(grafanaConfig):
     return output
 
 
-def saveAzure(azureName, personalAccessToken, wikiOrganizationUrl, wikiProject, wikiIdentifier, wikiPathToReport, appInsighsLogsServer, appInsighsAppId, appInsighsApiKey):
-    config_list = os.listdir("./app/integrations/azure")
+def saveAzure(project, azureName, personalAccessToken, wikiOrganizationUrl, wikiProject, wikiIdentifier, wikiPathToReport, appInsighsLogsServer, appInsighsAppId, appInsighsApiKey):
+    config_list = os.listdir("./app/projects/" + project + "/integrations/azure")
     for config in config_list:
         if azureName in config:
             return "Such name alrwady exixts"
     else:
-        f = open("./app/integrations/azure/"+azureName+".yaml", "a")
+        f = open("./app/projects/" + project + "/integrations/azure/"+azureName+".yaml", "a")
         f.write("azure:"                                             +"\n")
         f.write("  azureName: "               + azureName               +"\n")
         f.write("  personalAccessToken: "             + personalAccessToken             +"\n")
@@ -119,14 +122,9 @@ def saveAzure(azureName, personalAccessToken, wikiOrganizationUrl, wikiProject, 
         f.write("  appInsighsApiKey: " + appInsighsApiKey +"\n")
         return "Azure added"
 
-def deleteAzure(azureConfig):
-    azureConfigs = getAzureConfigs()
-    if azureConfig in azureConfigs:
-        os.remove("./app/integrations/azure/"+azureConfig)
-
-def getAzureConfigValues(azureConfig):
+def getAzureConfigValues(project, azureConfig):
     config = {}
-    with open("./app/integrations/azure/"+azureConfig, "r") as f:
+    with open("./app/projects/" + project + "/integrations/azure/"+azureConfig, "r") as f:
         config = yaml.safe_load(f)
     output = MultiDict()
     config = config["azure"]
@@ -134,14 +132,14 @@ def getAzureConfigValues(azureConfig):
         output.add(item, config[item])
     return output
 
-def getMetrics():
-    metric_list = os.listdir("./app/metrics/")
+def getMetrics(project):
+    metric_list = os.listdir("./app/projects/" + project + "/metrics/")
     metrics = []
     for metric in metric_list:
         metrics.append(metric)
     return metrics
 
-def saveReport(configs):
+def saveReport(project, configs):
     if all(elem in configs for elem in ["influxdbName","grafanaName","azureName","reportName"]) and \
        any("metrics" in elem for elem in configs):
         reportName   =   configs["reportName"]
@@ -153,12 +151,12 @@ def saveReport(configs):
             if "metrics" in elem:
                 metrics.append(configs[elem])
         if (len(metrics)>0):
-            config_list = os.listdir("./app/reports/")
+            config_list = os.listdir("./app/projects/" + project + "/reports/")
             for config in config_list:
                  if reportName in config:
                     return "Such report name already exixts"
             else:
-                f = open("./app/reports/"+reportName+".yaml", "a")
+                f = open("./app/projects/" + project + "/reports/"+reportName+".yaml", "a")
                 f.write("  reportName: "     + reportName          +"\n")
                 f.write("  influxdbName: "   + influxdbName        +"\n")
                 f.write("  grafanaName: "    + grafanaName         +"\n")
@@ -168,9 +166,9 @@ def saveReport(configs):
         else:
             return "No metrics provided"
 
-def getReportConfigValues(reportConfig):
+def getReportConfigValues(project, reportConfig):
     config = {}
-    with open("./app/reports/"+reportConfig, "r") as f:
+    with open("./app/projects/" + project + "/reports/"+reportConfig, "r") as f:
         config = yaml.safe_load(f)
     output = MultiDict()
     for item in config:
@@ -180,16 +178,3 @@ def getReportConfigValues(reportConfig):
         else:
             output.add(item, config[item])
     return output
-
-
-def deleteReport(reportConfig):
-    reportConfigs = getReportConfigs()
-    if reportConfig in reportConfigs:
-        os.remove("./app/reports/"+reportConfig)
-
-def getReportConfigs():
-    config_list = os.listdir("./app/reports/")
-    reportConfigs = []
-    for config in config_list:
-        reportConfigs.append(config)
-    return reportConfigs

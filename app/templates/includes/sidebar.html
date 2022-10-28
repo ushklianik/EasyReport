@@ -15,12 +15,12 @@
             </a>
         </button>
         <button class="btn-sidebar btn-black mb-3 ms-3" type="button" style="background-color: rgba(0, 0, 0, 0.2)">
-            <a class="text-white" href="/all-reports">
+            <a class="text-white" href="/all-reports?project={{ project }}">
                 <span class="fas fa-book-open me-2"></span>Reports
             </a>
         </button>
         <button class="btn-sidebar btn-black mb-3 ms-3" type="button" style="background-color: rgba(0, 0, 0, 0.2)">
-            <a class="text-white" href="/integrations">
+            <a class="text-white" href="/integrations?project={{ project }}">
                 <span class="far fa-sun me-2"></span>Integrations
             </a>
         </button>
@@ -42,5 +42,20 @@
                 <a class="dropdown-item rounded-bottom" href="/login">Sign out</a>
             </div>
         </div>
+        <div class="btn-group mb-5 ms-5 fixed-bottom">
+          <button type="button" class="btn-sidebar-dropdown text-white" data-bs-toggle="dropdown">
+          {% if project %}
+            {{ project }}
+          {% else %}
+            Choose project
+          {% endif %} 
+          </button>
+          <div class="dropdown-menu py-0 text-white ms-n4">
+            {% for project in projects %}
+              <a class="dropdown-item rounded-top rounded-bottom" href="?project={{ project }}">{{ project }}</a>
+            {% endfor %}
+              <a class="dropdown-item rounded-top rounded-bottom" href="#">New project</a>
+          </div>
+      </div>
     </div>
 </div>

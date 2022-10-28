@@ -1,6 +1,6 @@
 # Python modules
 import os, logging 
-from app.tools import tools
+from app.backend import tools
 
 # Flask modules
 from flask                   import render_template, request, url_for, redirect, flash
@@ -113,9 +113,16 @@ def index(path):
         return redirect(url_for('login'))
 
     try:
+        # Get all projects
+        projects = tools.getProjects()
+        # Get current project
+        project = request.args.get('project')
+        # If project not provided, the default value is selected
+        if project == None:
+            project = "default" 
         
         # Serve the file (if exists) from app/templates/FILE.html
-        return render_template( 'home/' + path)
+        return render_template( 'home/' + path, projects = projects, project = project)
     
     except TemplateNotFound:
         return render_template('home/page-404.html'), 404
@@ -126,10 +133,20 @@ def index(path):
 
 @app.route('/integrations')
 def integrations():
-    influxdbConfigs = tools.getInfluxdbConfigs()
-    grafanaConfigs  = tools.getGrafanaConfigs()
-    azureConfigs    = tools.getAzureConfigs()
-    return render_template('integrations/integrations.html', influxdbConfigs = influxdbConfigs, grafanaConfigs = grafanaConfigs, azureConfigs = azureConfigs)
+    # Get all projects
+    projects = tools.getProjects()
+    # Get current project
+    project = request.args.get('project')
+    # If project not provided, the default value is selected
+    if project == None:
+        project = "default"
+    
+    # Get integrations configs
+    influxdbConfigs = tools.getInfluxdbConfigs(project)
+    grafanaConfigs  = tools.getGrafanaConfigs(project)
+    azureConfigs    = tools.getAzureConfigs(project)
+
+    return render_template('integrations/integrations.html', influxdbConfigs = influxdbConfigs, grafanaConfigs = grafanaConfigs, azureConfigs = azureConfigs, projects = projects, project = project)
     
 @app.route('/influxdb', methods=['GET', 'POST'])
 def addInfluxdb():
@@ -144,8 +161,16 @@ def addInfluxdb():
     influxdbConfig = None
     influxdbConfig = request.args.get('influxdbConfig')
 
+    # Get all projects
+    projects = tools.getProjects()
+    # Get current project
+    project = request.args.get('project')
+    # If project not provided, the default value is selected
+    if project == None:
+        project = "default"
+
     if influxdbConfig != None:
-        output = tools.getInfluxdbConfigValues(influxdbConfig)
+        output = tools.getInfluxdbConfigValues(project, influxdbConfig)
         form = InfluxDBForm(output)
                     
     if form.validate_on_submit():
@@ -158,9 +183,9 @@ def addInfluxdb():
         influxdbBucket      = request.form.get("influxdbBucket")
         influxdbMeasurement = request.form.get("influxdbMeasurement")
         influxdbField       = request.form.get("influxdbField")
-        msg = tools.saveInfluxDB(influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdbTimeout, influxdbBucket, influxdbMeasurement, influxdbField)
+        msg = tools.saveInfluxDB(project, influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdbTimeout, influxdbBucket, influxdbMeasurement, influxdbField)
 
-    return render_template('integrations/influxdb.html', form = form, msg = msg, influxdbConfig = influxdbConfig)
+    return render_template('integrations/influxdb.html', form = form, msg = msg, influxdbConfig = influxdbConfig, projects = projects, project = project)
 
 @app.route('/delete/influxdb', methods=['GET'])
 def deleteInfluxdb():
@@ -168,8 +193,16 @@ def deleteInfluxdb():
     influxdbConfig = None
     influxdbConfig = request.args.get('influxdbConfig')
 
+    # Get all projects
+    projects = tools.getProjects()
+    # Get current project
+    project = request.args.get('project')
+    # If project not provided, the default value is selected
+    if project == None:
+        project = "default"
+
     if influxdbConfig != None:
-        tools.deleteInfluxdbConfig(influxdbConfig)
+        tools.deleteInfluxdbConfig(project, influxdbConfig)
 
     return redirect(url_for('integrations'))
 
@@ -183,12 +216,20 @@ def addGrafana():
     # Flask message injected into the page, in case of any errors
     msg = None
 
+    # Get all projects
+    projects = tools.getProjects()
+    # Get current project
+    project = request.args.get('project')
+    # If project not provided, the default value is selected
+    if project == None:
+        project = "default"
+
     # get grafana parameter if provided
     grafanaConfig = None
     grafanaConfig = request.args.get('grafanaConfig')
 
     if grafanaConfig != None:
-        output = tools.getGrafnaConfigValues(grafanaConfig)
+        output = tools.getGrafnaConfigValues(project, grafanaConfig)
         form = grafanaForm(output)
                     
     if form.validate_on_submit():
@@ -200,9 +241,9 @@ def addGrafana():
         grafanaOrgId              = request.form.get("grafanaOrgId")
         grafanaDashRenderPath     = request.form.get("grafanaDashRenderPath")
         grafanaDashRenderCompPath = request.form.get("grafanaDashRenderCompPath")
-        msg = tools.saveGrafana( grafanaName, grafanaServer, grafanaToken, grafanaDashboard, grafanaOrgId, grafanaDashRenderPath, grafanaDashRenderCompPath )
+        msg = tools.saveGrafana( project, grafanaName, grafanaServer, grafanaToken, grafanaDashboard, grafanaOrgId, grafanaDashRenderPath, grafanaDashRenderCompPath )
 
-    return render_template('integrations/grafana.html', form = form, msg = msg, grafanaConfig = grafanaConfig)
+    return render_template('integrations/grafana.html', form = form, msg = msg, grafanaConfig = grafanaConfig, projects = projects, project = project)
 
 
 @app.route('/delete/grafana', methods=['GET'])
@@ -211,8 +252,17 @@ def deleteGrafanaConfig():
     grafanaConfig = None
     grafanaConfig = request.args.get('grafanaConfig')
 
+    # Get all projects
+    projects = tools.getProjects()
+    # Get current project
+    project = request.args.get('project')
+    # If project not provided, the default value is selected
+    if project == None:
+        project = "default"
+
+
     if grafanaConfig != None:
-        tools.deleteGrafana(grafanaConfig)
+        tools.deleteGrafana(project, grafanaConfig)
 
     return redirect(url_for('integrations'))
 
@@ -226,12 +276,20 @@ def addAzure():
     # Flask message injected into the page, in case of any errors
     msg = None
 
+    # Get all projects
+    projects = tools.getProjects()
+    # Get current project
+    project = request.args.get('project')
+    # If project not provided, the default value is selected
+    if project == None:
+        project = "default"
+
     # get azure parameter if provided
     azureConfig = None
     azureConfig = request.args.get('azureConfig')
 
     if azureConfig != None:
-        output = tools.getAzureConfigValues(azureConfig)
+        output = tools.getAzureConfigValues(project, azureConfig)
         form = azureForm(output)
                     
     if form.validate_on_submit():
@@ -245,9 +303,9 @@ def addAzure():
         appInsighsLogsServer = request.form.get("appInsighsLogsServer")
         appInsighsAppId      = request.form.get("appInsighsAppId")
         appInsighsApiKey     = request.form.get("appInsighsApiKey")
-        msg = tools.saveAzure( azureName, personalAccessToken, wikiOrganizationUrl, wikiProject, wikiIdentifier, wikiPathToReport, appInsighsLogsServer, appInsighsAppId, appInsighsApiKey )
+        msg = tools.saveAzure( project, azureName, personalAccessToken, wikiOrganizationUrl, wikiProject, wikiIdentifier, wikiPathToReport, appInsighsLogsServer, appInsighsAppId, appInsighsApiKey )
 
-    return render_template('integrations/azure.html', form = form, msg = msg, azureConfig = azureConfig)
+    return render_template('integrations/azure.html', form = form, msg = msg, azureConfig = azureConfig, projects = projects, project = project)
 
 
 @app.route('/delete/azure', methods=['GET'])
@@ -256,8 +314,16 @@ def deleteAzureConfig():
     azureConfig = None
     azureConfig = request.args.get('azureConfig')
 
+    # Get all projects
+    projects = tools.getProjects()
+    # Get current project
+    project = request.args.get('project')
+    # If project not provided, the default value is selected
+    if project == None:
+        project = "default"
+
     if azureConfig != None:
-        tools.deleteAzure(azureConfig)
+        tools.deleteAzure(project, azureConfig)
 
     return redirect(url_for('integrations'))
 
@@ -265,25 +331,37 @@ def deleteAzureConfig():
 @app.route('/report', methods=['GET', 'POST'])
 def report():
 
-    metrics = tools.getMetrics()
+    # Get all projects
+    projects = tools.getProjects()
+    # Get current project
+    project = request.args.get('project')
+    # If project not provided, the default value is selected
+
+    metrics = tools.getMetrics(project)
 
     # Flask message injected into the page, in case of any errors
     msg = None
+    if project == None:
+        project = "default"
 
     # Declare the Influxdb form
     form = reportForm(request.form)
+    form.influxdbName.choices = tools.getInfluxdbConfigs(project)
+    form.grafanaName.choices  = tools.getGrafanaConfigs(project)
+    form.azureName.choices    = tools.getAzureConfigs(project)
+    
     if form.validate_on_submit():
-        msg = tools.saveReport(request.form.to_dict())
+        msg = tools.saveReport(project, request.form.to_dict())
     
     # get grafana parameter if provided
     reportConfig = None
     reportConfig = request.args.get('reportConfig')
 
     if reportConfig != None:
-        output = tools.getReportConfigValues(reportConfig)
+        output = tools.getReportConfigValues(project, reportConfig)
         form = reportForm(output)
 
-    return render_template('home/report.html', form = form, reportConfig = reportConfig, metrics = metrics, msg = msg)
+    return render_template('home/report.html', form = form, reportConfig = reportConfig, metrics = metrics, msg = msg, projects = projects, project = project)
 
 @app.route('/delete/report', methods=['GET'])
 def deleteReportConfig():
@@ -291,12 +369,28 @@ def deleteReportConfig():
     reportConfig = None
     reportConfig = request.args.get('reportConfig')
 
+    # Get all projects
+    projects = tools.getProjects()
+    # Get current project
+    project = request.args.get('project')
+    # If project not provided, the default value is selected
+    if project == None:
+        project = "default"
+
     if reportConfig != None:
-        tools.deleteReport(reportConfig)
+        tools.deleteReport(project, reportConfig)
 
     return redirect(url_for('integrations'))
 
 @app.route('/all-reports', methods=['GET'])
 def allReports():
-    reports = tools.getReports()
-    return render_template('home/all-reports.html', reports = reports)
+    # Get all projects
+    projects = tools.getProjects()
+    # Get current project
+    project = request.args.get('project')
+    # If project not provided, the default value is selected
+    if project == None:
+        project = "default"
+
+    reports = tools.getReports(project)
+    return render_template('home/all-reports.html', reports = reports, projects = projects, project = project)

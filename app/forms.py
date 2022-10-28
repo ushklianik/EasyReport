@@ -7,7 +7,6 @@ from flask_wtf          import FlaskForm
 from flask_wtf.file     import FileField, FileRequired
 from wtforms            import StringField, TextAreaField, SubmitField, PasswordField, SelectMultipleField, FieldList, FormField
 from wtforms.validators import InputRequired, Email, DataRequired
-from app.tools.tools    import getInfluxdbConfigs, getGrafanaConfigs, getAzureConfigs
 
 class LoginForm(FlaskForm):
 	username      = StringField  (u'Username'  , validators=[DataRequired()])
@@ -52,6 +51,6 @@ class azureForm(FlaskForm):
 class reportForm(FlaskForm):
 	reportName            = StringField         (u'Name'             , validators=[DataRequired()])
 	metrics               = FieldList           (StringField()                                    )
-	influxdbName          = SelectMultipleField (u'Influxdb config'  , validators=[DataRequired()], choices=getInfluxdbConfigs())
-	grafanaName           = SelectMultipleField (u'Grafana config'   , validators=[DataRequired()], choices=getGrafanaConfigs())
-	azureName             = SelectMultipleField (u'Azure config'     , validators=[DataRequired()], choices=getAzureConfigs())
+	influxdbName          = SelectMultipleField (u'Influxdb config'  , validators=[DataRequired()])
+	grafanaName           = SelectMultipleField (u'Grafana config'   , validators=[DataRequired()])
+	azureName             = SelectMultipleField (u'Azure config'     , validators=[DataRequired()])
