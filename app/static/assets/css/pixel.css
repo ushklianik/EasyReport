@@ -4739,6 +4739,7 @@ textarea.form-control-lg {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 20rem;
   word-wrap: break-word;
   background-color: #ffffff;
   background-clip: border-box;
@@ -16188,7 +16189,7 @@ textarea.form-control-lg {
   position: relative; 
   width: 100%;
   bottom: 0px;
-  margin-left: 11rem;
+  background-color: #212529 !important;
 }
   .footer h3, .footer .h3,
   .footer h5,
