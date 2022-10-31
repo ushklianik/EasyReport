@@ -30,6 +30,23 @@
   background-color: #212529 !important;
 }
 
+.main-background{
+  position: fixed;
+  top: 0;
+  left: 11rem !important;
+  width: 100%;
+  height: 100%;
+  transition: all 0.5s ease;
+  background-color: #1e2024 !important;
+}
+
+.footer {
+  position: fixed; 
+  width: 100%;
+  bottom: 0px;
+  background-color: #212529 !important;
+}
+
 .datepicker-dropdown {
   position: absolute;
   top: 0;
@@ -4738,8 +4755,7 @@ textarea.form-control-lg {
   position: relative;
   display: flex;
   flex-direction: column;
-  min-width: 0;
-  min-height: 20rem;
+  min-width: 5rem;
   word-wrap: break-word;
   background-color: #ffffff;
   background-clip: border-box;
@@ -16185,65 +16201,6 @@ textarea.form-control-lg {
 /**
  * = Footers
  */
-.footer {
-  position: relative; 
-  width: 100%;
-  bottom: 0px;
-  background-color: #212529 !important;
-}
-  .footer h3, .footer .h3,
-  .footer h5,
-  .footer .h5,
-  .footer .h3,
-  .footer .h5 {
-    font-size: 1.15rem;
-    margin-bottom: 1.25rem; }
-  .footer ul {
-    margin-bottom: 0;
-    padding: 0;
-    list-style: none; }
-    .footer ul li {
-      display: inline-block; }
-      .footer ul li a {
-        text-decoration: none;
-        position: relative;
-        display: block; }
-      .footer ul li .btn {
-        margin: 0; }
-    .footer ul.links-horizontal:first-child a {
-      padding-left: 0; }
-    .footer ul.links-horizontal:last-child a {
-      padding-right: 0; }
-    .footer ul.footer-links li {
-      display: block;
-      margin-left: -5px;
-      margin-right: -5px; }
-      .footer ul.footer-links li a {
-        padding: 5px; }
-        .footer ul.footer-links li a:hover {
-          color: inherit !important; }
-    .footer ul.icon-box span {
-      line-height: 1.7; }
-  .footer .social-buttons a,
-  .footer .social-buttons .btn {
-    margin-top: 5px;
-    margin-bottom: 5px; }
-  .footer .footer-brand {
-    font-size: 1.25rem;
-    font-weight: 600; }
-    .footer .footer-brand img,
-    .footer .footer-brand svg {
-      width: 30px; }
-    .footer .footer-brand:hover, .footer .footer-brand:focus {
-      color: #171f38; }
-    .footer .footer-brand.brand-sm img,
-    .footer .footer-brand.brand-sm svg {
-      width: 25px; }
-  .footer .copyright {
-    font-size: 0.875rem; }
-  .footer .pull-center {
-    display: inline-block;
-    float: none; }
 
 .footer-logo-text {
   font-size: 1.2rem;

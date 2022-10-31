@@ -34,23 +34,23 @@
         
         {% include 'includes/sidebar.html' %}
 
-        <div class="section section-sm pb-0 mb-n4">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <h3 class="text-center">Reports</h3>
+        <div class="main-background">
+            <div class="container pt-5 justify-content-center">
+                <div class="row">
+                    <div class="col-lg-11 ms-n8">
+                        <h3 class="text-center text-white">Reports</h3>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!--End of Title section-->
-        <div class="section section-md">
-            <div class="container">
+            <!--End of Title section-->
+            <div class="container pt-5 justify-content-center">
                 <div class="row mb-5">
                     {% for report in reports %}
                     <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0 text-md-center">
                         <div class="card shadow">
                             <img src="/static/assets/img/blog/image-1.jpg" class="card-img-top rounded-top"
-                                alt="Themesberg office">
+                                alt="Themesberg office" height="150">
                             <div class="card-body">
                                 <h3 class="h5 card-title mt-3">{{ report }}</h3>
                                 <p class="card-text">TO DO: Some info about test</p>
@@ -61,8 +61,8 @@
                     {% endfor %}
                     <div class="col-12 col-md-6 col-lg-4 mb-5 mb-lg-0 text-md-center">
                         <div class="card shadow">
-                            <img src="/static/assets/img/blog/image-1.jpg" class="card-img-top rounded-top"
-                                alt="Themesberg office">
+                            <img src="/static/assets/img/blog/influxdb_new.jpg" class="card-img-top rounded-top"
+                                alt="Themesberg office" height="245">
                             <div class="card-body">
                                 <a href="/report?project={{ project }}" class="btn btn-primary">Add new report</a>
                             </div>
