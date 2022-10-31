@@ -12,7 +12,7 @@ from jinja2                  import TemplateNotFound
 # App modules
 from app         import app, lm, db, bc
 from app.models  import Users
-from app.forms   import LoginForm, RegisterForm, InfluxDBForm, grafanaForm, azureForm, reportForm
+from app.forms   import LoginForm, RegisterForm, InfluxDBForm, grafanaForm, azureForm, reportForm, metricForm
 
 # provide login manager with load_user callback
 @lm.user_loader
@@ -344,6 +344,9 @@ def report():
     if project == None:
         project = "default"
 
+    # Declare the Metrics form
+    formForMerics = metricForm(request.form)
+
     # Declare the Influxdb form
     form = reportForm(request.form)
     form.influxdbName.choices = tools.getInfluxdbConfigs(project)
@@ -361,7 +364,7 @@ def report():
         output = tools.getReportConfigValues(project, reportConfig)
         form = reportForm(output)
 
-    return render_template('home/report.html', form = form, reportConfig = reportConfig, metrics = metrics, msg = msg, projects = projects, project = project)
+    return render_template('home/report.html', form = form, reportConfig = reportConfig, metrics = metrics, msg = msg, projects = projects, project = project, formForMerics = formForMerics)
 
 @app.route('/delete/report', methods=['GET'])
 def deleteReportConfig():
@@ -394,3 +397,25 @@ def allReports():
 
     reports = tools.getReports(project)
     return render_template('home/all-reports.html', reports = reports, projects = projects, project = project)
+
+
+@app.route('/new-metric', methods=['POST'])
+def newMetric():
+
+    formForMerics = metricForm(request.form)
+    # Get all projects
+    projects = tools.getProjects()
+    # Get current project
+    project = request.args.get('project')
+    # If project not provided, the default value is selected
+    if project == None:
+        project = "default"
+    if formForMerics.validate_on_submit():
+        viewPanel      = request.form.get("viewPanel")
+        dashId         = request.form.get("dashId")
+        fileName       = request.form.get("fileName")
+        width          = request.form.get("width")
+        height         = request.form.get("height")
+        msg = tools.saveMetric(project, viewPanel, dashId, fileName, width, height)
+
+    return render_template('home/all-reports.html', projects = projects, project = project)

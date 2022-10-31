@@ -4,11 +4,12 @@ from configparser import ConfigParser
 from werkzeug.datastructures import MultiDict
 import yaml
 
-def getFilesInDir(elem):
-    listOfValues = os.listdir(elem)
+def getFilesInDir(path):
+    listOfValues = os.listdir(path)
     output = []
     for elem in listOfValues:
-        output.append(elem)
+        if ".md" not in elem:
+            output.append(elem)
     return output
 
 def getReports(project):
@@ -133,11 +134,7 @@ def getAzureConfigValues(project, azureConfig):
     return output
 
 def getMetrics(project):
-    metric_list = os.listdir("./app/projects/" + project + "/metrics/")
-    metrics = []
-    for metric in metric_list:
-        metrics.append(metric)
-    return metrics
+    return getFilesInDir("./app/projects/" + project + "/metrics/")
 
 def saveReport(project, configs):
     if all(elem in configs for elem in ["influxdbName","grafanaName","azureName","reportName"]) and \
@@ -178,3 +175,17 @@ def getReportConfigValues(project, reportConfig):
         else:
             output.add(item, config[item])
     return output
+
+def saveMetric(project, viewPanel, dashId, fileName, width, height):
+    metricList = getMetrics(project)
+    for metric in metricList:
+        if fileName in metric:
+            return "Such name alrwady exixts"
+    else:
+        f = open("./app/projects/" + project + "/metrics/"+fileName+".yaml", "a")
+        f.write("viewPanel:"                + viewPanel               +"\n")
+        f.write("dashId: "                  + dashId                  +"\n")
+        f.write("fileName: "                + fileName                +"\n")
+        f.write("width: "                   + width                   +"\n")
+        f.write("height: "                  + height                  +"\n")
+        return "Metric added"

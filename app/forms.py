@@ -54,3 +54,10 @@ class reportForm(FlaskForm):
 	influxdbName          = SelectMultipleField (u'Influxdb config'  , validators=[DataRequired()])
 	grafanaName           = SelectMultipleField (u'Grafana config'   , validators=[DataRequired()])
 	azureName             = SelectMultipleField (u'Azure config'     , validators=[DataRequired()])
+
+class metricForm(FlaskForm):
+	viewPanel             = StringField         (u'View panel id'    , validators=[DataRequired()])
+	dashId                = StringField         (u'Dashboard Id'     , validators=[DataRequired()])
+	fileName              = StringField         (u'File name'        , validators=[DataRequired()])
+	width                 = StringField         (u'Panel width'      , validators=[DataRequired()])
+	height                = StringField         (u'Panel height'     , validators=[DataRequired()])

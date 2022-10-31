@@ -112,7 +112,42 @@
                     {% else %}
                         <a class="btn btn-gray">Delete</a>
                     {% endif %}   
+
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addnewmetric">
+                        Add new metric
+                    </button>
                 </form>
+                <!-- Modal -->
+                <div class="modal fade" id="addnewmetric" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addnewmetricLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="addnewmetricLabel">Add metric</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form method="POST" action="/new-metric?project={{ project }}">
+                                <div class="modal-body">
+                                    {{ formForMerics.hidden_tag() }} 
+                                        <label for="viewPanel">View panel</label>
+                                        {{ formForMerics.viewPanel(class="form-control") }}  
+                                        <label for="dashId">Dashboard Id</label>
+                                        {{ formForMerics.dashId(class="form-control") }} 
+                                        <label for="fileName">File name</label>
+                                        {{ formForMerics.fileName(class="form-control") }} 
+                                        <label for="width">Panel width</label>
+                                        {{ formForMerics.width(class="form-control") }} 
+                                        <label for="height">Panel height</label>
+                                        {{ formForMerics.height(class="form-control") }} 
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button class="btn btn-primary" type="submit">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <script>
@@ -167,44 +202,6 @@
                 }
             }
         </script>
-
-
-        <!-- Section will be used to add new metric -->
-        <div class="section section-md pt-4">
-            <div class="container">
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                    Add new metric (in progress)
-                </button>
-                
-                <!-- Modal -->
-                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Add metric</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                {% for metric in metrics %}
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="{{ metric }}">
-                                    <label class="form-check-label" for="{{ metric }}">{{ metric }}</label>
-                                </div> 
-                                {% endfor %}     
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Add</button>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </main>
     {% include 'includes/footer.html' %}
     {% include 'includes/scripts.html' %}
