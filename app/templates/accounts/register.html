@@ -1,16 +1,13 @@
 {% extends "layouts/base-fullscreen.html" %}
-
 {% block title %} Sign UP {% endblock %} 
-
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
-
+{% block stylesheets %}
+<link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+{% endblock stylesheets %}
 {% block content %}
-
     <main>
-
         {% include 'includes/preloader.html' %}
-
         <!-- Section -->
         <section class="min-vh-100 d-flex align-items-center bg-info-dark">
             <div class="container">
@@ -31,9 +28,7 @@
                                 </span>
                             </div>
                             <form method="post" action="" action="#">
-
                                 {{ form.hidden_tag() }}
-
                                 <div class="form-group mb-4">
                                     <label for="email">Username</label>
                                     <div class="input-group">
@@ -74,24 +69,16 @@
                                     <button type="submit" name="register" class="btn btn-primary">Sign UP</button>
                                 </div>
                             </form>
-                            
                             <br />
-
                             <div class="d-flex justify-content-center align-items-center mt-4">
                                 <span class="fw-normal">
                                     &copy; Coded by ushklianik 
                                 </span>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
     </main>
-
 {% endblock content %}
-
-<!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}

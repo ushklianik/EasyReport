@@ -1,15 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-<!-- Primary Meta Tags -->
-<title>
-    Flask and Bootstrap - Presentation | AppSeed
-</title>
-
-<!-- Favicon -->
+{% extends "layouts/base-fullscreen.html" %}
+{% block title %} Home {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
 <link rel="apple-touch-icon" sizes="120x120" href="/static/assets/img/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/static/assets/img/favicon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/static/assets/img/favicon/favicon-16x16.png">
@@ -17,23 +9,14 @@
 <link rel="mask-icon" href="/static/assets/img/favicon/safari-pinned-tab.svg" color="#ffffff">
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="theme-color" content="#ffffff">
-
-<!-- Fontawesome -->
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
-
-<!-- Pixel CSS -->
 <link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
-
 <link type="text/css" href="/static/assets/css/sidebars.css" rel="stylesheet">
-
-</head>
-<body>
+{% endblock stylesheets %}
+{% block content %}
     <main>
-        
         {% include 'includes/preloader.html' %}
-        
         {% include 'includes/sidebar.html' %}
-
         <div class="section section-sm pb-0 mb-n4">
             <div class="container">
                 <div class="row justify-content-center">
@@ -41,7 +24,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Section -->
         <div class="section section-md">
             <div class="container">
@@ -73,7 +55,6 @@
             </div>
         </div>
         <!-- End of Section -->
-
         <div class="section section-sm pb-0 mb-n4">
             <div class="container">
                 <div class="row justify-content-center">
@@ -81,7 +62,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Section -->
         <div class="section section-md">
             <div class="container">
@@ -121,7 +101,6 @@
             </div>
         </div>
         <!-- End of Section -->
-
         <div class="section section-sm pb-0 mb-n4">
             <div class="container">
                 <div class="row justify-content-center">
@@ -129,7 +108,6 @@
                 </div>
             </div>
         </div>
-
         <!--End of Title section-->
         <div class="section section-md components-section">
             <div class="container">
@@ -292,7 +270,6 @@
                 </div>
             </div>
         </div>
-
         <div class="section section-sm pb-0 mb-n4">
             <div class="container">
                 <div class="row justify-content-center">
@@ -300,7 +277,6 @@
                 </div>
             </div>
         </div>
-
         <div class="section section-md">
             <div class="container">
                 <div class="row justify-content-center">
@@ -449,7 +425,6 @@
                 </div>
             </div>
         </div>
-
         <div class="section section-sm pb-0 mb-n4">
             <div class="container">
                 <div class="row justify-content-center">
@@ -457,7 +432,6 @@
                 </div>
             </div>
         </div>
-
         <div class="section section-md pb-0">
             <div class="container">
                 <!-- Title -->
@@ -469,7 +443,6 @@
                 <!-- End of Title -->
             </div>
         </div>
-
         <!-- Section -->
         <div class="section section-md pt-4">
             <div class="container">
@@ -2323,12 +2296,6 @@
                 </div>
             </div>
         </section>
-
     </main>
-
     {% include 'includes/footer.html' %}
-
-    {% include 'includes/scripts.html' %}
-
-</body>
-</html>
+{% endblock content %}
