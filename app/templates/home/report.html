@@ -9,173 +9,175 @@
     <main>
         {% include 'includes/preloader.html' %}
         {% include 'includes/sidebar.html' %}
-        <div class="section section-sm pb-0 mb-n4">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <h3 class="text-center">New report</h3>
+        <div class="main-background">
+            <div class="section section-sm pb-0 mb-n4">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <h3 class="text-center">New report</h3>
+                    </div>
+                    <span class="font-weight-normal d-flex align-items-center justify-content-center">
+                        {% if msg %}
+                            {{ msg | safe }}
+                        {% else %}
+                            Add your report configuration
+                        {% endif %}   
+                    </span>
                 </div>
-                <span class="font-weight-normal d-flex align-items-center justify-content-center">
-                    {% if msg %}
-                        {{ msg | safe }}
-                    {% else %}
-                        Add your report configuration
-                    {% endif %}   
-                </span>
             </div>
-        </div>
-        <!-- Section -->
-        <div class="section section-md pt-4">
-            <div class="container">
-                <form method="POST" action="/report?project={{ project }}">
-                    {{ form.hidden_tag() }}
-                    <div class="col-lg-4 col-sm-6">
-                        <!-- Form -->
-                        <div class="mb-4">
-                            <label for="reportName">Report name</label>
-                            {{ form.reportName(class="form-control") }}
-                        </div>
-                        <!-- End of Form -->
-                    </div>
-                    <div class="row mb-4 mb-lg-5">
+            <!-- Section -->
+            <div class="section section-md pt-4">
+                <div class="container">
+                    <form method="POST" action="/report?project={{ project }}">
+                        {{ form.hidden_tag() }}
                         <div class="col-lg-4 col-sm-6">
                             <!-- Form -->
                             <div class="mb-4">
-                                <label for="influxdbName">Influxdb name</label>
-                                {{ form.influxdbName(class="form-control") }}
+                                <label for="reportName">Report name</label>
+                                {{ form.reportName(class="form-control") }}
                             </div>
                             <!-- End of Form -->
                         </div>
-                        <div class="col-lg-4 col-sm-6">
-                            <!-- Form -->
-                            <div class="mb-4">
-                                <label for="grafanaName">Grafana name</label>
-                                {{ form.grafanaName(class="form-control") }}
+                        <div class="row mb-4 mb-lg-5">
+                            <div class="col-lg-4 col-sm-6">
+                                <!-- Form -->
+                                <div class="mb-4">
+                                    <label for="influxdbName">Influxdb name</label>
+                                    {{ form.influxdbName(class="form-control") }}
+                                </div>
+                                <!-- End of Form -->
                             </div>
-                            <!-- End of Form -->
-                        </div>
-                        <div class="col-lg-4 col-sm-6">
-                            <!-- Form -->
-                            <div class="mb-4">
-                                <label for="azureName">Azure name</label>
-                                {{ form.azureName(class="form-control") }}
+                            <div class="col-lg-4 col-sm-6">
+                                <!-- Form -->
+                                <div class="mb-4">
+                                    <label for="grafanaName">Grafana name</label>
+                                    {{ form.grafanaName(class="form-control") }}
+                                </div>
+                                <!-- End of Form -->
                             </div>
-                            <!-- End of Form -->
+                            <div class="col-lg-4 col-sm-6">
+                                <!-- Form -->
+                                <div class="mb-4">
+                                    <label for="azureName">Azure name</label>
+                                    {{ form.azureName(class="form-control") }}
+                                </div>
+                                <!-- End of Form -->
+                            </div>
                         </div>
-                    </div>
-                    <div class="input-group mb-2 search-metric">
-                        <span class="input-group-text" id="basic-addon1"><span class="fas fa-search"></span></span>
-                        <input type="text" class="form-control" id="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" onkeyup='searchFilter()'>
-                    </div>
-                    <div id='options' class='search-container d-none form-control-metric'>
-                        <select class="form-select" multiple="">
-                            {% for metric in metrics %}
-                                <option class='each-search name'>{{ metric }}</option>
+                        <div class="input-group mb-2 search-metric">
+                            <span class="input-group-text" id="basic-addon1"><span class="fas fa-search"></span></span>
+                            <input type="text" class="form-control" id="search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" onkeyup='searchFilter()'>
+                        </div>
+                        <div id='options' class='search-container d-none form-control-metric'>
+                            <select class="form-select" multiple="">
+                                {% for metric in metrics %}
+                                    <option class='each-search name'>{{ metric }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div id='wrapper' class='wrapper'> 
+                            {% for metric in form.metrics %}
+                                <div class="toast fade show toast-header mb-2" aria-atomic="true">
+                                    <button type="button" class="btn-close-right btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                    {{ metric(class="form-control-metric") }}
+                                </div>
                             {% endfor %}
-                        </select>
-                    </div>
-                    <div id='wrapper' class='wrapper'> 
-                        {% for metric in form.metrics %}
-                            <div class="toast fade show toast-header mb-2" aria-atomic="true">
-                                <button type="button" class="btn-close-right btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                                {{ metric(class="form-control-metric") }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <button class="btn btn-primary" type="submit">Save</button>
-                    {% if reportConfig %}
-                        <a href="/delete/report?reportConfig={{ reportConfig }}&project={{ project }}" class="btn btn-danger">Delete</a>
-                    {% else %}
-                        <a class="btn btn-gray">Delete</a>
-                    {% endif %}   
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addnewmetric">
-                        Add new metric
-                    </button>
-                </form>
-                <!-- Modal -->
-                <div class="modal fade" id="addnewmetric" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addnewmetricLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="addnewmetricLabel">Add metric</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <form method="POST" action="/new-metric?project={{ project }}">
-                                <div class="modal-body">
-                                    {{ formForMerics.hidden_tag() }} 
-                                        <label for="viewPanel">View panel</label>
-                                        {{ formForMerics.viewPanel(class="form-control") }}  
-                                        <label for="dashId">Dashboard Id</label>
-                                        {{ formForMerics.dashId(class="form-control") }} 
-                                        <label for="fileName">File name</label>
-                                        {{ formForMerics.fileName(class="form-control") }} 
-                                        <label for="width">Panel width</label>
-                                        {{ formForMerics.width(class="form-control") }} 
-                                        <label for="height">Panel height</label>
-                                        {{ formForMerics.height(class="form-control") }} 
+                        </div>
+                        <button class="btn btn-primary" type="submit">Save</button>
+                        {% if reportConfig %}
+                            <a href="/delete/report?reportConfig={{ reportConfig }}&project={{ project }}" class="btn btn-danger">Delete</a>
+                        {% else %}
+                            <a class="btn btn-gray">Delete</a>
+                        {% endif %}   
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addnewmetric">
+                            Add new metric
+                        </button>
+                    </form>
+                    <!-- Modal -->
+                    <div class="modal fade" id="addnewmetric" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addnewmetricLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="addnewmetricLabel">Add metric</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" type="submit">Save</button>
-                                </div>
-                            </form>
+                                <form method="POST" action="/new-metric?project={{ project }}">
+                                    <div class="modal-body">
+                                        {{ formForMerics.hidden_tag() }} 
+                                            <label for="viewPanel">View panel</label>
+                                            {{ formForMerics.viewPanel(class="form-control") }}  
+                                            <label for="dashId">Dashboard Id</label>
+                                            {{ formForMerics.dashId(class="form-control") }} 
+                                            <label for="fileName">File name</label>
+                                            {{ formForMerics.fileName(class="form-control") }} 
+                                            <label for="width">Panel width</label>
+                                            {{ formForMerics.width(class="form-control") }} 
+                                            <label for="height">Panel height</label>
+                                            {{ formForMerics.height(class="form-control") }} 
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button class="btn btn-primary" type="submit">Save</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <script>
-            var wrapper = document.getElementById('wrapper');
-            var search = document.getElementById('search');
-            var options = document.getElementById('options');
-            var metric = document.querySelectorAll('.each-search');
-            var txtVal, filter;
-            var card_id = 0;
+            <script>
+                var wrapper = document.getElementById('wrapper');
+                var search = document.getElementById('search');
+                var options = document.getElementById('options');
+                var metric = document.querySelectorAll('.each-search');
+                var txtVal, filter;
+                var card_id = 0;
 
-            function searchFilter(){
-                for(var i = 0; i < metric.length; i++){
-                    txtVal = metric[i].innerText;
-                    filter = search.value.toUpperCase();
-                    if(txtVal.toUpperCase().indexOf(filter) > -1){
-                        metric[i].style.display = '';
-                    }else{
-                        metric[i].style.display = 'none';
-                    }    
+                function searchFilter(){
+                    for(var i = 0; i < metric.length; i++){
+                        txtVal = metric[i].innerText;
+                        filter = search.value.toUpperCase();
+                        if(txtVal.toUpperCase().indexOf(filter) > -1){
+                            metric[i].style.display = '';
+                        }else{
+                            metric[i].style.display = 'none';
+                        }    
+                    }
                 }
-            }
 
-            search.onclick = function(){
-                options.classList.toggle('d-none');
-            }
+                search.onclick = function(){
+                    options.classList.toggle('d-none');
+                }
 
-            for (var i = 0; i < metric.length; i++) {
-                
-                metric[i].onclick = function() {
-
-                    const name = this.innerHTML;
-                    id = "metrics-" + card_id;
-                    card_id = card_id + 1;
+                for (var i = 0; i < metric.length; i++) {
                     
-                    const cardElement = "<div class='toast fade show toast-header mb-2' aria-atomic='true'>" +
-                                "<button type='button' class='btn-close-right btn-close' data-bs-dismiss='toast' aria-label='Close'></button>" +
-                                "<input class='form-control-metric' id='"+id+"' name='"+id+"' type='text' value='"+name+"'>" +
-                            "</div>"
-  
-                    wrapper.insertAdjacentHTML("beforeend", cardElement);
+                    metric[i].onclick = function() {
 
-                    const cardName = document.querySelector('.card .details .name');
+                        const name = this.innerHTML;
+                        id = "metrics-" + card_id;
+                        card_id = card_id + 1;
+                        
+                        const cardElement = "<div class='toast fade show toast-header mb-2' aria-atomic='true'>" +
+                                    "<button type='button' class='btn-close-right btn-close' data-bs-dismiss='toast' aria-label='Close'></button>" +
+                                    "<input class='form-control-metric' id='"+id+"' name='"+id+"' type='text' value='"+name+"'>" +
+                                "</div>"
+    
+                        wrapper.insertAdjacentHTML("beforeend", cardElement);
 
-                    document.getElementById('options').classList.add('d-none');
+                        const cardName = document.querySelector('.card .details .name');
 
-                    var closeBtn = document.getElementsByClassName('btn-close-right');
-                    for(var i = 0; i < closeBtn.length; i++){
-                        closeBtn[i].onclick = function(){
-                            this.parentElement.remove();
+                        document.getElementById('options').classList.add('d-none');
+
+                        var closeBtn = document.getElementsByClassName('btn-close-right');
+                        for(var i = 0; i < closeBtn.length; i++){
+                            closeBtn[i].onclick = function(){
+                                this.parentElement.remove();
+                            }
                         }
                     }
                 }
-            }
-        </script>
+            </script>
+        </div>
     </main>
     {% include 'includes/footer.html' %}
 {% endblock content %}

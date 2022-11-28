@@ -51,6 +51,7 @@ footer {
 
 .main-background{
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: auto;
@@ -70,6 +71,20 @@ footer {
   border-radius: 25px;
   text-align: center;
   background-color: rgba(0, 0, 0, 0.15);
+}
+
+.section {
+    position: relative;
+    padding-top: 3rem;
+    padding-bottom: 3rem; 
+    margin-left: 11rem;
+}
+  
+.section-header {
+    position: relative;
+    padding-top: 7rem;
+    padding-bottom: 3rem;
+    margin-left: 11rem; 
 }
 
 .datepicker-dropdown {
@@ -4773,7 +4788,6 @@ textarea.form-control-lg {
   flex-direction: column;
   min-width: 5rem;
   word-wrap: break-word;
-  background-color: #ffffff;
   background-clip: border-box;
   border: 0.0625rem solid #E5E7EB;
   border-radius: 1rem; }
@@ -16121,52 +16135,6 @@ textarea.form-control-lg {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); }
   .navbar-collapse.collapsing-out {
     animation: hide-navbar-collapse .2s ease forwards; } }
-
-/**
- * = Sections
- */
-.section {
-  position: relative;
-  padding-top: 3rem;
-  padding-bottom: 3rem; 
-  margin-left: 11rem;
-}
-
-.section-header {
-  position: relative;
-  padding-top: 7rem;
-  padding-bottom: 3rem;
-  margin-left: 11rem; }
-
-@media (min-width: 576px) {
-  .section {
-    position: relative;
-    padding-top: 6rem;
-    padding-bottom: 6rem; 
-    margin-left: 11rem;
-  }
-  .section-header {
-    position: relative;
-    padding-top: 10rem;
-    padding-bottom: 10rem;
-    margin-left: 11rem; }
-    .section-header.section-sm {
-      padding-top: 4rem;
-      padding-bottom: 3rem;
-      margin-left: 11rem; }
-  .section-xl {
-    padding-top: 10rem;
-    padding-bottom: 10rem; }
-  .section-lg {
-    padding-top: 8rem;
-    padding-bottom: 8rem; }
-  .section-sm {
-    padding-top: 4rem;
-    padding-bottom: 4rem; } }
-
-@media (min-width: 768px) {
-  .section-hero {
-    height: 100vh; } }
 
 .card-box {
   -o-perspective: 900px;
