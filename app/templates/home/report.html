@@ -24,10 +24,25 @@
                     </span>
                 </div>
             </div>
+        </div>
+        <!-- Section -->
+        <div class="section section-md pt-4">
+            <div class="container">
+                <form method="POST" action="/report">
+                    {{ form.hidden_tag() }}
+                    <div class="col-lg-4 col-sm-6">
+                        <!-- Form -->
+                        <div class="mb-4">
+                            <label for="reportName">Report name</label>
+                            {{ form.reportName(class="form-control") }}
+                        </div>
+                        <!-- End of Form -->
+                    </div>
+                    <div class="row mb-4 mb-lg-5">
             <!-- Section -->
             <div class="section section-md pt-4">
                 <div class="container">
-                    <form method="POST" action="/report?project={{ project }}">
+                    <form method="POST" action="/report">
                         {{ form.hidden_tag() }}
                         <div class="col-lg-4 col-sm-6">
                             <!-- Form -->
@@ -84,7 +99,7 @@
                         </div>
                         <button class="btn btn-primary" type="submit">Save</button>
                         {% if reportConfig %}
-                            <a href="/delete/report?reportConfig={{ reportConfig }}&project={{ project }}" class="btn btn-danger">Delete</a>
+                            <a href="/delete/report?reportConfig={{ reportConfig }}" class="btn btn-danger">Delete</a>
                         {% else %}
                             <a class="btn btn-gray">Delete</a>
                         {% endif %}   
@@ -101,7 +116,7 @@
                                     <h1 class="modal-title fs-5" id="addnewmetricLabel">Add metric</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form method="POST" action="/new-metric?project={{ project }}">
+                                <form method="POST" action="/new-metric">
                                     <div class="modal-body">
                                         {{ formForMerics.hidden_tag() }} 
                                             <label for="viewPanel">View panel</label>

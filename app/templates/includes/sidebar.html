@@ -1,3 +1,5 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
 <div class="sidebar">
     <div class="d-flex justify-content-center" style="background-color: rgba(0, 0, 0, 0.2)">
         <img src="/static/assets/img/themesberg.svg" height="30" class="my-sm" alt="Themesberg Logo">
@@ -15,12 +17,12 @@
             </a>
         </button>
         <button class="btn-sidebar btn-black mb-3 ms-3" type="button" style="background-color: rgba(0, 0, 0, 0.2)">
-            <a class="text-white" href="/all-reports?project={{ project }}">
+            <a class="text-white" href="/all-reports">
                 <span class="fas fa-book-open me-2"></span>Reports
             </a>
         </button>
         <button class="btn-sidebar btn-black mb-3 ms-3" type="button" style="background-color: rgba(0, 0, 0, 0.2)">
-            <a class="text-white" href="/integrations?project={{ project }}">
+            <a class="text-white" href="/integrations">
                 <span class="far fa-sun me-2"></span>Integrations
             </a>
         </button>
@@ -43,19 +45,47 @@
             </div>
         </div>
         <div class="btn-group mb-5 ms-5 fixed-bottom">
-          <button type="button" class="btn-sidebar-dropdown text-white" data-bs-toggle="dropdown">
-          {% if project %}
-            {{ project }}
-          {% else %}
-            Choose project
-          {% endif %} 
+          <button type="button" id = "projects-dropdown" class="btn-sidebar-dropdown text-white" data-bs-toggle="dropdown">
           </button>
-          <div class="dropdown-menu py-0 text-white ms-n4">
-            {% for project in projects %}
-              <a class="dropdown-item rounded-top rounded-bottom" href="?project={{ project }}">{{ project }}</a>
-            {% endfor %}
+          <div id="projects-list" class="dropdown-menu py-0 text-white ms-n4">
               <a class="dropdown-item rounded-top rounded-bottom" href="#">New project</a>
           </div>
       </div>
     </div>
 </div>
+<script>
+    var wrapper = document.getElementById('projects-list');
+
+    $.get('/get-projects')
+    .done(function(response) {
+        var arrayLength = response['projects'].length;
+        for (var i = 0; i < arrayLength; i++) {
+            const projectElement = '<a class="dropdown-item rounded-top rounded-bottom" href="/set-project?project='+response['projects'][i]+'">'+response['projects'][i]+'</a>'
+            wrapper.insertAdjacentHTML("afterbegin", projectElement);
+        }
+    }).fail(function() {
+        const projectElement = '<a class="dropdown-item rounded-top rounded-bottom">Could not contact server.</a>'
+        wrapper.insertAdjacentHTML("afterbegin", projectElement);
+    });
+
+    var currentProject = document.getElementById('projects-dropdown');
+
+    if (getCookie("project") === undefined){
+        setCookie("project", "default")
+        currentProject.textContent += "default";
+    }else{
+        currentProject.textContent += getCookie("project")
+    }
+
+    function getCookie(cookieName) {
+    let cookie = {};
+    document.cookie.split(';').forEach(function(el) {
+        let [key,value] = el.split('=');
+        cookie[key.trim()] = value;
+    })
+    return cookie[cookieName];
+    }
+    function setCookie(cname, cvalue) {
+        document.cookie = cname + "=" + cvalue;
+    }
+</script>

@@ -1,0 +1,45 @@
+{% extends "layouts/base-fullscreen.html" %}
+{% block title %} Azure {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+{% endblock stylesheets %}
+{% block content %}
+    <main>
+        {% include 'includes/sidebar.html' %}
+        <table id="data" class="table table-striped container">
+            <thead>
+            <tr>
+                <th>runId</th>
+                <th>testName</th>
+                <th>duration</th>
+                <th>maxThreads</th>
+                <th>startTime</th>
+                <th>endTime</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for test in tests %}
+                <tr>
+                <td>{{ test.runId }}</td>
+                <td>{{ test.testName }}</td>
+                <td>{{ test.duration }}</td>
+                <td>{{ test.maxThreads }}</td>
+                <td>{{ test.startTime }}</td>
+                <td>{{ test.endTime }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
+        <script>
+            $(document).ready(function () {
+              $('#data').DataTable();
+            });
+        </script>
+    </main>
+    {% include 'includes/footer.html' %}
+{% endblock content %}

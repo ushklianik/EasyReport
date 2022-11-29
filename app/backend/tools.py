@@ -52,7 +52,6 @@ def getInfluxdbConfigValues(project, influxdbConfig):
     with open("./app/projects/" + project + "/integrations/influxdb/"+influxdbConfig, "r") as f:
         config = yaml.safe_load(f)
     output = MultiDict()
-    config = config["influxdb"]
     for item in config:
         output.add(item, config[item])
     return output
@@ -64,7 +63,6 @@ def saveInfluxDB(project, influxdbName, influxdbUrl, influxdbOrg, influxdbToken,
             return "Such name alrwady exixts"
     else:
         f = open("./app/projects/" + project + "/integrations/influxdb/"+influxdbName+".yaml", "a")
-        f.write("influxdb:"                                     +"\n")
         f.write("  influxdbName: "        + influxdbName        +"\n")
         f.write("  influxdbUrl: "         + influxdbUrl         +"\n")
         f.write("  influxdbOrg: "         + influxdbOrg         +"\n")
@@ -189,3 +187,16 @@ def saveMetric(project, viewPanel, dashId, fileName, width, height):
         f.write("width: "                   + width                   +"\n")
         f.write("height: "                  + height                  +"\n")
         return "Metric added"
+
+def getDefaultInfluxdb(project):
+    configs = getFilesInDir("./app/projects/" + project + "/integrations/influxdb/")
+    for config in configs:
+        with open("./app/projects/" + project + "/integrations/influxdb/"+config, "r") as f:
+            configd = yaml.safe_load(f)
+            if configd["default"] == True:
+                return "./app/projects/" + project + "/integrations/influxdb/" + config
+
+def getValueFromYaml(path, key):
+    with open(path, "r") as f:
+            config = yaml.safe_load(f)
+            return config[key]

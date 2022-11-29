@@ -3,6 +3,7 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 import os
+import logging
 
 from flask            import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -13,6 +14,8 @@ from flask_bcrypt     import Bcrypt
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
+
+logging.basicConfig(filename='./app/logs/info.log', level=logging.INFO)
 
 app.config.from_object('app.config.Config')
 

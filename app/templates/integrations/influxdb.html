@@ -30,7 +30,7 @@
         <!-- Section -->
             <div class="container pt-4 justify-content-center">
                 <div class="col-lg-12 ms-n8">
-                    <form method="POST" action="/influxdb?project={{ project }}">
+                    <form method="POST" action="/influxdb">
                         {{ form.hidden_tag() }}
                         <div class="row mb-4 mb-lg-5 justify-content-center text-white">
                             <div class="col-lg-4 col-sm-6">
@@ -63,7 +63,7 @@
                                 <!-- End of Form -->
                                 <button class="btn btn-primary" type="submit">Save</button>
                                 {% if influxdbConfig %}
-                                    <a href="/delete/influxdb?influxdbConfig={{ influxdbConfig }}&project={{ project }}" class="btn btn-danger">Delete</a>
+                                    <a href="/delete/influxdb?influxdbConfig={{ influxdbConfig }}" class="btn btn-danger">Delete</a>
                                 {% endif %}   
                             </div>
                             <div class="col-lg-4 col-sm-6">
