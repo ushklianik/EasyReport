@@ -9,31 +9,16 @@
     <main>
         {% include 'includes/sidebar.html' %}
         <div class="main-background">
-                <div class="container pt-5 justify-content-center">
-                    <!-- Title -->
-                    <div class="row">
-                        <div class="col-lg-12 ms-n8">
-                            <div class="d-flex align-items-center justify-content-center text-white">
-                                <h2 class="h5">Grafana configuration</h2>
-                            </div>
-                            <span class="font-weight-normal d-flex align-items-center justify-content-center text-white">
-                                {% if msg %}
-                                    {{ msg | safe }}
-                                {% else %}
-                                    Add your InfluDB configuration
-                                {% endif %}                                  
-                            </span>
-                        </div>
-                    </div>
-                    <!-- End of Title -->
+            <div class="main-container">
+                <div class="section-header">
+                    <h2 class="h5">Grafana configuration</h2>
+                        Add your Grafana configuration
                 </div>
-            <!-- Section -->
-                <div class="container pt-4 justify-content-center">
-                    <div class="col-lg-12 ms-n8">
+                <div class="section">
                         <form method="POST" action="/grafana?project={{ project }}">
                             {{ form.hidden_tag() }}
-                            <div class="row mb-4 mb-lg-5 justify-content-center text-white">
-                                <div class="col-lg-4 col-sm-6">
+                            <div class="row mb-4 justify-content-center text-white">
+                                <div class="col-sm-6">
                                     <!-- Form -->
                                     <div class="mb-4 text-center">
                                         <label for="grafanaName">Name</label>
@@ -63,10 +48,10 @@
                                     <!-- End of Form -->
                                     <button class="btn btn-primary" type="submit">Save</button>
                                     {% if grafanaConfig %}
-                                        <a href="/delete/grafana?grafanaConfig={{ grafanaConfig }}&project={{ project }}" class="btn btn-danger">Delete</a>
+                                        <a href="/delete/grafana?grafanaConfig={{ grafanaConfig }}&project={{ project }}" class="btn btn-secondary">Delete</a>
                                     {% endif %}   
                                 </div>
-                                <div class="col-lg-4 col-sm-6">
+                                <div class="col-sm-6">
                                     <!-- Form -->
                                     <div class="mb-4 text-center">
                                         <label for="grafanaDashboard">Grafana dashboard</label>
@@ -87,8 +72,8 @@
                         </form>
                     </div>
                 </div>
-        </div>
-        <!-- End of Section -->
-    </main>
+            </div>
+            <!-- End of Section -->
+        </main>
     {% include 'includes/footer.html' %}
 {% endblock content %}

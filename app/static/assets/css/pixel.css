@@ -138,10 +138,9 @@ footer {
 }
   
 .section-header {
-    position: relative;
-    padding-top: 7rem;
-    padding-bottom: 3rem;
-    margin-left: 11rem; 
+    margin: 25px;
+    display: flex;
+    flex-direction: column;
 }
 
 .datepicker-dropdown {

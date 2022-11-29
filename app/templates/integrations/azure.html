@@ -9,31 +9,16 @@
     <main>
         {% include 'includes/sidebar.html' %}
         <div class="main-background">
-            <div class="container pt-5 justify-content-center">
-                <!-- Title -->
-                <div class="row">
-                    <div class="col-lg-12 ms-n8">
-                        <div class="d-flex align-items-center justify-content-center text-white">
-                            <h2 class="h5">Azure configuration</h2>
-                        </div>
-                        <span class="font-weight-normal d-flex align-items-center justify-content-center text-white">
-                            {% if msg %}
-                                {{ msg | safe }}
-                            {% else %}
-                                Add your Azure configuration
-                            {% endif %}                                  
-                        </span>
-                    </div>
+            <div class="main-container">
+                <div class="section-header">
+                    <h2 class="h5">Azure configuration</h2>
+                        Add your Azure configuration
                 </div>
-                <!-- End of Title -->
-            </div>
-            <!-- Section -->
-            <div class="container pt-4 justify-content-center">
-                <div class="col-lg-12 ms-n8">
+            <div class="section">
                     <form method="POST" action="/azure?project={{ project }}">
                         {{ form.hidden_tag() }}
-                        <div class="row mb-4 mb-lg-5 d-flex justify-content-center text-white">
-                            <div class="col-lg-4 col-sm-6">
+                        <div class="row mb-4 justify-content-center text-white">
+                            <div class="col-sm-6">
                                 <!-- Form -->
                                 <div class="mb-4 text-center">
                                     <label for="azureName">Name</label>
@@ -69,10 +54,10 @@
                                 <!-- End of Form -->
                                 <button class="btn btn-primary" type="submit">Save</button>
                                 {% if azureConfig %}
-                                    <a href="/delete/azure?azureConfig={{ azureConfig }}&project={{ project }}" class="btn btn-danger">Delete</a>
+                                    <a href="/delete/azure?azureConfig={{ azureConfig }}&project={{ project }}" class="btn btn-secondary">Delete</a>
                                 {% endif %}   
                             </div>
-                            <div class="col-lg-4 col-sm-6">
+                            <div class="col-sm-6">
                                 <!-- Form -->
                                 <div class="mb-4 text-center">
                                     <label for="wikiPathToReport">Wiki Path To Report</label>
