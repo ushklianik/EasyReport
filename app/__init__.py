@@ -15,6 +15,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 
+if (os.path.exists("./app/logs/info.log") == False):
+    f = open("./app/logs/info.log", "w")
 logging.basicConfig(filename='./app/logs/info.log', level=logging.INFO)
 
 app.config.from_object('app.config.Config')

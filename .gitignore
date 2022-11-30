@@ -21,3 +21,4 @@ app/projects/default/integrations/grafana/*.yaml
 app/projects/default/integrations/influxdb/*.yaml
 app/projects/default/metrics/*.json
 app/projects/default/reports/*.yaml
+app/logs
