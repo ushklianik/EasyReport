@@ -61,6 +61,12 @@
                                     </div>
                                 </div>
                                 <!-- End of Form -->
+                                <!-- Form -->
+                                <div class="mb-4 text-center">
+                                    <label for="influxdbTestIdTag">Test Id Tag</label>
+                                    {{ form.influxdbTestIdTag(class="form-control") }}
+                                </div>
+                                <!-- End of Form -->
                                 <button class="btn btn-primary" type="submit">Save</button>
                                 {% if influxdbConfig %}
                                     <a href="/delete/influxdb?influxdbConfig={{ influxdbConfig }}" class="btn btn-danger">Delete</a>
@@ -86,6 +92,12 @@
                                     <label for="influxdbField">Field</label>
                                     {{ form.influxdbField(class="form-control") }}
                                 </div>
+                                <!-- Form -->
+                                <div class="mb-4 text-center">
+                                    <label for="isDefault">Default</label>
+                                    {{ form.isDefault }}
+                                </div>
+                                <!-- End of Form -->
                             </div>
                         </div>
                     </form>

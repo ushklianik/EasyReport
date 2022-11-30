@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 from flask_wtf          import FlaskForm
 from flask_wtf.file     import FileField, FileRequired
-from wtforms            import StringField, TextAreaField, SubmitField, PasswordField, SelectMultipleField, FieldList, FormField
+from wtforms            import StringField, PasswordField, SelectMultipleField, FieldList, BooleanField
 from wtforms.validators import InputRequired, Email, DataRequired
 
 class LoginForm(FlaskForm):
@@ -27,6 +27,8 @@ class InfluxDBForm(FlaskForm):
 	influxdbBucket       = StringField  (u'Bucket'       , validators=[DataRequired()])
 	influxdbMeasurement  = StringField  (u'Measurement'  , validators=[DataRequired()])
 	influxdbField        = StringField  (u'Field'        , validators=[DataRequired()])
+	influxdbTestIdTag    = StringField  (u'TestIdTag'    , validators=[DataRequired()])
+	isDefault            = BooleanField()
 
 class grafanaForm(FlaskForm):
 	grafanaName                = StringField  (u'Name'             , validators=[DataRequired()])

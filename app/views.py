@@ -165,7 +165,9 @@ def addInfluxdb():
         influxdbBucket      = request.form.get("influxdbBucket")
         influxdbMeasurement = request.form.get("influxdbMeasurement")
         influxdbField       = request.form.get("influxdbField")
-        msg = tools.saveInfluxDB(project, influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdbTimeout, influxdbBucket, influxdbMeasurement, influxdbField)
+        influxdbTestIdTag   = request.form.get("influxdbTestIdTag")
+        isDefault           = request.form.get("isDefault")
+        msg = tools.saveInfluxDB(project, influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdbTimeout, influxdbBucket, influxdbMeasurement, influxdbField, influxdbTestIdTag, isDefault)
 
     return render_template('integrations/influxdb.html', form = form, msg = msg, influxdbConfig = influxdbConfig)
 

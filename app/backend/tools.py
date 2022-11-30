@@ -56,7 +56,7 @@ def getInfluxdbConfigValues(project, influxdbConfig):
         output.add(item, config[item])
     return output
 
-def saveInfluxDB(project, influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdbTimeout, influxdbBucket, influxdbMeasurement, influxdbField):
+def saveInfluxDB(project, influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdbTimeout, influxdbBucket, influxdbMeasurement, influxdbField, influxdbTestIdTag, isDefault):
     config_list = os.listdir("./app/projects/" + project + "/integrations/influxdb")
     for config in config_list:
         if influxdbName in config:
@@ -71,6 +71,8 @@ def saveInfluxDB(project, influxdbName, influxdbUrl, influxdbOrg, influxdbToken,
         f.write("  influxdbBucket: "      + influxdbBucket      +"\n")
         f.write("  influxdbMeasurement: " + influxdbMeasurement +"\n")
         f.write("  influxdbField: "       + influxdbField       +"\n")
+        f.write("  influxdbTestIdTag: "   + influxdbTestIdTag   +"\n")
+        f.write("  isDefault: "           + isDefault           +"\n")
         f.write("  verify_ssl: False")
         return "Influxdb added"
 
@@ -193,7 +195,7 @@ def getDefaultInfluxdb(project):
     for config in configs:
         with open("./app/projects/" + project + "/integrations/influxdb/"+config, "r") as f:
             configd = yaml.safe_load(f)
-            if configd["default"] == True:
+            if configd["isDefault"] == "y":
                 return "./app/projects/" + project + "/integrations/influxdb/" + config
 
 def getValueFromYaml(path, key):
