@@ -1,6 +1,6 @@
 getTestLog = '''
 data = from(bucket: "jmeter")
-  |> range(start: 0, stop: 2022-11-29T09:35:12.22Z)
+  |> range(start: 0, stop: now())
   |> filter(fn: (r) => r["_measurement"] == "virtualUsers")
   |> filter(fn: (r) => r["_field"] == "maxActiveThreads")
   |> keep(columns: ["_time", "_value", "runId", "testName"])
