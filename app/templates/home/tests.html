@@ -11,51 +11,291 @@
         <div class="main-background">
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
-                <div class="d-flex justify-content-start BasicLayout__header">
-                    <a class="text-white fw-bold footer-logo-text my-sm ms-2">Test log</a>
-                </div>      
-                <table id="data" class="table table-striped container rounded-bottom">
-                    <thead>
-                    <tr>
-                        <th>runId</th>
-                        <th>testName</th>
-                        <th>duration</th>
-                        <th>maxThreads</th>
-                        <th>startTime</th>
-                        <th>endTime</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for test in tests %}
-                        <tr>
-                        <td>{{ test.runId }}</td>
-                        <td>{{ test.testName }}</td>
-                        <td>{{ test.duration }}</td>
-                        <td>{{ test.maxThreads }}</td>
-                        <td>{{ test.startTime }}</td>
-                        <td>{{ test.endTime }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                <div class="justify-content-start main-body_header" style="background-color: rgba(0, 0, 0, 0.2); height: 4rem;">
+                    <a class="text-white footer-logo-text">Test log</a>
+                    <div id="table-filter-count" style="float: right;">
+                        <label> 
+                            <select name="data_length" id="maxRows" class="form-select max-rows" aria-controls="data" style="height: 2.3rem;margin-left: 15px">
+                                <option selected value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </label>  
+                    </div>
+                    <div id="data_filter" class="dataTables_filter" style="float: right;">
+                        <div class="input-group" style="height: 2.3rem;">
+                            <span class="input-group-text max-rows" id="basic-addon1"><span class="fas fa-search"></span></span>
+                            <input id="myInput" onkeyup="searchFunction()" type="search" class="form-control form-control-sm max-rows" placeholder="Search" aria-controls="data">
+                        </div>
+                        
+                    </div>
+                </div>    
+                <div class="table" id="table-id">
+                    <div class="table-header">
+                        <div class="header__item"><a id="runId" class="filter__link" href="#">runId</a></div>
+                        <div class="header__item"><a id="testName" class="filter__link" href="#">testName</a></div>
+                        <div class="header__item"><a id="duration" class="filter__link filter__link--number" href="#">Duration</a></div>
+                        <div class="header__item"><a id="maxThreads" class="filter__link filter__link--number" href="#">maxThreads</a></div>
+                        <div class="header__item"><a id="startTime" class="filter__link" href="#">startTime</a></div>
+                        <div class="header__item"><a id="endTime" class="filter__link" href="#">endTime</a></div>
+                        <div class="header__item"><a id="actions" class="filter__link" href="#">actions</a></div>
+                    </div>
+                    <div class="table-content" id="table-content">	
+                        {% for test in tests %}
+                        <div class="table-row">	
+                            <div class="table-data">{{ test.runId }}</div>
+                            <div class="table-data">{{ test.testName }}</div>
+                            <div class="table-data">{{ test.duration }}</div>
+                            <div class="table-data">{{ test.maxThreads }}</div>
+                            <div class="table-data">{{ test.startTime }}</div>
+                            <div class="table-data">{{ test.endTime }}</div>
+                            <div class="table-data">
+                                <button type="button" class="btn btn-primary">Generate</button>
+                                <button class="btn btn-danger" type="button">Delete</button>
+                            </div>
+                        </div>
+                        {% endfor %} 
+                    </div>	
+                </div>
+                <div class='pagination-container' style="float: right;">
+                    <nav>
+                      <ul class="pagination">
+                            <li class="page-item" data-page="prev" >
+                                <span class="page-link"> < <span class="sr-only">(current)</span></span>
+                            </li>
+                            <!--	Here the JS Function Will Add the Rows -->
+                            <li class="page-item" data-page="next" id="prev">
+                                <span class="page-link"> > <span class="sr-only">(current)</span></span>
+                            </li>
+                      </ul>
+                    </nav>
+                </div>
             </div>
         </div>
         <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
+        <script src="/static/assets/js/table.js"></script>
         <script>
-            $(document).ready(function () {
-              $('#data').DataTable({
-                columns: [
-                  {orderable: true},
-                  {orderable: true},
-                  {orderable: true},
-                  {orderable: true},
-                  {orderable: true},
-                  {orderable: true}
-                ]
-              });
+            var properties = [
+                'runId',
+                'testName',
+                'duration',
+                'maxThreads',
+                'startTime',
+                'endTime',
+            ];
+
+            $.each( properties, function( i, val ) {
+                
+                var orderClass = '';
+
+                $("#" + val).click(function(e){
+                    e.preventDefault();
+                    $('.filter__link.filter__link--active').not(this).removeClass('filter__link--active');
+                    $(this).toggleClass('filter__link--active');
+                    $('.filter__link').removeClass('asc desc');
+
+                    if(orderClass == 'desc' || orderClass == '') {
+                            $(this).addClass('asc');
+                            orderClass = 'asc';
+                    } else {
+                        $(this).addClass('desc');
+                        orderClass = 'desc';
+                    }
+
+                    var parent = $(this).closest('.header__item');
+                        var index = $(".header__item").index(parent);
+                    var $table = $('.table-content');
+                    var rows = $table.find('.table-row').get();
+                    var isSelected = $(this).hasClass('filter__link--active');
+                    var isNumber = $(this).hasClass('filter__link--number');
+                        
+                    rows.sort(function(a, b){
+
+                        var x = $(a).find('.table-data').eq(index).text();
+                            var y = $(b).find('.table-data').eq(index).text();
+                            
+                        if(isNumber == true) {
+                                    
+                            if(isSelected) {
+                                return x - y;
+                            } else {
+                                return y - x;
+                            }
+
+                        } else {
+                        
+                            if(isSelected) {		
+                                if(x < y) return -1;
+                                if(x > y) return 1;
+                                return 0;
+                            } else {
+                                if(x > y) return -1;
+                                if(x < y) return 1;
+                                return 0;
+                            }
+                        }
+                        });
+
+                    $.each(rows, function(index,row) {
+                        $table.append(row);
+                    });
+
+                    return false;
+                });
+
             });
+
+            getPagination('#table-id');
+
+            function getPagination(table) {
+            var lastPage = 1;
+
+            $('#maxRows')
+                .on('change', function(evt) {
+                //$('.paginationprev').html('');						// reset pagination
+
+                lastPage = 1;
+                $('.pagination')
+                    .find('li')
+                    .slice(1, -1)
+                    .remove();
+                var trnum = 0; // reset tr counter
+                var maxRows = parseInt($(this).val()); // get Max Rows from select option
+
+                if (maxRows == 5000) {
+                    $('.pagination').hide();
+                } else {
+                    $('.pagination').show();
+                }
+
+                var totalRows = $('#table-content > div').length; // numbers of rows
+                $('#table-content > div').each(function() {
+                    // each TR in  table and not the header
+                    trnum++; // Start Counter
+                    if (trnum > maxRows) {
+                    // if tr number gt maxRows
+
+                    $(this).hide(); // fade it out
+                    }
+                    if (trnum <= maxRows) {
+                    $(this).show();
+                    } // else fade in Important in case if it ..
+                }); //  was fade out to fade it in
+                if (totalRows > maxRows) {
+                    // if tr total rows gt max rows option
+                    var pagenum = Math.ceil(totalRows / maxRows); // ceil total(rows/maxrows) to get ..
+                    //	numbers of pages
+                    for (var i = 1; i <= pagenum; ) {
+                    // for each page append pagination li
+                    $('.pagination #prev')
+                        .before(
+                        '<li class="page-item" data-page="' +
+                            i +
+                            '">\
+                                            <span class="page-link">' +
+                            i++ +
+                            '<span class="sr-only">(current)</span></span>\
+                                            </li>'
+                        )
+                        .show();
+                    } // end for i
+                } // end if row count > max rows
+                $('.pagination [data-page="1"]').addClass('active'); // add active class to the first li
+                $('.pagination li').on('click', function(evt) {
+                    // on click each page
+                    evt.stopImmediatePropagation();
+                    evt.preventDefault();
+                    var pageNum = $(this).attr('data-page'); // get it's number
+
+                    var maxRows = parseInt($('#maxRows').val()); // get Max Rows from select option
+
+                    if (pageNum == 'prev') {
+                        if (lastPage == 1) {
+                            return;
+                        }
+                        pageNum = --lastPage;
+                    }
+                    if (pageNum == 'next') {
+                        if (lastPage == $('.pagination li').length - 2) {
+                            return;
+                        }
+                        pageNum = ++lastPage;
+                    }
+
+                    lastPage = pageNum;
+                    var trIndex = 0; // reset tr counter
+                    $('.pagination li').removeClass('active'); // remove active class from all li
+                    $('.pagination [data-page="' + lastPage + '"]').addClass('active'); // add active class to the clicked
+                    // $(this).addClass('active');					// add active class to the clicked
+                    limitPagging();
+                    $('#table-content > div').each(function() {
+                        // each tr in table not the header
+                        trIndex++; // tr index counter
+                        // if tr index gt maxRows*pageNum or lt maxRows*pageNum-maxRows fade if out
+                        if (
+                            trIndex > maxRows * pageNum ||
+                            trIndex <= maxRows * pageNum - maxRows
+                        ) {
+                            $(this).hide();
+                        } else {
+                            $(this).show();
+                        } //else fade in
+                    }); // end of for each tr in table
+                }); // end of on click pagination list
+                limitPagging();
+            })
+            .val(10)
+            .change();
+
+            // end of on select change
+
+            // END OF PAGINATION
+            }
+
+            function limitPagging(){
+                // alert($('.pagination li').length)
+                if($('.pagination li').length > 7 ){
+                        if( $('.pagination li.active').attr('data-page') <= 3 ){
+                        $('.pagination li:gt(5)').hide();
+                        $('.pagination li:lt(5)').show();
+                        $('.pagination [data-page="next"]').show();
+                    }if ($('.pagination li.active').attr('data-page') > 3){
+                        $('.pagination li:gt(0)').hide();
+                        $('.pagination [data-page="next"]').show();
+                        for( let i = ( parseInt($('.pagination li.active').attr('data-page'))  -2 )  ; i <= ( parseInt($('.pagination li.active').attr('data-page'))  + 2 ) ; i++ ){
+                            $('.pagination [data-page="'+i+'"]').show();
+
+                        }
+                    }
+                }
+            }
+
+            function searchFunction() {
+            // Declare variables
+            var input, filter, table, row, cell, i,j, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("table-content");
+            row = $('#table-content > div');
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < row.length; i++) {
+                for (j = 0; j < row[i].getElementsByTagName("div").length; j++) {
+                cell = row[i].getElementsByTagName("div")[j];
+                if (cell) {
+                    txtValue = cell.textContent || cell.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    row[i].style.display = "";
+                    break;
+                    } else {
+                    row[i].style.display = "none";
+                    }
+                }
+                }
+            }
+            }
+
           </script>
     </main>
     {% include 'includes/footer.html' %}
