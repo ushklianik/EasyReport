@@ -51,8 +51,20 @@
                             <div class="table-data">{{ test.startTime }}</div>
                             <div class="table-data">{{ test.endTime }}</div>
                             <div class="table-data">
-                                <button type="button" class="btn btn-primary">Generate</button>
-                                <button class="btn btn-danger" type="button">Delete</button>
+                                <div class="dropdown" style="display: inline-block;">
+                                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                      Report
+                                    </a>
+                                  
+                                    <ul class="dropdown-menu">
+                                      <li><a class="dropdown-item" style="color: white" href="#">Open report</a></li>
+                                      <li><a class="dropdown-item" style="color: white" href="#">Azure Wiki Report</a></li>
+                                      <li><a class="dropdown-item" style="color: white" href="#">Generate HTML Report</a></li>
+                                    </ul>
+                                </div>
+                                <div style="display: inline-block;">
+                                    <button class="btn btn-danger" type="button">Delete</button>
+                                </div>
                             </div>
                         </div>
                         {% endfor %} 
