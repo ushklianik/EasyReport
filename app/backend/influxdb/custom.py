@@ -34,3 +34,13 @@ join(tables: {d1: join1, d2: endTime}, on: ["runId", "testName"])
   |> keep(columns: ["startTime","endTime", "runId", "testName",  "maxThreads", "duration", "dashboard"])
   |> group(columns: ["1"])
 '''
+
+getResTime = '''
+from(bucket: "jmeter")
+  |> range(start: 2022-11-28T09:44:47.47Z, stop: 2022-11-28T09:48:47.47Z)
+  |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
+  |> filter(fn: (r) => r["_field"] == "responseTime")
+  |> filter(fn: (r) => r["runId"] == "R001")
+  |> group(columns: ["_field"])
+  |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)
+'''

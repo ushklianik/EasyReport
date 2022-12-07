@@ -3,6 +3,7 @@ import os
 from configparser import ConfigParser
 from werkzeug.datastructures import MultiDict
 import yaml
+from datetime import datetime
 
 def getFilesInDir(path):
     listOfValues = os.listdir(path)
@@ -202,3 +203,14 @@ def getValueFromYaml(path, key):
     with open(path, "r") as f:
             config = yaml.safe_load(f)
             return config[key]
+
+def sortTests(tests):
+    def startTime(e): return e['startTime']
+
+    if len(tests) != 0:
+        for test in tests:
+            test["startTime"] = datetime.strftime(test["startTime"], "%d-%m-%Y %I:%M:%S %p")
+            test["endTime"] = datetime.strftime(test["endTime"], "%d-%m-%Y %I:%M:%S %p")
+
+    tests.sort(key=startTime, reverse=True)
+    return tests

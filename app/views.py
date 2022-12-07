@@ -1,7 +1,8 @@
 # Python modules
 import os, logging 
 from app.backend import tools
-from app.backend.influxdb import influxdb
+from app.backend.influxdb import influxdb, custom
+
 # Flask modules
 from flask                   import render_template, request, url_for, redirect, flash
 from flask_login             import login_user, logout_user, current_user
@@ -13,6 +14,7 @@ from jinja2                  import TemplateNotFound
 from app         import app, lm, db, bc
 from app.models  import Users
 from app.forms   import LoginForm, RegisterForm, InfluxDBForm, grafanaForm, azureForm, reportForm, metricForm
+
 
 # provide login manager with load_user callback
 @lm.user_loader
@@ -383,5 +385,12 @@ def getTests():
     # Get current project
     project = request.cookies.get('project')  
     tests = influxdb.getTestLog(project)
+    tests = tools.sortTests(tests)
 
     return render_template('home/tests.html', tests=tests)
+
+@app.route('/test-results', methods=['GET'])
+def getTestResults():
+    runId = request.args.get('runId')
+    graphJSON = influxdb.getRT(runId)
+    return render_template('home/test-results.html', graphJSON=graphJSON)
