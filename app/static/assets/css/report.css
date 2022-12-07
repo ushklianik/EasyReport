@@ -70,8 +70,7 @@ li, ul {
 }
 
 .box .box-kpi {
-    color: #ffffff;
-    color: #444444;
+    color: #e0e0e09f;
     font-size: 0.9em;
     margin-top: 10px;
     overflow: hidden;
