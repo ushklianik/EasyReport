@@ -45,7 +45,7 @@ class htmlReport:
         fluxTables = self.queryApi.query(custom.getAverageRPS_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp']))
         for fluxTable in fluxTables:
             for fluxRecord in fluxTable:
-                self.report['stats']['rps'] = fluxRecord['_value']
+                self.report['stats']['rps'] = round(fluxRecord['_value'], 2)
     
     def getErrorsPerc_stats(self):
         fluxTables = self.queryApi.query(custom.getErrorsPerc_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp']))
