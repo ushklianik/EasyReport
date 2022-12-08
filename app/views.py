@@ -2,6 +2,7 @@
 import os, logging 
 from app.backend import tools
 from app.backend.influxdb import influxdb, custom
+from app.backend.reporting.htmlreport import htmlReport
 
 # Flask modules
 from flask                   import render_template, request, url_for, redirect, flash
@@ -391,6 +392,9 @@ def getTests():
 
 @app.route('/test-results', methods=['GET'])
 def getTestResults():
+    # Get current project
+    project = request.cookies.get('project')  
     runId = request.args.get('runId')
-    graphJSON = influxdb.getRT(runId)
-    return render_template('home/test-results.html', graphJSON=graphJSON)
+    report = htmlReport(project, runId)
+    report.createReport()
+    return render_template('home/test-results.html', report=report.report)

@@ -13,47 +13,47 @@
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
                 <div class="justify-content-start main-body_header" style="background-color: rgba(0, 0, 0, 0.2); height: 4rem;">
-                    <a class="text-white footer-logo-text">Test results / R001</a>
+                    <a class="text-white footer-logo-text">Test results / {{ report.runId }}</a>
                 </div> 
                 <ul class="stats-row">
                     <li class="stats-block">
                         <div class="box users" role="button" tabindex="0">
-                            <span class="count">5</span>
+                            <span class="count">{{ report.stats.maxActiveThreads }}</span>
                             <span class="units">VU</span>
                             <div class="box-kpi">Max Users</div>
                         </div>
                     </li>
                     <li class="stats-block">
                         <div class="box hits" role="button" tabindex="0">
-                            <span class="count">12.58</span>
+                            <span class="count">{{ report.stats.rps }}</span>
                             <span class="units">Hits/s</span>
                             <div class="box-kpi">Avg. Throughput</div>
                         </div>
                     </li>
                     <li class="stats-block">
                         <div class="box errors" role="button" tabindex="0">
-                            <span class="count">0</span>
+                            <span class="count">{{ report.stats.errors }}</span>
                             <span class="units">%</span>
                             <div class="box-kpi">Errors</div>
                         </div>
                     </li>
                     <li class="stats-block">
                         <div class="box response-time" role="button" tabindex="0">
-                            <span class="count">266.86</span>
+                            <span class="count">{{ report.stats.avgResponseTime }}</span>
                             <span class="units">ms</span>
                             <div class="box-kpi">Avg. Response Time</div>
                         </div>
                     </li>
                     <li class="stats-block">
                         <div class="box avg-response-time" role="button" tabindex="0">
-                            <span class="count">308</span>
+                            <span class="count">{{ report.stats.percentileResponseTime }}</span>
                             <span class="units">ms</span>
                             <div class="box-kpi">90% Response Time</div>
                         </div>
                     </li>
                     <li class="stats-block">
                         <div class="box bytes" role="button" tabindex="0">
-                            <span class="count">3.46</span>
+                            <span class="count">{{ report.stats.avgBandwidth }}</span>
                             <span class="units">MiB/s</span>
                             <div class="box-kpi">Avg. Bandwidth</div> 
                         </div>
@@ -67,15 +67,15 @@
                         </li>
                         <li class="text-row">
                             <div class="text-row-key">Duration</div>
-                            <div class="text-row-value">19 minutes</div>
+                            <div class="text-row-value">{{ report.duration }}</div>
                         </li>
                         <li class="text-row">
                             <div class="text-row-key">Started</div>
-                            <div class="text-row-value">Dec 03, 2022, 10:55:28 PM</div>
+                            <div class="text-row-value">{{ report.startTime }}</div>
                         </li>
                         <li class="text-row">
                             <div class="text-row-key">Ended</div>
-                            <div class="text-row-value">Dec 03, 2022, 11:15:41 PM</div>
+                            <div class="text-row-value">{{ report.endTime }}</div>
                         </li>
                     </ul>
                     <div class="nfr-block">
@@ -124,21 +124,22 @@
                     </div>
                 </div>
                 <div class="report-row" style="padding-bottom: 10px; flex-wrap: nowrap;">
-                    <div class="chart-block">
-                        <div id='chartRT1'></div>
-                    </div>
-                    <div class="chart-block">
-                        <div id='chartRT2'></div>
-                    </div>
+                    {% for graph in report.graph %}
+                        <div class="chart-block">
+                            <div id='{{ graph }}'></div>
+                        </div>
+                    {% endfor %} 
                 </div>    
             </div>
         </div>
         <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
         <script type='text/javascript'>
-            var graphs = {{graphJSON | safe}};
-            Plotly.plot('chartRT1',graphs,{});
-            Plotly.plot('chartRT2',graphs,{});
+            var graphs = JSON.parse('{{ report.graph | tojson }}');
+            jQuery.each(graphs, function(key, value) {
+                Plotly.plot(key,value,{});
+            });
         </script>
+
         <script>
             google.load("visualization", "1", {packages:["corechart"]});
             google.setOnLoadCallback(drawChart);
