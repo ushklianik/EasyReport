@@ -209,8 +209,8 @@ def sortTests(tests):
 
     if len(tests) != 0:
         for test in tests:
-            test["startTime"] = datetime.strftime(test["startTime"], "%d-%m-%Y %I:%M:%S %p")
-            test["endTime"] = datetime.strftime(test["endTime"], "%d-%m-%Y %I:%M:%S %p")
+            test["startTime"] = datetime.strftime(test["startTime"], "%Y-%m-%d %I:%M:%S %p")
+            test["endTime"] = datetime.strftime(test["endTime"], "%Y-%m-%d %I:%M:%S %p")
 
     tests.sort(key=startTime, reverse=True)
     return tests
