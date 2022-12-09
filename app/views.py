@@ -3,6 +3,7 @@ import os, logging
 from app.backend import tools
 from app.backend.influxdb import influxdb, custom
 from app.backend.reporting.htmlreport import htmlReport
+from app.backend.validation.validation import nfr
 
 # Flask modules
 from flask                   import render_template, request, url_for, redirect, flash
@@ -398,3 +399,28 @@ def getTestResults():
     report = htmlReport(project, runId)
     report.createReport()
     return render_template('home/test-results.html', report=report.report)
+
+@app.route('/nfrs', methods=['GET'])
+def getNFRs():
+    # Get current project
+    project = request.cookies.get('project')  
+    nfrObject = nfr(project)
+    nfrsList = nfrObject.getNFRs()
+
+    return render_template('home/nfrs.html', nfrsList=nfrsList)
+
+@app.route('/nfr', methods=['GET', 'POST'])
+def getNFR():
+    nfrs = {}
+    # Get current project
+    project = request.cookies.get('project') 
+
+    if request.method == "POST":
+        nfrObject = nfr(project)
+        nfrObject.saveNFRs(request.get_json())
+    
+    if request.args.get('appName') != None:
+        nfrObject = nfr(project)
+        nfrs = nfrObject.getNFR(request.args.get('appName'))
+
+    return render_template('home/nfr.html', nfrs=nfrs)

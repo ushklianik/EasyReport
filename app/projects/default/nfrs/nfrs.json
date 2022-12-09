@@ -1,0 +1,81 @@
+[
+    {
+        "appName": "new",
+        "rows": [
+            {
+                "scope": "a",
+                "metric": "response-time",
+                "aggregation": "avg",
+                "operation": ">",
+                "threshold": "1999",
+                "weight": "25"
+            },
+            {
+                "scope": "b",
+                "metric": "response-time",
+                "aggregation": "avg",
+                "operation": ">",
+                "threshold": "1",
+                "weight": "25"
+            },
+            {
+                "scope": "c",
+                "metric": "response-time",
+                "aggregation": "avg",
+                "operation": ">",
+                "threshold": "1",
+                "weight": "25"
+            },
+            {
+                "scope": "d",
+                "metric": "response-time",
+                "aggregation": "avg",
+                "operation": ">",
+                "threshold": "1",
+                "weight": "25"
+            }
+        ]
+    },
+    {
+        "appName": "new2",
+        "rows": [
+            {
+                "scope": "a",
+                "metric": "response-time",
+                "aggregation": "avg",
+                "operation": ">",
+                "threshold": "1",
+                "weight": "50"
+            },
+            {
+                "scope": "b",
+                "metric": "response-time",
+                "aggregation": "avg",
+                "operation": ">",
+                "threshold": "1",
+                "weight": "50"
+            }
+        ]
+    },
+    {
+        "appName": "new3",
+        "rows": [
+            {
+                "scope": "a",
+                "metric": "response-time",
+                "aggregation": "avg",
+                "operation": ">",
+                "threshold": "1",
+                "weight": "50"
+            },
+            {
+                "scope": "b",
+                "metric": "response-time",
+                "aggregation": "avg",
+                "operation": ">",
+                "threshold": "1",
+                "weight": "50"
+            }
+        ]
+    }
+]
