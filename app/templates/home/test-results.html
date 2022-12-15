@@ -5,6 +5,7 @@
 <link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/report.css" rel="stylesheet">
+<!-- <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet"> -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 {% endblock stylesheets %}
 {% block content %}
@@ -13,46 +14,46 @@
         <div class="main-background">
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
-                <div class="justify-content-start main-body_header" style="background-color: rgba(0, 0, 0, 0.2); height: 4rem;">
+                <div class="main-body-header">
                     <a class="text-white footer-logo-text">Test results / {{ report.runId }}</a>
                 </div> 
-                <ul class="stats-row">
-                    <li class="stats-block">
+                <ul class="full-screen-section">
+                    <li class="card-container-fl">
                         <div class="box users" role="button" tabindex="0">
                             <span class="count">{{ report.stats.maxActiveThreads }}</span>
                             <span class="units">VU</span>
                             <div class="box-kpi">Max Users</div>
                         </div>
                     </li>
-                    <li class="stats-block">
+                    <li class="card-container-fl">
                         <div class="box hits" role="button" tabindex="0">
                             <span class="count">{{ report.stats.rps }}</span>
                             <span class="units">Hits/s</span>
                             <div class="box-kpi">Avg. Throughput</div>
                         </div>
                     </li>
-                    <li class="stats-block">
+                    <li class="card-container-fl">
                         <div class="box errors" role="button" tabindex="0">
                             <span class="count">{{ report.stats.errors }}</span>
                             <span class="units">%</span>
                             <div class="box-kpi">Errors</div>
                         </div>
                     </li>
-                    <li class="stats-block">
+                    <li class="card-container-fl">
                         <div class="box response-time" role="button" tabindex="0">
                             <span class="count">{{ report.stats.avgResponseTime }}</span>
                             <span class="units">ms</span>
                             <div class="box-kpi">Avg. Response Time</div>
                         </div>
                     </li>
-                    <li class="stats-block">
+                    <li class="card-container-fl">
                         <div class="box avg-response-time" role="button" tabindex="0">
                             <span class="count">{{ report.stats.percentileResponseTime }}</span>
                             <span class="units">ms</span>
                             <div class="box-kpi">90% Response Time</div>
                         </div>
                     </li>
-                    <li class="stats-block">
+                    <li class="card-container-fl">
                         <div class="box bytes" role="button" tabindex="0">
                             <span class="count">{{ report.stats.avgBandwidth }}</span>
                             <span class="units">MiB/s</span>
@@ -60,8 +61,8 @@
                         </div>
                     </li>
                 </ul>
-                <div class="report-row">
-                    <ul class="test-details-block">
+                <div class="full-screen-section">
+                    <ul class="card-container-fl">
                         <li class="text-row">
                             <div class="text-row-key">App name</div>
                             <div class="text-row-value">DEMO APP</div>
@@ -79,7 +80,7 @@
                             <div class="text-row-value">{{ report.endTime }}</div>
                         </li>
                     </ul>
-                    <div class="nfr-block">
+                    <div class="card-container-fl">
                         <li class="text-row">
                             <div class="nfr-msg">
                                 <img src="/static/assets/img/reports/bleu-lighning.png" height="30">
@@ -116,18 +117,22 @@
                             <div class="nfr-result">FAILED</div>
                         </li>
                     </div>
-                    <div id="apdex-block">
-                        <div id="apdex-chart"></div>
-                        <div id="apdex-label">
-                            <p class="apdex_value" id="apdex_value">90%</p>
-                            <p class="apdex_title">APDEX</p>
+                    <div class="card-container-fx">
+                        <div id="apdex-block">
+                            <div id="apdex-chart"></div>
+                            <div id="apdex-label">
+                                <p class="apdex_value" id="apdex_value">90%</p>
+                                <p class="apdex_title">APDEX</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="report-row" style="padding-bottom: 10px; flex-wrap: nowrap;">
+                <div class="full-screen-section">
                     {% for graph in report.graph %}
-                        <div class="chart-block">
-                            <div id='{{ graph }}'></div>
+                        <div class="card-container-fl">
+                            <div class="max-width-99">
+                                <div id='{{ graph }}'></div>
+                            </div>
                         </div>
                     {% endfor %} 
                 </div>    
