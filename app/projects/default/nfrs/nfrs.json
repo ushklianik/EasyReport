@@ -1,80 +1,88 @@
 [
     {
-        "appName": "new",
+        "appName": "demoapp",
         "rows": [
             {
-                "scope": "a",
+                "scope": "all",
                 "metric": "response-time",
                 "aggregation": "avg",
-                "operation": ">",
-                "threshold": "1999",
-                "weight": "25"
+                "operation": "<",
+                "threshold": "1000",
+                "weight": ""
             },
             {
-                "scope": "b",
+                "scope": "each",
                 "metric": "response-time",
                 "aggregation": "avg",
-                "operation": ">",
-                "threshold": "1",
-                "weight": "25"
+                "operation": "<",
+                "threshold": "1200",
+                "weight": ""
             },
             {
-                "scope": "c",
-                "metric": "response-time",
+                "scope": "R_01_02-200",
+                "metric": "rps",
                 "aggregation": "avg",
-                "operation": ">",
-                "threshold": "1",
-                "weight": "25"
-            },
-            {
-                "scope": "d",
-                "metric": "response-time",
-                "aggregation": "avg",
-                "operation": ">",
-                "threshold": "1",
-                "weight": "25"
+                "operation": ">=",
+                "threshold": "100",
+                "weight": ""
             }
         ]
     },
     {
-        "appName": "new2",
+        "appName": "demoapp2",
         "rows": [
             {
-                "scope": "a",
+                "scope": "all",
                 "metric": "response-time",
                 "aggregation": "avg",
-                "operation": ">",
-                "threshold": "1",
-                "weight": "50"
+                "operation": "<",
+                "threshold": "1000",
+                "weight": ""
             },
             {
-                "scope": "b",
+                "scope": "each",
                 "metric": "response-time",
                 "aggregation": "avg",
-                "operation": ">",
-                "threshold": "1",
-                "weight": "50"
+                "operation": "<",
+                "threshold": "1200",
+                "weight": ""
+            },
+            {
+                "scope": "R_01_02-200",
+                "metric": "rps",
+                "aggregation": "avg",
+                "operation": ">=",
+                "threshold": "100",
+                "weight": ""
             }
         ]
     },
     {
-        "appName": "new3",
+        "appName": "demoapp3",
         "rows": [
             {
-                "scope": "a",
+                "scope": "all",
                 "metric": "response-time",
                 "aggregation": "avg",
-                "operation": ">",
-                "threshold": "1",
-                "weight": "50"
+                "operation": "<",
+                "threshold": "1000",
+                "weight": ""
             },
             {
-                "scope": "b",
+                "scope": "each",
                 "metric": "response-time",
                 "aggregation": "avg",
-                "operation": ">",
-                "threshold": "1",
-                "weight": "50"
+                "operation": "<",
+                "threshold": "1200",
+                "weight": ""
+            },
+            {
+                "scope": "R_01_02-200",
+                "metric": "rps",
+                "aggregation": "avg",
+                "operation": ">=",
+                "threshold": "100",
+                "weight": ""
             }
         ]
     }

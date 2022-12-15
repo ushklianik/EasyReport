@@ -53,6 +53,11 @@ class nfr:
             with open(self.pathToNfrs, 'r') as fp:
                 nfrs = json.load(fp)
                 return nfrs
+
+    def compareWithNFRs(self, appName):
+        nfrs = self.getNFR(appName)
+        for nfr in nfrs["rows"]:
+            print(nfr)
             
 
 

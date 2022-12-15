@@ -183,3 +183,62 @@ def getRPS_graph(runId, start, stop):
   |> group(columns: ["_field"])
   |> aggregateWindow(every: 1s, fn: count, createEmpty: false)
   '''
+
+################################################################# NFR requests
+def getAvgAllRT(runId, start, stop):
+  return '''from(bucket: "jmeter")
+  |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
+  |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
+  |> filter(fn: (r) => r["_field"] == "responseTime")
+  |> filter(fn: (r) => r["runId"] == "'''+runId+'''")
+  |> group(columns: ["_field"])
+  |> mean()
+  '''
+
+def getAvgEachRT(runId, start, stop):
+  return '''from(bucket: "jmeter")
+  |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
+  |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
+  |> filter(fn: (r) => r["_field"] == "responseTime")
+  |> filter(fn: (r) => r["runId"] == "'''+runId+'''")
+  |> group(columns: ["requestName"])
+  |> mean()
+  |> group()
+  '''
+
+def getAvgRequestRT(runId, start, stop, requestName):
+  return '''from(bucket: "jmeter")
+  |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
+  |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
+  |> filter(fn: (r) => r["_field"] == "responseTime")
+  |> filter(fn: (r) => r["runId"] == "'''+runId+'''")
+  |> filter(fn: (r) => r["requestName"] == "'''+requestName+'''")
+  |> group(columns: ["requestName"])
+  |> mean()
+  '''
+
+def fluxConstructor(runId, start, stop, requestName = ''):
+  constr                                 = {}
+  constr["source"]                       = 'from(bucket: "jmeter")'
+  constr["range"]                        = '|> range(start: '+str(start)+', stop: '+str(stop)+')'
+  constr["_measurement"]                 = {}
+  constr["_measurement"]["reponse time"] = '|> filter(fn: (r) => r["_field"] == "requestsRaw")'
+  constr["_measurement"]["rps"]          = '|> filter(fn: (r) => r["_field"] == "requestsRaw")'
+  constr["_measurement"]["errors"]       = '|> filter(fn: (r) => r["_field"] == "requestsRaw")'
+  constr["metric"]["reponse time"]       = '|> filter(fn: (r) => r["_field"] == "responseTime")'
+  constr["metric"]["rps"]                = '|> filter(fn: (r) => r["_field"] == "responseTime")' 
+  constr["metric"]["errors"]             = '|> filter(fn: (r) => r["_field"] == "errorCount")'
+  constr["runId"]                        = '|> filter(fn: (r) => r["runId"] == "'+runId+'")'
+  constr["scope"]['all']                 = '|> group(columns: ["_field"])'
+  constr["scope"]['each']                = '|> group(columns: ["requestName"])'
+  constr["scope"]['request']             = '|> filter(fn: (r) => r["requestName"] == "'+requestName+'")' + \
+                                           '|> group(columns: ["requestName"])'
+  constr["aggregation"]['avg']           = '|> mean()'
+  constr["aggregation"]['median']        = '|> median()'
+  constr["aggregation"]['90']            = '|> toFloat()' + \
+                                           '|> quantile(q: 0.90)'
+  constr["aggregation"]['95']            = '|> toFloat()' + \
+                                           '|> quantile(q: 0.95)'
+  constr["aggregation"]['count']         = ''
+  constr["aggregation"]['sum']           = ''
+  
