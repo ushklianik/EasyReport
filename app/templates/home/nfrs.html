@@ -14,56 +14,56 @@
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
                 <div class="justify-content-start main-body-header">
-                    <a class="text-white footer-logo-text">NFRs</a>
+                    <a>NFRs</a>
                 </div> 
-                <div class="nfrs-container" id="nfrs-accordion">
-                    {% for nfrsItem in nfrsList %}
-                    <div class="nfrs-item">
-                        <h2 class="nfrs-header" id="heading_{{ nfrsItem.appName }}">
-                            <button class="nfrs-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ nfrsItem.appName }}" aria-expanded="false" aria-controls="{{ nfrsItem.appName }}">
-                                <div style="font-size: 1rem;padding-right: 0.5rem;color: darkgrey;">App name:</div>{{ nfrsItem.appName }}
-                                <div style="font-size: 1rem;padding-left: 2rem; color: darkgrey;">Number of NFRs:</div>
-                                <div class="nfr-circle" style="display:block;" id="{{ nfrsItem.appName }}"></div>
-                                <div></div>
-                            </button>
-                        </h2>
-                        <div id="{{ nfrsItem.appName }}" class="accordion-collapse collapse" aria-labelledby="heading_{{ nfrsItem.appName }}" data-bs-parent="#nfrs-accordion">
-                            <div class="nfrs-body">
-                                <div class="nfrs-body-header">
-                                    <a class="btn nfr-action-btn" href="/nfr?appName={{ nfrsItem.appName }}" role="button">Edit</a>
-                                    <a class="btn nfr-action-btn" href="#" role="button">Delete</a>
-                                </div>
-                                <div class="nfr-table-wraper">
-                                    <div class="nfr-table">
-                                        <div class="nfr-table-header">Scope</div>
-                                        <div class="nfr-table-header">Metric</div>
-                                        <div class="nfr-table-header">Aggregation</div>
-                                        <div class="nfr-table-header">Operation</div>
-                                        <div class="nfr-table-header">Threshold</div>
-                                        <div class="nfr-table-header">Weight</div>
+                <div class="full-screen-section flex-direction-column" id="nfrs-accordion">
+                    <div class="marging-10">
+                        {% for nfrsItem in nfrsList %}
+                        <div class="nfrs-item">
+                            <div id="heading_{{ nfrsItem.appName }}">
+                                <button class="nfrs-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ nfrsItem.appName }}" aria-expanded="false" aria-controls="{{ nfrsItem.appName }}">
+                                    <div class="grey-text-color" style="font-size: 1rem;padding-right: 8px;">App name:</div>{{ nfrsItem.appName }}
+                                    <div class="grey-text-color" style="font-size: 1rem;padding-left: 32px;">Number of NFRs:</div>
+                                    <div class="nfr-circle" id="{{ nfrsItem.appName }}"></div>
+                                    <div></div>
+                                </button>
+                            </div>
+                            <div id="{{ nfrsItem.appName }}" class="accordion-collapse collapse" aria-labelledby="heading_{{ nfrsItem.appName }}" data-bs-parent="#nfrs-accordion">
+                                <div class="nfrs-body">
+                                    <div>
+                                        <a class="btn-primary" style="width: 80px;" href="/nfr?appName={{ nfrsItem.appName }}" role="button">Edit</a>
+                                        <a class="btn-secondary" style="width: 80px;" href="#" role="button">Delete</a>
                                     </div>
-                                    <div class="nfr-table">
-                                        {% for nfr in nfrsItem.rows %}
-                                            <div class="nfr-table-column">{{ nfr.scope }}</div>
-                                            <div class="nfr-table-column">
-                                                <div>
-                                                    <span class="nfr-metric-name">{{ nfr.metric }}</span>
+                                    <div class="nfr-table-wraper">
+                                        <div class="nfr-table">
+                                            <div class="nfr-table-header grey-text-color">Scope</div>
+                                            <div class="nfr-table-header grey-text-color">Metric</div>
+                                            <div class="nfr-table-header grey-text-color">Aggregation</div>
+                                            <div class="nfr-table-header grey-text-color">Operation</div>
+                                            <div class="nfr-table-header grey-text-color">Threshold</div>
+                                            <div class="nfr-table-header grey-text-color">Weight</div>
+                                        </div>
+                                        <div class="nfr-table">
+                                            {% for nfr in nfrsItem.rows %}
+                                                <div class="nfr-table-column">{{ nfr.scope }}</div>
+                                                <div class="nfr-table-column">
+                                                    <div>
+                                                        <span class="nfr-metric-name">{{ nfr.metric }}</span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="nfr-table-column">{{ nfr.aggregation }}</div>
-                                            <div class="nfr-table-column">{{ nfr.operation }}</div>
-                                            <div class="nfr-table-column">{{ nfr.threshold }}</div>
-                                            <div class="nfr-table-column">{{ nfr.weight }}</div>
-                                        {% endfor %} 
+                                                <div class="nfr-table-column">{{ nfr.aggregation }}</div>
+                                                <div class="nfr-table-column">{{ nfr.operation }}</div>
+                                                <div class="nfr-table-column">{{ nfr.threshold }}</div>
+                                                <div class="nfr-table-column">{{ nfr.weight }}</div>
+                                            {% endfor %} 
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        {% endfor %} 
                     </div>
-                    {% endfor %} 
-                </div>
-                <div class="nfrs-panel" style="padding-left: 2rem;">
-                    <a class="btn nfr-btn" href="/nfr" role="button">Create new</a>
+                    <a class="btn-primary" href="/nfr" style="width: 150px;" role="button">Create new</a>
                 </div>
             </div>
         </div>

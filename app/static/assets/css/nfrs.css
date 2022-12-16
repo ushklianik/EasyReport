@@ -1,25 +1,9 @@
-.nfr-circle {
-    width: 22px;
-    height: 22px;
-    color: darkgrey;
-    border-radius: 50%;
-    text-align: center;
-    border: 3px solid rgb(3, 73, 107);
-    background-color: rgb(3, 73, 107);
-    padding-top: 0.2%;
-    margin-left: 0.5rem;
-    font-size: 0.6rem; 
-  }
+/* ########### nfrs page ########### */
 
-.nfrs-container {
-    padding: 2rem; 
-    color: white;
+.marging-10 {
+    margin: 10px;
 }
 
-.nfrs-header {
-    margin-bottom: 0; 
-}
-  
 .nfrs-item:last-of-type .nfrs-button.collapsed {
     border-bottom-width: 0.0625rem;
 }
@@ -66,8 +50,77 @@
         .nfrs-button::after {
           transition: none; } }
 
+.nfr-circle {
+    width: 22px;
+    height: 22px;
+    color: darkgrey;
+    border-radius: 50%;
+    text-align: center;
+    border: 3px solid rgb(3, 73, 107);
+    background-color: rgb(3, 73, 107);
+    padding-top: 0.2%;
+    margin-left: 0.5rem;
+    font-size: 0.6rem; 
+  }
+
+.nfrs-body {
+    padding: 15px 15px; 
+}
+
+.nfr-table-wraper {
+    border: 1px solid rgba(204, 204, 220, 0.25);
+    border-radius: 2px;
+    color:rgb(204, 204, 220);
+}
+
+.nfr-table:nth-child(2n+1) {
+    background-color: rgb(34, 37, 43);
+}
+.nfr-table {
+    display: grid;
+    grid-template-columns: auto 150px 150px 150px 150px 150px;
+    grid-template-rows: 1fr auto;
+}
+
+.nfr-table:nth-child(2n) {
+    background-color: rgb(24, 27, 31);
+}
+
+.nfr-table-column {
+    -webkit-box-align: center;
+    align-items: center;
+    padding: 8px;
+    overflow: hidden;
+}
+
+.nfr-table-header {
+    -webkit-box-align: center;
+    align-items: center;
+    padding: 8px;
+}
+
+.nfr-metric-name {
+    appearance: none;
+    border-style: none;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1.5;
+    vertical-align: baseline;
+    background-color: rgb(3, 73, 107);
+    color: rgb(247, 248, 250);
+    white-space: nowrap;
+    text-shadow: none;
+    padding: 3px 6px;
+    border-radius: 4px;
+}
 
 
+
+/* ########### nfr page ########### */
+.nfrs-container {
+    padding: 2rem; 
+    color: white;
+}
 
 .nfr-action-btn:hover {
     background: rgba(204, 204, 220, 0.2);
@@ -141,74 +194,6 @@ a:active, a:hover {
     box-shadow: rgb(24 26 27 / 75%) 0px 1px 2px;
 }
 
-.nfrs-body {
-    padding: 1.0rem 1.0rem; }
-
-.nfrs-body-header {
-    padding-bottom: 1rem;
-}
-
-
-
-
-.nfr-table-wraper {
-    border: 1px solid rgba(204, 204, 220, 0.25);
-    border-radius: 2px;
-    color:rgb(204, 204, 220);
-}
-.nfr-table:nth-child(2n+1) {
-    background-color: rgb(34, 37, 43);
-}
-.nfr-table {
-    display: grid;
-    grid-template-columns: auto 150px 150px 150px 150px 150px;
-    grid-template-rows: 1fr auto;
-}
-
-.nfr-table:nth-child(2n) {
-    background-color: rgb(24, 27, 31);
-}
-
-.nfr-table-column {
-    -webkit-box-align: center;
-    align-items: center;
-    padding: 8px;
-    overflow: hidden;
-}
-
-
-.nfr-table-header {
-    -webkit-box-align: center;
-    align-items: center;
-    padding: 8px;
-    color: #808080;
-}
-
-
-.nfr-metric-name {
-    appearance: none;
-    border-style: none;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 1.5;
-    vertical-align: baseline;
-    background-color: rgb(3, 73, 107);
-    color: rgb(247, 248, 250);
-    white-space: nowrap;
-    text-shadow: none;
-    padding: 3px 6px;
-    border-radius: 4px;
-}
-
-.nfr-panel {
-    padding-left: 2rem; 
-}
-
-
-
-
-
-/* NFR PAGE: */
 .form-control-nfr {
     display: block;
     width: 100%;
@@ -241,12 +226,6 @@ a:active, a:hover {
     white-space: pre-line;
     min-height: 8rem;
  }
-      
-
-.marging-10 {
-    margin-top: 1%;
-    margin-bottom: 1%;
-}
 
 .form-select-nfr {
     display: block;
