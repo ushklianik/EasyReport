@@ -2,9 +2,10 @@
 {% block title %} Integrations {% endblock %} 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-<link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
+<!-- <link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet"> -->
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/integrations.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
     <main>
@@ -16,123 +17,84 @@
                     <a class="footer-logo-text">Integrations</a>
                 </div>
                 <div class="center-section">
-                    <div class="nav-wrapper position-relative mb-2">
-                        <ul class="nav nav-pills nav-fill" id="tabs-text" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="tabs-text-1-tab" data-bs-toggle="tab"
-                                    href="#tabs-text-1" role="tab" aria-controls="tabs-text-1" aria-selected="true">InfluxDB
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="tabs-text-2-tab" data-bs-toggle="tab"
-                                    href="#tabs-text-2" role="tab" aria-controls="tabs-text-2"
-                                    aria-selected="false">Grafana
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="tabs-text-3-tab" data-bs-toggle="tab"
-                                    href="#tabs-text-3" role="tab" aria-controls="tabs-text-3"
-                                    aria-selected="false">Azure
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- End of Tab Nav -->
-                    <!-- Tab Content -->
-                    <div class="card border-0">
-                        <div class="card-body p-0">
-                            <div class="tab-content" id="tabcontent1">
-                                <div class="tab-pane active" id="tabs-text-1" role="tabpanel"
-                                    aria-labelledby="tabs-text-1-tab">
-                                    <div class="container">
-                                        <div class="row">
-                                            {% for influxdbConfig in influxdbConfigs %}
-                                            <div class="col-lg-4 text-md-center">
-                                                <div class="card">
-                                                    <img src="/static/assets/img/blog/influxdb.jpg" class="card-img-top rounded-top"
-                                                        alt="Themesberg office" height="150">
-                                                    <div class="card-body">
-                                                        <h3 class="h5 card-title mt-3">{{ influxdbConfig }}</h3>
-                                                        <p class="card-text">TO DO: Some info about config</p>
-                                                        <a href="/influxdb?influxdbConfig={{ influxdbConfig }}" class="btn btn-primary">Configure</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {% endfor %}
-                                            <div class="col-lg-4 text-md-center">
-                                                <div class="card">
-                                                    <img src="/static/assets/img/blog/influxdb_new.jpg" class="card-img-top rounded-top"
-                                                        alt="Themesberg office" height="245">
-                                                    <div class="card-body">
-                                                    <a href="/influxdb" class="btn btn-primary">Add new config</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="tabs-text-2" role="tabpanel"
-                                    aria-labelledby="tabs-text-2-tab">
-                                    <div class="container">
-                                        <div class="row">
-                                            {% for grafanaConfig in grafanaConfigs %}
-                                            <div class="col-lg-4 text-md-center">
-                                                <div class="card">
-                                                    <img src="/static/assets/img/blog/grafana.jpeg" class="card-img-top rounded-top"
-                                                        alt="Themesberg office" height="150">
-                                                    <div class="card-body">
-                                                        <h3 class="h5 card-title mt-3">{{ grafanaConfig }}</h3>
-                                                        <p class="card-text">TO DO: Some info about test</p>
-                                                        <a href="/grafana?grafanaConfig={{ grafanaConfig }}" class="btn btn-primary">Configure</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {% endfor %}
-                                            <div class="col-lg-4 text-md-center">
-                                                <div class="card">
-                                                    <img src="/static/assets/img/blog/influxdb_new.jpg" class="card-img-top rounded-top"
-                                                        alt="Themesberg office" height="245">
-                                                    <div class="card-body">
-                                                    <a href="/grafana" class="btn btn-primary">Add new config</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="tabs-text-3" role="tabpanel"
-                                    aria-labelledby="tabs-text-3-tab">
-                                    <div class="container">
-                                        <div class="row">
-                                            {% for azureConfig in azureConfigs %}
-                                            <div class="col-lg-4 text-md-center">
-                                                <div class="card">
-                                                    <img src="/static/assets/img/blog/azure.jpg" class="card-img-top rounded-top"
-                                                        alt="Themesberg office" height="150">
-                                                    <div class="card-body">
-                                                        <h3 class="h5 card-title mt-3">{{ azureConfig }}</h3>
-                                                        <p class="card-text">TO DO: Some info about test</p>
-                                                        <a href="/azure?azureConfig={{ azureConfig }}" class="btn btn-primary">Configure</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {% endfor %}
-                                            <div class="col-lg-4 text-md-center">
-                                                <div class="card">
-                                                    <img src="/static/assets/img/blog/influxdb_new.jpg" class="card-img-top rounded-top"
-                                                        alt="Themesberg office" height="245">
-                                                    <div class="card-body">
-                                                    <a href="/azure" class="btn btn-primary">Add new config</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                    <ul class="nav" id="tabs-text" role="tablist">
+                        <li class="card-container-fx">
+                            <a class="nav-link active" id="tabs-text-1-tab" data-bs-toggle="tab"
+                                href="#tabs-text-1" role="tab" aria-controls="tabs-text-1" aria-selected="true">InfluxDB
+                            </a>
+                        </li>
+                        <li class="card-container-fx">
+                            <a class="nav-link" id="tabs-text-2-tab" data-bs-toggle="tab"
+                                href="#tabs-text-2" role="tab" aria-controls="tabs-text-2"
+                                aria-selected="false">Grafana
+                            </a>
+                        </li>
+                        <li class="card-container-fx">
+                            <a class="nav-link" id="tabs-text-3-tab" data-bs-toggle="tab"
+                                href="#tabs-text-3" role="tab" aria-controls="tabs-text-3"
+                                aria-selected="false">Azure
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="center-section">
+                    <div class="tab-pane active" id="tabs-text-1" role="tabpanel"
+                        aria-labelledby="tabs-text-1-tab">
+                        <div class="center-section">
+                            {% for influxdbConfig in influxdbConfigs %}
+                            <div class="card">
+                                <img src="/static/assets/img/blog/influxdb.jpg" class="rounded-top"
+                                    alt="InfluxDB" height="150">
+                                <p>{{ influxdbConfig }}</p>
+                                <a>TO DO: Some info about config</a>
+                                <a href="/influxdb?influxdbConfig={{ influxdbConfig }}" class="btn-primary">Configure</a>
+                            </div>
+                            {% endfor %}
+                            <div class="card">
+                                <img src="/static/assets/img/blog/influxdb_new.jpg" class="rounded-top"
+                                    alt="New" height="245">
+                                <a href="/influxdb" class="btn-primary">Add new config</a>
                             </div>
                         </div>
                     </div>
-                    <!-- End of Tab Content -->
+                    <div class="tab-pane" id="tabs-text-2" role="tabpanel"
+                        aria-labelledby="tabs-text-2-tab">
+                        <div class="center-section">
+                            {% for grafanaConfig in grafanaConfigs %}
+                            <div class="card">
+                                <img src="/static/assets/img/blog/grafana.jpeg" class="rounded-top"
+                                    alt="Grafana" height="150">
+                                <p>{{ grafanaConfig }}</p>
+                                <a>TO DO: Some info about test</a>
+                                <a href="/grafana?grafanaConfig={{ grafanaConfig }}" class="btn-primary">Configure</a>
+                            </div>
+                            {% endfor %}
+                            <div class="card">
+                                <img src="/static/assets/img/blog/influxdb_new.jpg" class="rounded-top"
+                                    alt="New" height="245">
+                                <a href="/grafana" class="btn-primary">Add new config</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabs-text-3" role="tabpanel"
+                        aria-labelledby="tabs-text-3-tab">
+                        <div class="center-section">
+                            {% for azureConfig in azureConfigs %}
+                            <div class="card">
+                                <img src="/static/assets/img/blog/azure.jpg" class="rounded-top"
+                                    alt="Azure" height="150">
+                                <p>{{ azureConfig }}</p>
+                                <a>TO DO: Some info about test</a>
+                                <a href="/azure?azureConfig={{ azureConfig }}" class="btn-primary">Configure</a>
+                            </div>
+                            {% endfor %}
+                            <div class="card">
+                                <img src="/static/assets/img/blog/influxdb_new.jpg" class="rounded-top"
+                                    alt="New" height="245">
+                                <a href="/azure" class="btn-primary">Add new config</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
