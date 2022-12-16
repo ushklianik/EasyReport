@@ -5,90 +5,47 @@
 <link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/integrations.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
     <main>
         <div class="main-background">
             {% include 'includes/sidebar.html' %}
-            <div class="main-body align-items-center">
-                    <div class="container pt-5 justify-content-center">
-                        <!-- Title -->
-                        <div class="row">
-                            <div class="col-lg-12 ms-n8">
-                                <div class="d-flex align-items-center justify-content-center text-white">
-                                    <h2 class="h5">Grafana configuration</h2>
-                                </div>
-                                <span class="font-weight-normal d-flex align-items-center justify-content-center text-white">
-                                    {% if msg %}
-                                        {{ msg | safe }}
-                                    {% else %}
-                                        Add your InfluDB configuration
-                                    {% endif %}                                  
-                                </span>
+            <div class="main-body">
+                <div class="main-body-header">
+                    <a>Grafana configuration</a>
+                </div>
+                <div class="center-section">
+                    <a>Add your Grafana configuration</a>
+                </div>
+                <div class="center-section">
+                    <form method="POST" action="/grafana">
+                        {{ form.hidden_tag() }}
+                        <div class="center-section width-500">
+                            <label for="grafanaName">Name</label>
+                            {{ form.grafanaName(class="form-control") }}
+                            <label for="grafanaServer">Grafana server</label>
+                            {{ form.grafanaServer(class="form-control") }}
+                            <label for="grafanaOrgId">Grafana org ID</label>
+                            {{ form.grafanaOrgId(class="form-control") }}
+                            <label for="grafanaToken">Token</label>
+                            <div class="input-group">
+                                {{ form.grafanaToken(class="form-control", type="password") }}
+                                <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
                             </div>
+                            <label for="grafanaDashboard">Grafana dashboard</label>
+                            {{ form.grafanaDashboard(class="form-control") }}
+                            <label for="grafanaDashRenderPath">grafanaDashRenderPath</label>
+                            {{ form.grafanaDashRenderPath(class="form-control") }}
+                            <label for="grafanaDashRenderCompPath">grafanaDashRenderCompPath</label>
+                            {{ form.grafanaDashRenderCompPath(class="form-control") }}
+                            <button class="btn-primary" type="submit">Save</button>
+                            {% if grafanaConfig %}
+                                <button href="/delete/grafana?grafanaConfig={{ grafanaConfig }}" class="btn-secondary">Delete</button>
+                            {% endif %}
                         </div>
-                        <!-- End of Title -->
-                    </div>
-                <!-- Section -->
-                    <div class="container pt-4 justify-content-center">
-                        <div class="col-lg-12 ms-n8">
-                            <form method="POST" action="/grafana">
-                                {{ form.hidden_tag() }}
-                                <div class="row mb-4 mb-lg-5 justify-content-center text-white">
-                                    <div class="col-lg-4 col-sm-6">
-                                        <!-- Form -->
-                                        <div class="mb-4 text-center">
-                                            <label for="grafanaName">Name</label>
-                                            {{ form.grafanaName(class="form-control") }}
-                                        </div>
-                                        <!-- End of Form -->
-                                        <!-- Form -->
-                                        <div class="mb-4 text-center">
-                                            <label for="grafanaServer">Grafana server</label>
-                                            {{ form.grafanaServer(class="form-control") }}
-                                        </div>
-                                        <!-- End of Form -->
-                                        <!-- Form -->
-                                        <div class="mb-4 text-center">
-                                            <label for="grafanaOrgId">Grafana org ID</label>
-                                            {{ form.grafanaOrgId(class="form-control") }}
-                                        </div>
-                                        <!-- End of Form -->
-                                        <!-- Form -->
-                                        <div class="mb-3 text-center">
-                                            <label for="grafanaToken">Token</label>
-                                            <div class="input-group">
-                                                {{ form.grafanaToken(class="form-control", type="password") }}
-                                                <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
-                                            </div>
-                                        </div>
-                                        <!-- End of Form -->
-                                        <button class="btn btn-primary" type="submit">Save</button>
-                                        {% if grafanaConfig %}
-                                            <a href="/delete/grafana?grafanaConfig={{ grafanaConfig }}" class="btn btn-danger">Delete</a>
-                                        {% endif %}   
-                                    </div>
-                                    <div class="col-lg-4 col-sm-6">
-                                        <!-- Form -->
-                                        <div class="mb-4 text-center">
-                                            <label for="grafanaDashboard">Grafana dashboard</label>
-                                            {{ form.grafanaDashboard(class="form-control") }}
-                                        </div>
-                                        <!-- End of Form -->
-                                        <!-- Form -->
-                                        <div class="mb-4 text-center">
-                                            <label for="grafanaDashRenderPath">grafanaDashRenderPath</label>
-                                            {{ form.grafanaDashRenderPath(class="form-control") }}
-                                        </div>
-                                        <div class="mb-4 text-center">
-                                            <label for="grafanaDashRenderCompPath">grafanaDashRenderCompPath</label>
-                                            {{ form.grafanaDashRenderCompPath(class="form-control") }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    </form>
+                </div>
             </div>
         </div>
     </main>

@@ -59,13 +59,15 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6,
   font-weight: 600; }
 
 a {
-  color: var(--bs-white);
-  font-weight: 400;
-  transition: all 0.2s ease;
-  text-decoration: none; }
-  a:hover {
-    color: var(--bs-gray-100);
-    cursor: pointer; }
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--bs-white);
+    font-weight: 400;
+    transition: all 0.2s ease;
+    text-decoration: none; }
+    a:hover {
+        color: var(--bs-gray-100);
+        cursor: pointer; }
 
 body{
     margin: 0;

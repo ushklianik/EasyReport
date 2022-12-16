@@ -2,7 +2,7 @@
 {% block title %} Integrations {% endblock %} 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-<!-- <link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet"> -->
+<link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/integrations.css" rel="stylesheet">
@@ -14,7 +14,7 @@
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
                 <div class="main-body-header">
-                    <a class="footer-logo-text">Integrations</a>
+                    <a>Integrations</a>
                 </div>
                 <div class="center-section">
                     <ul class="nav" id="tabs-text" role="tablist">
@@ -44,7 +44,7 @@
                             {% for influxdbConfig in influxdbConfigs %}
                             <div class="card">
                                 <img src="/static/assets/img/blog/influxdb.jpg" class="rounded-top"
-                                    alt="InfluxDB" height="150">
+                                    alt="InfluxDB" height="200">
                                 <p>{{ influxdbConfig }}</p>
                                 <a>TO DO: Some info about config</a>
                                 <a href="/influxdb?influxdbConfig={{ influxdbConfig }}" class="btn-primary">Configure</a>
@@ -63,7 +63,7 @@
                             {% for grafanaConfig in grafanaConfigs %}
                             <div class="card">
                                 <img src="/static/assets/img/blog/grafana.jpeg" class="rounded-top"
-                                    alt="Grafana" height="150">
+                                    alt="Grafana" height="200">
                                 <p>{{ grafanaConfig }}</p>
                                 <a>TO DO: Some info about test</a>
                                 <a href="/grafana?grafanaConfig={{ grafanaConfig }}" class="btn-primary">Configure</a>
@@ -82,7 +82,7 @@
                             {% for azureConfig in azureConfigs %}
                             <div class="card">
                                 <img src="/static/assets/img/blog/azure.jpg" class="rounded-top"
-                                    alt="Azure" height="150">
+                                    alt="Azure" height="200">
                                 <p>{{ azureConfig }}</p>
                                 <a>TO DO: Some info about test</a>
                                 <a href="/azure?azureConfig={{ azureConfig }}" class="btn-primary">Configure</a>

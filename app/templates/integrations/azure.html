@@ -5,100 +5,50 @@
 <link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/integrations.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
-    <main>
-        <div class="main-background">
-            {% include 'includes/sidebar.html' %}
-            <div class="main-body align-items-center justify-content-center">
-                <div class="container pt-5 justify-content-center">
-                    <!-- Title -->
-                    <div class="row">
-                        <div class="col-lg-12 ms-n8">
-                            <div class="d-flex align-items-center justify-content-center text-white">
-                                <h2 class="h5">Azure configuration</h2>
-                            </div>
-                            <span class="font-weight-normal d-flex align-items-center justify-content-center text-white">
-                                {% if msg %}
-                                    {{ msg | safe }}
-                                {% else %}
-                                    Add your Azure configuration
-                                {% endif %}                                  
-                            </span>
+<main>
+    <div class="main-background">
+        {% include 'includes/sidebar.html' %}
+        <div class="main-body">
+            <div class="main-body-header">
+                <a>Azure configuration</a>
+            </div>
+            <div class="center-section">
+                <a>Add your Azure configuration</a>
+            </div>
+            <div class="center-section">
+                <form method="POST" action="/azure">
+                    {{ form.hidden_tag() }}
+                    <div class="center-section width-500">
+                        <label for="azureName">Name</label>
+                        {{ form.azureName(class="form-control") }}
+                        <label for="personalAccessToken">Personal Access Token</label>
+                        <div class="input-group">
+                            {{ form.personalAccessToken(class="form-control", type="password") }}
+                            <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
                         </div>
+                        <label for="wikiOrganizationUrl">Wiki Organization Url</label>
+                        {{ form.wikiOrganizationUrl(class="form-control") }}
+                        <label for="wikiProject">Wiki Project</label>
+                        {{ form.wikiProject(class="form-control") }}
+                        <label for="wikiIdentifier">Wiki Identifier</label>
+                        {{ form.wikiIdentifier(class="form-control") }}
+                        <label for="wikiPathToReport">Wiki Path To Report</label>
+                        {{ form.wikiPathToReport(class="form-control") }}
+                        <label for="appInsighsLogsServer">App Insighs Logs Server</label>
+                        {{ form.appInsighsLogsServer(class="form-control") }}
+                        <label for="appInsighsAppId">App Insighs App Id</label>
+                        {{ form.appInsighsAppId(class="form-control") }}
+                        <label for="appInsighsApiKey">App Insighs Api Key</label>
+                        {{ form.appInsighsApiKey(class="form-control") }}
+                        <button class="btn-primary" type="submit">Save</button>
+                        {% if azureConfig %}
+                            <button href="/delete/azure?azureConfig={{ azureConfig }}" class="btn-secondary">Delete</button>
+                        {% endif %}
                     </div>
-                    <!-- End of Title -->
-                </div>
-                <!-- Section -->
-                <div class="container pt-4 justify-content-center">
-                    <div class="col-lg-12 ms-n8">
-                        <form method="POST" action="/azure">
-                            {{ form.hidden_tag() }}
-                            <div class="row mb-4 mb-lg-5 d-flex justify-content-center text-white">
-                                <div class="col-lg-4 col-sm-6">
-                                    <!-- Form -->
-                                    <div class="mb-4 text-center">
-                                        <label for="azureName">Name</label>
-                                        {{ form.azureName(class="form-control") }}
-                                    </div>
-                                    <!-- End of Form -->
-                                    <!-- Form -->
-                                    <div class="mb-3 text-center">
-                                        <label for="personalAccessToken">Personal Access Token</label>
-                                        <div class="input-group">
-                                            {{ form.personalAccessToken(class="form-control", type="password") }}
-                                            <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
-                                        </div>
-                                    </div>
-                                    <!-- End of Form -->
-                                    <!-- Form -->
-                                    <div class="mb-4 text-center">
-                                        <label for="wikiOrganizationUrl">Wiki Organization Url</label>
-                                        {{ form.wikiOrganizationUrl(class="form-control") }}
-                                    </div>
-                                    <!-- End of Form -->
-                                    <!-- Form -->
-                                    <div class="mb-4 text-center">
-                                        <label for="wikiProject">Wiki Project</label>
-                                        {{ form.wikiProject(class="form-control") }}
-                                    </div>
-                                    <!-- End of Form -->
-                                    <!-- Form -->
-                                    <div class="mb-4 text-center">
-                                        <label for="wikiIdentifier">Wiki Identifier</label>
-                                        {{ form.wikiIdentifier(class="form-control") }}
-                                    </div>
-                                    <!-- End of Form -->
-                                    <button class="btn btn-primary" type="submit">Save</button>
-                                    {% if azureConfig %}
-                                        <a href="/delete/azure?azureConfig={{ azureConfig }}" class="btn btn-danger">Delete</a>
-                                    {% endif %}   
-                                </div>
-                                <div class="col-lg-4 col-sm-6">
-                                    <!-- Form -->
-                                    <div class="mb-4 text-center">
-                                        <label for="wikiPathToReport">Wiki Path To Report</label>
-                                        {{ form.wikiPathToReport(class="form-control") }}
-                                    </div>
-                                    <!-- End of Form -->
-                                    <!-- Form -->
-                                    <div class="mb-4 text-center">
-                                        <label for="appInsighsLogsServer">App Insighs Logs Server</label>
-                                        {{ form.appInsighsLogsServer(class="form-control") }}
-                                    </div>
-                                    <div class="mb-4 text-center">
-                                        <label for="appInsighsAppId">App Insighs App Id</label>
-                                        {{ form.appInsighsAppId(class="form-control") }}
-                                    </div>
-                                    <div class="mb-4 text-center">
-                                        <label for="appInsighsApiKey">App Insighs Api Key</label>
-                                        {{ form.appInsighsApiKey(class="form-control") }}
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </main>
