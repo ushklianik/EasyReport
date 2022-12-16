@@ -1,91 +1,8 @@
-/*
-
-=========================================================
-* Pixel Free Bootstrap 5 UI Kit
-=========================================================
-
-* Product Page: https://themesberg.com/product/ui-kit/pixel-free-bootstrap-5-ui-kit
-* Copyright 2021 Themesberg (https://www.themesberg.com)
-
-* Coded by https://themesberg.com
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. Contact us if you want to remove it.
-
-*/
 @import url("https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700&display=swap");
 .datepicker {
   display: none; }
   .datepicker.active {
     display: block; }
-
-body {
-  margin: 0;
-  font-family: var(--bs-font-sans-serif);
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--bs-white);
-  -webkit-text-size-adjust: 100%;
-  -webkit-tap-highlight-color: rgba(23, 31, 56, 0);
-}
-
-footer {
-    position: relative; 
-    width: 100%;
-    bottom: 0px;
-    background-color: var(--bs-dark);
-    text-align: center;
-}
-
-.sidebar{
-  height: 100%;
-  width: 11rem;
-  position: fixed;
-  top: 0;
-  left: 0;
-  overflow-x: hidden;
-  background-color: var(--bs-dark);
-}
-
-.main-background{
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  gap: 1rem;
-  height: auto;
-  min-height: 100vh;
-  background-attachment: fixed;
-  background-size: cover;
-  background: var(--bs-gradient);
-}
-
-.main-body{
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  margin-left: 11rem;
-}
-
-.main-body-header {
-  border-bottom: 1px solid var(--bs-gray);
-  padding: 16px;
-  height: 64px;
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-.signin-inner {
-  display: flex;
-  flex-direction: column;
-  height: auto;
-  min-width: 500px;
-  padding: 35px;
-  border: 1px solid #E5E7EB;
-  border-radius: 25px;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.15);
-}
 
 .section {
     position: relative;
@@ -312,54 +229,6 @@ footer {
   border-color: #1c243b; }
   .datepicker-input.in-edit:focus, .datepicker-input.in-edit:active {
     box-shadow: 0 0 0.25em 0.25em rgba(28, 36, 59, 0.2); }
-
-:root {
-  --bs-blue: #0d6efd;
-  --bs-indigo: #6610f2;
-  --bs-purple: #6f42c1;
-  --bs-pink: #d63384;
-  --bs-red: #dc3545;
-  --bs-orange: #fd7e14;
-  --bs-yellow: #ffc107;
-  --bs-green: #198754;
-  --bs-teal: #20c997;
-  --bs-cyan: #0dcaf0;
-  --bs-white: #fff;
-  --bs-gray: #6c757d;
-  --bs-gray-dark: #343a40;
-  --bs-primary: #0d6efd;
-  --bs-secondary: #6c757d;
-  --bs-tertiary: #1d58a5;
-  --bs-primary-app: #EBF4F6;
-  --bs-secondary-app: #424AA0;
-  --bs-success: #198754;
-  --bs-info: #0dcaf0;
-  --bs-warning: #ffc107;
-  --bs-danger: #dc3545;
-  --bs-white: #ffffff;
-  --bs-light: #f8f9fa;
-  --bs-gray: #343a40;
-  --bs-dark: #313131;
-  --bs-black: #000;
-  --bs-purple: #6f42c1;
-  --bs-orange: #e84422;
-  --bs-gray-100: #f8f9fa;
-  --bs-gray-200: #e9ecef;
-  --bs-gray-300: #dee2e6;
-  --bs-gray-400: #ced4da;
-  --bs-gray-500: #adb5bd;
-  --bs-gray-600: #6c757d;
-  --bs-gray-700: #495057;
-  --bs-gray-800: #343a40;
-  --bs-gray-900: #212529;
-  --bs-font-sans-serif: "Nunito Sans", sans-serif;
-  --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --bs-gradient: radial-gradient(circle at -10% -10%, rgb(37, 35, 40) 0.5%, rgb(30, 30, 30) 90%); }
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box; }
 
 @media (prefers-reduced-motion: no-preference) {
   :root {
@@ -2929,64 +2798,6 @@ textarea.form-control-lg {
     pointer-events: none;
     opacity: 0.65;
     box-shadow: none; }
-
-.btn-primary {
-  color: #ffffff;
-  background-color: #242e4c;
-  border-color: #242e4c;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
-  .btn-primary:hover {
-    color: #ffffff;
-    background-color: #1f2741;
-    border-color: #1d253d; }
-  .btn-check:focus + .btn-primary, .btn-primary:focus {
-    color: #ffffff;
-    background-color: #1f2741;
-    border-color: #1d253d;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075), 0 0 0 0.2rem rgba(69, 77, 103, 0.5); }
-  .btn-check:checked + .btn-primary,
-  .btn-check:active + .btn-primary, .btn-primary:active, .btn-primary.active,
-  .show > .btn-primary.dropdown-toggle {
-    color: #ffffff;
-    background-color: #1d253d;
-    border-color: #1b2339; }
-    .btn-check:checked + .btn-primary:focus,
-    .btn-check:active + .btn-primary:focus, .btn-primary:active:focus, .btn-primary.active:focus,
-    .show > .btn-primary.dropdown-toggle:focus {
-      box-shadow: inset 0 3px 5px rgba(23, 31, 56, 0.125), 0 0 0 0.2rem rgba(69, 77, 103, 0.5); }
-  .btn-primary:disabled, .btn-primary.disabled {
-    color: #ffffff;
-    background-color: #242e4c;
-    border-color: #242e4c; }
-
-.btn-secondary {
-  color: #ffffff;
-  background-color: #1c2540;
-  border-color: #1c2540;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
-  .btn-secondary:hover {
-    color: #ffffff;
-    background-color: #181f36;
-    border-color: #161e33; }
-  .btn-check:focus + .btn-secondary, .btn-secondary:focus {
-    color: #ffffff;
-    background-color: #181f36;
-    border-color: #161e33;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075), 0 0 0 0.2rem rgba(62, 70, 93, 0.5); }
-  .btn-check:checked + .btn-secondary,
-  .btn-check:active + .btn-secondary, .btn-secondary:active, .btn-secondary.active,
-  .show > .btn-secondary.dropdown-toggle {
-    color: #ffffff;
-    background-color: #161e33;
-    border-color: #151c30; }
-    .btn-check:checked + .btn-secondary:focus,
-    .btn-check:active + .btn-secondary:focus, .btn-secondary:active:focus, .btn-secondary.active:focus,
-    .show > .btn-secondary.dropdown-toggle:focus {
-      box-shadow: inset 0 3px 5px rgba(23, 31, 56, 0.125), 0 0 0 0.2rem rgba(62, 70, 93, 0.5); }
-  .btn-secondary:disabled, .btn-secondary.disabled {
-    color: #ffffff;
-    background-color: #1c2540;
-    border-color: #1c2540; }
 
 .btn-tertiary {
   color: #ffffff;

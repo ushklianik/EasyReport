@@ -49,18 +49,21 @@
     --bs-gradient: radial-gradient(circle at -10% -10%, rgb(37, 35, 40) 0.5%, rgb(30, 30, 30) 90%);
 }
 
-.main-background{
+body{
     margin: 0;
     font-family: var(--bs-font-sans-serif);
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
+}
+
+.main-background {
     height: auto;
     min-height: 100vh;
     background-attachment: fixed;
     background-size: cover;
     background: var(--bs-gradient);
-  }
+}
 
 .sidebar{
     height: 100%;
