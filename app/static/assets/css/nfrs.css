@@ -12,6 +12,15 @@
     border-bottom-width: 0.0625rem;
 }
 
+.collapse:not(.show) {
+    display: none;
+}
+
+.accordion-collapse {
+    border: solid #E5E7EB;
+    border-width: 0 0.0625rem;
+}
+
 .nfrs-button {
     position: relative;
     display: flex;
