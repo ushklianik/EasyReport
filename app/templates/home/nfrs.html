@@ -20,14 +20,12 @@
                     <div class="marging-10">
                         {% for nfrsItem in nfrsList %}
                         <div class="nfrs-item">
-                            <div id="heading_{{ nfrsItem.appName }}">
-                                <button class="nfrs-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ nfrsItem.appName }}" aria-expanded="false" aria-controls="{{ nfrsItem.appName }}">
-                                    <div class="grey-text-color" style="font-size: 1rem;padding-right: 8px;">App name:</div>{{ nfrsItem.appName }}
-                                    <div class="grey-text-color" style="font-size: 1rem;padding-left: 32px;">Number of NFRs:</div>
-                                    <div class="nfr-circle" id="{{ nfrsItem.appName }}"></div>
-                                </button>
-                            </div>
-                            <div id="{{ nfrsItem.appName }}" class="accordion-collapse collapse" aria-labelledby="heading_{{ nfrsItem.appName }}" data-bs-parent="#nfrs-accordion">
+                            <button class="nfrs-button">
+                                <div class="grey-text-color" style="font-size: 1rem;padding-right: 8px;">App name:</div>{{ nfrsItem.appName }}
+                                <div class="grey-text-color" style="font-size: 1rem;padding-left: 32px;">Number of NFRs:</div>
+                                <div class="nfr-circle" id="{{ nfrsItem.appName }}"></div>
+                            </button>
+                            <div class="nfr-panel">
                                 <div class="nfrs-body">
                                     <div>
                                         <a class="btn-primary" style="width: 80px;" href="/nfr?appName={{ nfrsItem.appName }}" role="button">Edit</a>
@@ -83,6 +81,21 @@
                     var elem = document.getElementById(nfrsJson[i]["appName"]);
                     elem.textContent = nfrsJson[i]["rows"].length;
                 }
+            }
+
+            var acc = document.getElementsByClassName("nfrs-button");
+            var i;
+
+            for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("nfr-panel-active");
+                var panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+                } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+                } 
+            });
             }
         </script>
     </main>
