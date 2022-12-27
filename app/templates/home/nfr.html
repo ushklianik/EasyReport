@@ -4,7 +4,6 @@
 {% block stylesheets %}
 <link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
-<link type="text/css" href="/static/assets/css/report.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/nfrs.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
 {% endblock stylesheets %}
@@ -14,76 +13,72 @@
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
                 <div class="main-body-header">
-                    <a class="text-white footer-logo-text">NFR</a>
+                    <a>NFR</a>
                 </div> 
-                <div class="full-screen-section flex-direction-column" id="nfrs-container">
-                    <div class="row">
-                        <div class="col-auto">
+                <div class="flex-direction-column" id="nfrs-container">
+                    <div class="full-screen-section">
+                        <div class="marging-10">
                             <label class="col-form-nfr-label">App name:</label>
                         </div>
-                        <div class="col-auto">
+                        <div class="marging-10">
                             <input name="appName" id="appName" class="form-control-nfr">
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="nfr-col-l">
-                            <div style="display:flex;flex-direction: column;">
-                                <label class="col-form-nfr-label" style="flex:1;">Scope:</label>
-                                <label class="col-form-nfr-description" style="flex:1;">You can define the scope to which the NFRs check will be applied.
+                    <div class="full-screen-section">
+                        <div class="nfr-col-l padding-10">
+                            <label class="col-form-nfr-label">Scope:</label>
+                            <label class="col-form-nfr-description">You can define the scope to which the NFRs check will be applied.
                                     all: calculates metrics for all requests
                                     each: calculates metrics for each request. 
                                     Also you can specify request/transaction name.
-                                </label>
-                            </div>
+                            </label>
                         </div>
-                        <div class="nfr-col-m">
+                        <div class="nfr-col-m padding-10">
                             <label class="col-form-nfr-label">Metric:</label>
-                            <label class="col-form-nfr-description" style="flex:1;">What metric should be calculated for the specified scope.</label>
+                            <label class="col-form-nfr-description">What metric should be calculated for the specified scope.</label>
                         </div>
-                        <div class="nfr-col-s">
+                        <div class="nfr-col-s padding-10">
                             <label class="col-form-nfr-label">Aggregation:</label>
-                            <label class="col-form-nfr-description" style="flex:1;">What aggregation will be used to calculate metric value.</label>
+                            <label class="col-form-nfr-description">What aggregation will be used to calculate metric value.</label>
                         </div>
-                        <div class="nfr-col-s">
+                        <div class="nfr-col-s padding-10">
                             <label class="col-form-nfr-label">Operation:</label>
-                            <label class="col-form-nfr-description" style="flex:1;">What comparison operation will be used to compare metric value with treshold.</label>
+                            <label class="col-form-nfr-description">What comparison operation will be used to compare metric value with treshold.</label>
                         </div>
-                        <div class="nfr-col-m">
+                        <div class="nfr-col-m padding-10">
                             <label class="col-form-nfr-label">Threshold:</label>
-                            <label class="col-form-nfr-description" style="flex:1;">Only number should be specified.</label>
+                            <label class="col-form-nfr-description">Only number should be specified.</label>
                         </div>
-                        <div class="nfr-col-m" style="width: 18%;">
+                        <div class="nfr-col-l padding-10">
                             <label class="col-form-nfr-label">Weight (optional):</label>
-                            <label class="col-form-nfr-description" style="flex:1;">You can specify which weight belongs to each NFR. This is an optional field. If not specified, all NFS will have the same weight.
+                            <label class="col-form-nfr-description">You can specify which weight belongs to each NFR. This is an optional field. If not specified, all NFS will have the same weight.
                                 Only number should be specified.
                                 The sum of the total weight in one set should not exceed 100</label>
                         </div>
-                        <div class="nfr-col-m" style="display: flex;width: 10%;">
-                        </div>
                     </div>
                 </div>
-                <div class="nfrs-container">
+                <div class="full-screen-section">
                     <div id="nfrs-panel">
-                        <button onclick="addNfrRow()" class="btn nfr-btn" style="margin-right: 1rem;">New row</button>
-                        <button onclick="saveNFRs()" class="btn nfr-btn">Save NFRs</button>
+                        <button onclick="addNfrRow()" class="btn-primary">New row</button>
+                        <button onclick="saveNFRs()" class="btn-primary">Save NFRs</button>
                     </div>
                 </div>
             </div>
         </div>
         <script>
-            var row = '<div class="row marging-10 nfr-row">'+
-                            '<div class="nfr-col-l">'+
-                                '<input name="scope-nfr-field" class="form-control-nfr scope-nfr-field">'+
+            var row = '<div class="full-screen-section nfr-row">'+
+                            '<div class="nfr-col-l padding-10">'+
+                                '<input class="form-control-nfr scope-nfr-field">'+
                             '</div>'+
-                            '<div class="nfr-col-m">'+
-                                '<select name="metric-nfr-field" class="form-select-nfr metric-nfr-field">'+
+                            '<div class="nfr-col-m padding-10">'+
+                                '<select class="form-select-nfr metric-nfr-field">'+
                                     '<option value="response-time" selected>response time</option>'+
                                     '<option value="rps">rps</option>'+
                                     '<option value="errors">errors</option>'+
                                 '</select>'+
                             '</div>'+
-                            '<div class="nfr-col-s">'+
-                                '<select name="aggregation-nfr-field" class="form-select-nfr aggregation-nfr-field">'+
+                            '<div class="nfr-col-s padding-10">'+
+                                '<select class="form-select-nfr aggregation-nfr-field">'+
                                     '<option value="avg" selected>avg</option>'+
                                     '<option value="median">median</option>'+
                                     '<option value="90">90%-tile</option>'+
@@ -92,8 +87,8 @@
                                     '<option value="sum">sum</option>'+
                                 '</select>'+
                             '</div>'+
-                            '<div class="nfr-col-s">'+
-                                '<select name="operation-nfr-field" class="form-select-nfr operation-nfr-field" >'+
+                            '<div class="nfr-col-s padding-10">'+
+                                '<select class="form-select-nfr operation-nfr-field" >'+
                                     '<option value=">" selected>></option>'+
                                     '<option value="<"><</option>'+
                                     '<option value="=">=</option>'+
@@ -102,14 +97,14 @@
                                     '<option value="<="><=</option>'+
                                 '</select>'+
                             '</div>'+
-                            '<div class="nfr-col-m">'+
-                                '<input name="threshold-nfr-field" class="form-control-nfr threshold-nfr-field" >'+
+                            '<div class="nfr-col-m padding-10">'+
+                                '<input class="form-control-nfr threshold-nfr-field" >'+
                             '</div>'+
-                            '<div class="nfr-col-m" style="width: 18%;">'+
-                                '<input name="weight-nfr-field" class="form-control-nfr weight-nfr-field" >'+
+                            '<div class="nfr-col-l padding-10">'+
+                                '<input class="form-control-nfr weight-nfr-field" >'+
                             '</div>'+
-                            '<div class="nfr-col-m" style="display: flex;width: 10%;">'+
-                                '<button onclick="deleteNfrRow(this)" class="btn nfr-btn-red" style="align-self: flex-end;">Delete</a>'+
+                            '<div class="padding-10" style="display: flex;width: 5%;">'+
+                                '<button onclick="deleteNfrRow(this)" class="nfr-btn-red" style="align-self: flex-end;">Delete</a>'+
                             '</div>'+
                         '</div>'
             function addNfrRow() {
@@ -175,20 +170,20 @@
                     appName.value = nfrsJson["appName"]
                     for(var i = 0; i < nfrsJson["rows"].length; i++) {
                         var container = document.getElementById("nfrs-container");
-                        var newRow = '<div class="row marging-10 nfr-row">'+
-                            '<div class="nfr-col-l">'+
-                                '<input name="scope-nfr-field" value="'+nfrsJson["rows"][i]["scope"]+'" class="form-control-nfr scope-nfr-field">'+
+                        var newRow = '<div class="full-screen-section nfr-row">'+
+                            '<div class="nfr-col-l padding-10">'+
+                                '<input value="'+nfrsJson["rows"][i]["scope"]+'" class="form-control-nfr scope-nfr-field">'+
                             '</div>'+
-                            '<div class="nfr-col-m">'+
-                                '<select name="metric-nfr-field" class="form-select-nfr metric-nfr-field">'+
+                            '<div class="nfr-col-m padding-10">'+
+                                '<select class="form-select-nfr metric-nfr-field">'+
                                     '<option value="'+nfrsJson["rows"][i]["metric"]+'" selected>'+nfrsJson["rows"][i]["metric"]+'</option>'+
                                     '<option value="response-time">response time</option>'+
                                     '<option value="rps">rps</option>'+
                                     '<option value="errors">errors</option>'+
                                 '</select>'+
                             '</div>'+
-                            '<div class="nfr-col-s">'+
-                                '<select name="aggregation-nfr-field" class="form-select-nfr aggregation-nfr-field">'+
+                            '<div class="nfr-col-s padding-10">'+
+                                '<select class="form-select-nfr aggregation-nfr-field">'+
                                     '<option value="'+nfrsJson["rows"][i]["aggregation"]+'" selected>'+nfrsJson["rows"][i]["aggregation"]+'</option>'+
                                     '<option value="avg">avg</option>'+
                                     '<option value="median">median</option>'+
@@ -198,8 +193,8 @@
                                     '<option value="sum">sum</option>'+
                                 '</select>'+
                             '</div>'+
-                            '<div class="nfr-col-s">'+
-                                '<select name="operation-nfr-field" class="form-select-nfr operation-nfr-field" >'+
+                            '<div class="nfr-col-s padding-10">'+
+                                '<select class="form-select-nfr operation-nfr-field" >'+
                                     '<option value="'+nfrsJson["rows"][i]["operation"]+'" selected>'+nfrsJson["rows"][i]["operation"]+'</option>'+
                                     '<option value=">">></option>'+
                                     '<option value="<"><</option>'+
@@ -209,14 +204,14 @@
                                     '<option value="<="><=</option>'+
                                 '</select>'+
                             '</div>'+
-                            '<div class="nfr-col-m">'+
-                                '<input name="threshold-nfr-field" value="'+nfrsJson["rows"][i]["threshold"]+'"class="form-control-nfr threshold-nfr-field" >'+
+                            '<div class="nfr-col-m padding-10">'+
+                                '<input value="'+nfrsJson["rows"][i]["threshold"]+'"class="form-control-nfr threshold-nfr-field" >'+
                             '</div>'+
-                            '<div class="nfr-col-m" style="width: 18%;">'+
-                                '<input name="weight-nfr-field" value="'+nfrsJson["rows"][i]["weight"]+'"class="form-control-nfr weight-nfr-field" >'+
+                            '<div class="nfr-col-m padding-10" style="width: 18%;">'+
+                                '<input value="'+nfrsJson["rows"][i]["weight"]+'"class="form-control-nfr weight-nfr-field" >'+
                             '</div>'+
-                            '<div class="nfr-col-m" style="display: flex;width: 10%;">'+
-                                '<button onclick="deleteNfrRow(this)" class="btn nfr-btn-red" style="align-self: flex-end;">Delete</a>'+
+                            '<div class="nfr-col-m padding-10" style="display: flex;width: 10%;">'+
+                                '<button onclick="deleteNfrRow(this)" class="nfr-btn-red" style="align-self: flex-end;">Delete</a>'+
                             '</div>'+
                         '</div>'
                         container.insertAdjacentHTML("beforeend", newRow);
