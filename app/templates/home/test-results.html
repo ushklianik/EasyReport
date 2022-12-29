@@ -94,7 +94,7 @@
                         <div id="apdex-block">
                             <div id="apdex-chart"></div>
                             <div id="apdex-label">
-                                <p class="apdex_value" id="apdex_value">90%</p>
+                                <p class="apdex_value" id="apdex_value">{{ report.apdex }}%</p>
                                 <p class="apdex_title">APDEX</p>
                             </div>
                         </div>
@@ -175,7 +175,6 @@
                 }
             }
         </script>
-
     </main>
     {% include 'includes/footer.html' %}
 {% endblock content %}

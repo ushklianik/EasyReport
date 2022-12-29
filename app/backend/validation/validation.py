@@ -27,6 +27,11 @@ class nfr:
             name = self.generateName(nfr)
             nfr['name'] = name
         
+        # Update weight
+        for nfr in nfrs['rows']:
+            name = self.generateName(nfr)
+            nfr['weight'] = 100/len(nfrs['rows'])
+        
         # If NFRs already exists, update only edited NFR
         if len(target) != 0:
             for nfrCurrent in target:
@@ -187,7 +192,7 @@ class nfr:
                     compResult.append({"name": nfr['name'], "result": "no data"})
                 # If influxdb query returns 1 row
                 elif len(results) == 1:
-                    compResult.append({"name": nfr['name'], "result": self.compareValue(results[0]['_value'], nfr['operation'], nfr['threshold'])})
+                    compResult.append({"name": nfr['name'], "result": self.compareValue(results[0]['_value'], nfr['operation'], nfr['threshold']), "weight": nfr['weight']})
                 # If influxdb query returns more than 1 rows
                 elif len(results) > 1:
                     status = "PASSED"
@@ -197,8 +202,20 @@ class nfr:
                         if a == "FAILED":
                             status = "FAILED"
                             break
-                    compResult.append({"name": nfr['name'], "result": status})
+                    compResult.append({"name": nfr['name'], "result": status, "weight": nfr['weight']})
         return compResult
+
+    def calculateApdex(self, compResult):
+        passed = 0
+        failed = 0
+        for result in compResult:
+            if result["result"] == "PASSED":
+                passed += float(result["weight"])
+            else:
+                failed += float(result["weight"])
+        apdex = passed / (passed + failed) * 100
+        return int(apdex)
+
 
 
             

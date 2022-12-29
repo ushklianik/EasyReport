@@ -21,7 +21,7 @@
                             <label class="col-form-nfr-label">App name:</label>
                         </div>
                         <div class="marging-10">
-                            <input name="appName" id="appName" class="form-control-nfr">
+                            <input name="appName" id="appName" class="form-control-nfr" required>
                         </div>
                     </div>
                     <div class="full-screen-section">
@@ -68,10 +68,10 @@
         <script>
             var row = '<div class="full-screen-section nfr-row">'+
                             '<div class="nfr-col-l padding-10">'+
-                                '<input class="form-control-nfr scope-nfr-field">'+
+                                '<input name="scope" class="form-control-nfr scope-nfr-field" required>'+
                             '</div>'+
                             '<div class="nfr-col-m padding-10">'+
-                                '<select class="form-select-nfr metric-nfr-field">'+
+                                '<select class="form-select-nfr metric-nfr-field" required>'+
                                     '<option value="response-time" selected>response time</option>'+
                                     '<option value="rps">rps</option>'+
                                     '<option value="errors">errors</option>'+
@@ -98,10 +98,10 @@
                                 '</select>'+
                             '</div>'+
                             '<div class="nfr-col-m padding-10">'+
-                                '<input class="form-control-nfr threshold-nfr-field" >'+
+                                '<input name="threshold" class="form-control-nfr threshold-nfr-field" step="0.001" type="number" required>'+
                             '</div>'+
                             '<div class="nfr-col-l padding-10">'+
-                                '<input class="form-control-nfr weight-nfr-field" >'+
+                                '<input name="weight" class="form-control-nfr weight-nfr-field" max="100" step="0.001" type="number">'+
                             '</div>'+
                             '<div class="padding-10" style="display: flex;width: 5%;">'+
                                 '<button onclick="deleteNfrRow(this)" class="nfr-btn-red" style="align-self: flex-start;">Delete</a>'+
@@ -110,48 +110,52 @@
             function addNfrRow() {
                 var container = document.getElementById("nfrs-container");
                 container.insertAdjacentHTML("beforeend", row);
+                addListeners()
             } 
 
             function deleteNfrRow(elem) {
                 elem.parentNode.parentNode.remove();
+                addListeners()
             }
             function saveNFRs(){
-                var appName = document.getElementById("appName");
-                var nfrsPanel = document.getElementById("nfrs-panel");
-                var rows = document.getElementsByClassName("nfr-row");
-                var nfrs = {}
-                nfrs["appName"]=appName.value
-                nfrs["rows"] = []
-                for(var i = 0; i < rows.length; i++) {
-                    let dict = {}
-                    dict["scope"] = rows[i].querySelector('.scope-nfr-field').value
-                    dict["metric"] = rows[i].querySelector('.metric-nfr-field').value
-                    dict["aggregation"] = rows[i].querySelector('.aggregation-nfr-field').value
-                    dict["operation"] = rows[i].querySelector('.operation-nfr-field').value
-                    dict["threshold"] = parseInt(rows[i].querySelector('.threshold-nfr-field').value)
-                    dict["weight"] = rows[i].querySelector('.weight-nfr-field').value
-                    nfrs["rows"].push(dict)
+                if (checkValidity()){
+                    var appName = document.getElementById("appName");
+                    var nfrsPanel = document.getElementById("nfrs-panel");
+                    var rows = document.getElementsByClassName("nfr-row");
+                    var nfrs = {}
+                    nfrs["appName"]=appName.value
+                    nfrs["rows"] = []
+                    for(var i = 0; i < rows.length; i++) {
+                        let dict = {}
+                        dict["scope"] = rows[i].querySelector('.scope-nfr-field').value
+                        dict["metric"] = rows[i].querySelector('.metric-nfr-field').value
+                        dict["aggregation"] = rows[i].querySelector('.aggregation-nfr-field').value
+                        dict["operation"] = rows[i].querySelector('.operation-nfr-field').value
+                        dict["threshold"] = parseInt(rows[i].querySelector('.threshold-nfr-field').value)
+                        dict["weight"] = rows[i].querySelector('.weight-nfr-field').value
+                        nfrs["rows"].push(dict)
+                    }
+                    $.ajax({
+                        url:'/nfr',
+                        type:"POST",
+                        data:JSON.stringify(nfrs),
+                        contentType:"application/json",
+                        success: function(){
+                            if(nfrsPanel.querySelector('.status-message') != null){
+                                nfrsPanel.querySelector('.status-message').remove();
+                            }
+                            let elem = '<div class="good-msg status-message">Saved</div>';
+                            nfrsPanel.insertAdjacentHTML("beforeend", elem);
+                        },
+                        error: function () {
+                            if(nfrsPanel.querySelector('.status-message') != null){
+                                nfrsPanel.querySelector('.status-message').remove();
+                            }
+                            let elem = '<div class="bad-msg status-message">Not saved</div>';
+                            nfrsPanel.insertAdjacentHTML("beforeend", elem);
+                        },
+                    })
                 }
-                $.ajax({
-                    url:'/nfr',
-                    type:"POST",
-                    data:JSON.stringify(nfrs),
-                    contentType:"application/json",
-                    success: function(){
-                        if(nfrsPanel.querySelector('.status-message') != null){
-                            nfrsPanel.querySelector('.status-message').remove();
-                        }
-                        let elem = '<div class="good-msg status-message">Saved</div>';
-                        nfrsPanel.insertAdjacentHTML("beforeend", elem);
-                    },
-                    error: function () {
-                        if(nfrsPanel.querySelector('.status-message') != null){
-                            nfrsPanel.querySelector('.status-message').remove();
-                        }
-                        let elem = '<div class="bad-msg status-message">Not saved</div>';
-                        nfrsPanel.insertAdjacentHTML("beforeend", elem);
-                    },
-                })
             }
 
             var nfrsPanel = document.getElementById("nfrs-panel");
@@ -172,7 +176,7 @@
                         var container = document.getElementById("nfrs-container");
                         var newRow = '<div class="full-screen-section nfr-row">'+
                             '<div class="nfr-col-l padding-10">'+
-                                '<input value="'+nfrsJson["rows"][i]["scope"]+'" class="form-control-nfr scope-nfr-field">'+
+                                '<input name="scope" value="'+nfrsJson["rows"][i]["scope"]+'" class="form-control-nfr scope-nfr-field" required>'+
                             '</div>'+
                             '<div class="nfr-col-m padding-10">'+
                                 '<select class="form-select-nfr metric-nfr-field">'+
@@ -205,10 +209,10 @@
                                 '</select>'+
                             '</div>'+
                             '<div class="nfr-col-m padding-10">'+
-                                '<input value="'+nfrsJson["rows"][i]["threshold"]+'"class="form-control-nfr threshold-nfr-field" >'+
+                                '<input name="threshold" value="'+nfrsJson["rows"][i]["threshold"]+'"class="form-control-nfr threshold-nfr-field" step="0.001" type="number" required>'+
                             '</div>'+
                             '<div class="nfr-col-m padding-10" style="width: 18%;">'+
-                                '<input value="'+nfrsJson["rows"][i]["weight"]+'"class="form-control-nfr weight-nfr-field" >'+
+                                '<input name="weight" type="number" value="'+nfrsJson["rows"][i]["weight"]+'"class="form-control-nfr weight-nfr-field" max="100" step="0.001">'+
                             '</div>'+
                             '<div class="nfr-col-m padding-10" style="display: flex;width: 10%;">'+
                                 '<button onclick="deleteNfrRow(this)" class="nfr-btn-red" style="align-self: flex-start;">Delete</a>'+
@@ -221,6 +225,68 @@
             if (nfRows.length == 0){
                 var container = document.getElementById("nfrs-container");
                 container.insertAdjacentHTML("beforeend", row);
+            }
+            addListeners();
+            function addListeners(){
+                var inputElements = document.getElementsByClassName('form-control-nfr');
+                if (inputElements.length != 0){
+                    for(var i = 0; i < inputElements.length; i++) {
+                        inputElements[i].addEventListener('change', (e) => {
+                            var isValid = e.target.reportValidity();
+                            // other code from before
+                            e.target.setAttribute('aria-invalid', !isValid);
+                        });
+                    }
+                }
+            }
+            function checkValidity(){
+                var inputElements = document.getElementsByClassName('form-control-nfr');
+                var nfrsPanel = document.getElementById("nfrs-panel");
+                if (inputElements.length != 0){
+                    var weightTotal = 0;
+                    for(var i = 0; i < inputElements.length; i++) {
+                        var isValid = inputElements[i].reportValidity();
+                        // other code from before
+                        if (!isValid && inputElements[i].getAttribute('name') == "appName" ){
+                            if(nfrsPanel.querySelector('.status-message') != null){
+                                nfrsPanel.querySelector('.status-message').remove();
+                            }
+                            let elem = '<div class="bad-msg status-message">Not saved: Add app name</div>';
+                            nfrsPanel.insertAdjacentHTML("beforeend", elem);
+                            return false;
+                        }
+                        if (!isValid && inputElements[i].getAttribute('name') == "scope" ){
+                            if(nfrsPanel.querySelector('.status-message') != null){
+                                nfrsPanel.querySelector('.status-message').remove();
+                            }
+                            let elem = '<div class="bad-msg status-message">Not saved: Add scope name</div>';
+                            nfrsPanel.insertAdjacentHTML("beforeend", elem);
+                            return false;
+                        }
+                        if (!isValid && inputElements[i].getAttribute('name') == "threshold" ){
+                            if(nfrsPanel.querySelector('.status-message') != null){
+                                nfrsPanel.querySelector('.status-message').remove();
+                            }
+                            let elem = '<div class="bad-msg status-message">Not saved: Add thresholds</div>';
+                            nfrsPanel.insertAdjacentHTML("beforeend", elem);
+                            return false;
+                        }
+                        if (inputElements[i].getAttribute('name') == "weight" ){
+                            weightTotal += parseInt(inputElements[i].value)
+                        }
+                    }
+                    if (weightTotal > 100){
+                        if(nfrsPanel.querySelector('.status-message') != null){
+                            nfrsPanel.querySelector('.status-message').remove();
+                        }
+                        let elem = '<div class="bad-msg status-message">Not saved: Sum of weights is more than 100</div>';
+                        nfrsPanel.insertAdjacentHTML("beforeend", elem);
+                        return false;
+                    }
+                }else{
+                    return false;
+                }
+                return true;
             }
         </script>
     </main>

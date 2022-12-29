@@ -145,5 +145,8 @@ class htmlReport:
         self.getAvgResponseTime_graph()
         self.getRPS_graph()
         nfrObj = nfr(self.project)
-        self.report['nfrs'] = nfrObj.compareWithNFRs(appName = self.report['appName'], runId = self.report['runId'],start = self.report["startTimeStamp"], end = self.report["endTimeStamp"])
+        compResult = nfrObj.compareWithNFRs(appName = self.report['appName'], runId = self.report['runId'],start = self.report["startTimeStamp"], end = self.report["endTimeStamp"])
+        self.report['nfrs'] = compResult
+        print(compResult)
+        self.report['apdex'] = nfrObj.calculateApdex(compResult)
         self.influxdbObj.closeInfluxdbConnection()
