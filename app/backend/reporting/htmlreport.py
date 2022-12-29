@@ -1,4 +1,6 @@
-from app.backend.influxdb import influxdb, custom
+from app.backend.influxdb.main import influxdb
+from app.backend.influxdb import custom
+from app.backend.validation.validation import nfr
 from datetime import datetime
 from dateutil import tz
 import plotly
@@ -9,16 +11,20 @@ class htmlReport:
     def __init__(self, project, runId):
         self.project = project
         self.runId = runId
-        self.influxdbClient = influxdb.connectToInfluxDB(project)
-        self.queryApi = self.influxdbClient.query_api()
+        self.influxdbObj = influxdb(project)
+        self.queryApi = self.influxdbObj.connectToInfluxDB().query_api()
         self.report = {}
         self.report['runId'] = runId
         self.report['stats'] = {}
         self.report['graph'] = {}
         self.tmz = tz.tzlocal()
+        self.getStartTime()
+        self.getEndTime()
+        self.getAppName()
     
     def getStartTime(self):
         fluxTables = self.queryApi.query(custom.getStartTime(self.runId))
+        # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         for fluxTable in fluxTables:
             for fluxRecord in fluxTable:
                 self.report["startTimeStamp"] = datetime.strftime(fluxRecord['_time'],"%Y-%m-%dT%H:%M:%SZ")                   
@@ -26,6 +32,7 @@ class htmlReport:
 
     def getEndTime(self):
         fluxTables = self.queryApi.query(custom.getEndTime(self.runId))
+        # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         for fluxTable in fluxTables:
             for fluxRecord in fluxTable:
                 self.report["endTimeStamp"] = datetime.strftime(fluxRecord['_time'],"%Y-%m-%dT%H:%M:%SZ")                 
@@ -37,36 +44,42 @@ class htmlReport:
     
     def getMaxActiveUsers_stats(self):
         fluxTables = self.queryApi.query(custom.getMaxActiveUsers_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp']))
+        # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         for fluxTable in fluxTables:
             for fluxRecord in fluxTable:
                 self.report['stats']['maxActiveThreads'] = fluxRecord['_value']
     
     def getAverageRPS_stats(self):
         fluxTables = self.queryApi.query(custom.getAverageRPS_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp']))
+        # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         for fluxTable in fluxTables:
             for fluxRecord in fluxTable:
                 self.report['stats']['rps'] = round(fluxRecord['_value'], 2)
     
     def getErrorsPerc_stats(self):
         fluxTables = self.queryApi.query(custom.getErrorsPerc_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp']))
+        # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         for fluxTable in fluxTables:
             for fluxRecord in fluxTable:
                 self.report['stats']['errors'] = round(fluxRecord['_value'], 2)
     
     def getAvgResponseTime_stats(self):
         fluxTables = self.queryApi.query(custom.getAvgResponseTime_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp']))
+        # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         for fluxTable in fluxTables:
             for fluxRecord in fluxTable:
                 self.report['stats']['avgResponseTime'] = round(fluxRecord['_value'], 2)
     
     def get90ResponseTime_stats(self):
         fluxTables = self.queryApi.query(custom.get90ResponseTime_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp']))
+        # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         for fluxTable in fluxTables:
             for fluxRecord in fluxTable:
                 self.report['stats']['percentileResponseTime'] = round(fluxRecord['_value'], 2)
     
     def getAvgBandwidth_stats(self):
         fluxTables = self.queryApi.query(custom.getAvgBandwidth_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp']))
+        # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         for fluxTable in fluxTables:
             for fluxRecord in fluxTable:
                 self.report['stats']['avgBandwidth'] = round(fluxRecord['_value']/1048576, 2)
@@ -76,6 +89,7 @@ class htmlReport:
         for fluxTable in fluxTables:
             x_vals = []
             y_vals = []
+            # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
             for fluxRecord in fluxTable:
                 y_vals.append(fluxRecord["_value"])
                 x_vals.append(fluxRecord["_time"])
@@ -112,11 +126,15 @@ class htmlReport:
         fig.update_xaxes(gridcolor='#444444', color="white", title_text='Time')
 
         self.report['graph']['rps'] = json.loads(json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder))
+    
+    def getAppName(self):
+        fluxTables = self.queryApi.query(custom.getAppName(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp']))
+        for fluxTable in fluxTables:
+            for fluxRecord in fluxTable:
+                self.report['appName'] = fluxRecord['testName']
 
     
     def createReport(self):
-        self.getStartTime()
-        self.getEndTime()
         self.getDuration()
         self.getMaxActiveUsers_stats()
         self.getAverageRPS_stats()
@@ -126,4 +144,7 @@ class htmlReport:
         self.getAvgBandwidth_stats()
         self.getAvgResponseTime_graph()
         self.getRPS_graph()
-        influxdb.closeInfluxdbConnection(self.influxdbClient)
+        nfrObj = nfr(self.project)
+        self.report['nfrs'] = nfrObj.compareWithNFRs(appName = self.report['appName'], runId = self.report['runId'],start = self.report["startTimeStamp"], end = self.report["endTimeStamp"])
+        print(self.report['nfrs'] )
+        self.influxdbObj.closeInfluxdbConnection()

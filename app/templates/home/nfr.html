@@ -81,8 +81,8 @@
                                 '<select class="form-select-nfr aggregation-nfr-field">'+
                                     '<option value="avg" selected>avg</option>'+
                                     '<option value="median">median</option>'+
-                                    '<option value="90">90%-tile</option>'+
-                                    '<option value="95">95%-tile</option>'+
+                                    '<option value="90%-tile">90%-tile</option>'+
+                                    '<option value="95%-tile">95%-tile</option>'+
                                     '<option value="count">count</option>'+
                                     '<option value="sum">sum</option>'+
                                 '</select>'+
@@ -91,7 +91,7 @@
                                 '<select class="form-select-nfr operation-nfr-field" >'+
                                     '<option value=">" selected>></option>'+
                                     '<option value="<"><</option>'+
-                                    '<option value="=">=</option>'+
+                                    '<option value="==">==</option>'+
                                     '<option value="!=">!=</option>'+
                                     '<option value=">=">>=</option>'+
                                     '<option value="<="><=</option>'+
@@ -104,7 +104,7 @@
                                 '<input class="form-control-nfr weight-nfr-field" >'+
                             '</div>'+
                             '<div class="padding-10" style="display: flex;width: 5%;">'+
-                                '<button onclick="deleteNfrRow(this)" class="nfr-btn-red" style="align-self: flex-end;">Delete</a>'+
+                                '<button onclick="deleteNfrRow(this)" class="nfr-btn-red" style="align-self: flex-start;">Delete</a>'+
                             '</div>'+
                         '</div>'
             function addNfrRow() {
@@ -128,7 +128,7 @@
                     dict["metric"] = rows[i].querySelector('.metric-nfr-field').value
                     dict["aggregation"] = rows[i].querySelector('.aggregation-nfr-field').value
                     dict["operation"] = rows[i].querySelector('.operation-nfr-field').value
-                    dict["threshold"] = rows[i].querySelector('.threshold-nfr-field').value
+                    dict["threshold"] = parseInt(rows[i].querySelector('.threshold-nfr-field').value)
                     dict["weight"] = rows[i].querySelector('.weight-nfr-field').value
                     nfrs["rows"].push(dict)
                 }
@@ -187,8 +187,8 @@
                                     '<option value="'+nfrsJson["rows"][i]["aggregation"]+'" selected>'+nfrsJson["rows"][i]["aggregation"]+'</option>'+
                                     '<option value="avg">avg</option>'+
                                     '<option value="median">median</option>'+
-                                    '<option value="90">90%-tile</option>'+
-                                    '<option value="95">95%-tile</option>'+
+                                    '<option value="90%-tile">90%-tile</option>'+
+                                    '<option value="95%-tile">95%-tile</option>'+
                                     '<option value="count">count</option>'+
                                     '<option value="sum">sum</option>'+
                                 '</select>'+
@@ -198,7 +198,7 @@
                                     '<option value="'+nfrsJson["rows"][i]["operation"]+'" selected>'+nfrsJson["rows"][i]["operation"]+'</option>'+
                                     '<option value=">">></option>'+
                                     '<option value="<"><</option>'+
-                                    '<option value=">=">=</option>'+
+                                    '<option value="==">==</option>'+
                                     '<option value="!=">!=</option>'+
                                     '<option value=">=">>=</option>'+
                                     '<option value="<="><=</option>'+
@@ -211,7 +211,7 @@
                                 '<input value="'+nfrsJson["rows"][i]["weight"]+'"class="form-control-nfr weight-nfr-field" >'+
                             '</div>'+
                             '<div class="nfr-col-m padding-10" style="display: flex;width: 10%;">'+
-                                '<button onclick="deleteNfrRow(this)" class="nfr-btn-red" style="align-self: flex-end;">Delete</a>'+
+                                '<button onclick="deleteNfrRow(this)" class="nfr-btn-red" style="align-self: flex-start;">Delete</a>'+
                             '</div>'+
                         '</div>'
                         container.insertAdjacentHTML("beforeend", newRow);

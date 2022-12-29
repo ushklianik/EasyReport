@@ -1,7 +1,7 @@
 # Python modules
 import os, logging 
 from app.backend import tools
-from app.backend.influxdb import influxdb, custom
+from app.backend.influxdb.main import influxdb
 from app.backend.reporting.htmlreport import htmlReport
 from app.backend.validation.validation import nfr
 
@@ -386,7 +386,8 @@ def getProjects():
 def getTests():
     # Get current project
     project = request.cookies.get('project')  
-    tests = influxdb.getTestLog(project)
+
+    tests = influxdb(project).getTestLog()
     tests = tools.sortTests(tests)
 
     return render_template('home/tests.html', tests=tests)

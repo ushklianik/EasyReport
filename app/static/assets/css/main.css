@@ -138,7 +138,7 @@ img {
 
 .card-container-fl {
     flex: 1;
-    min-width: 16%;
+    min-width: 15%;
     margin-right: 5px;
     margin-left: 5px;
     background: rgb(47, 46, 46);

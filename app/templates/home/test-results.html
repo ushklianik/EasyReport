@@ -80,42 +80,15 @@
                             <div class="text-row-value">{{ report.endTime }}</div>
                         </li>
                     </ul>
-                    <div class="card-container-fl">
-                        <li class="text-row">
-                            <div class="nfr-msg">
-                                <img src="/static/assets/img/reports/bleu-lighning.png" height="30">
-                                <span>99th percentile of response time is less than 1500.0</span>
-                            </div>
-                            <div class="nfr-result">PASSED</div>
-                        </li>
-                        <li class="text-row">
-                            <div class="nfr-msg">
-                                <img src="/static/assets/img/reports/bleu-lighning.png" height="30">
-                                <span>95th percentile of response time is less than 1200.0</span>
-                            </div>
-                            <div class="nfr-result">PASSED</div>
-                        </li>
-                        <li class="text-row">
-                            <div class="nfr-msg">
-                                <img src="/static/assets/img/reports/bleu-lighning.png" height="30">
-                                <span>percentage of failed requests is less than 5.0</span>
-                            </div>
-                            <div class="nfr-result">PASSED</div>
-                        </li>
-                        <li class="text-row">
-                            <div class="nfr-msg">
-                                <img src="/static/assets/img/reports/bleu-lighning.png" height="30">
-                                <span>percentage of failed requests is less than 10.0</span>
-                            </div>
-                            <div class="nfr-result">PASSED</div>
-                        </li>
-                        <li class="text-row">
-                            <div class="nfr-msg">
-                                <img src="/static/assets/img/reports/red-lighning.png" height="30">
-                                <span>percentage of failed requests is less than 15.0</span>
-                            </div>
-                            <div class="nfr-result">FAILED</div>
-                        </li>
+                    <div class="card-container-fl" style="min-width: 650px;">
+                        {% for nfr in report.nfrs %}
+                            <li class="text-row">
+                                <div class="nfr-msg">
+                                    <span>{{ nfr.name }}</span>
+                                </div>
+                                <div class="nfr-result">{{ nfr.result }}</div>
+                            </li>
+                        {% endfor %} 
                     </div>
                     <div class="card-container-fx">
                         <div id="apdex-block">
@@ -177,6 +150,20 @@
                     
                 chart.draw(data, options);
             
+            }
+        </script>
+        <script>
+            passed = '<img src="/static/assets/img/reports/bleu-lighning.png" height="30">'
+            failed = '<img src="/static/assets/img/reports/red-lighning.png" height="30">'
+            nfrs = document.getElementsByClassName("nfr-result");
+            if (nfrs.length != 0){
+                for(var i = 0; i < nfrs.length; i++) {
+                    if (nfrs[i].textContent == "PASSED"){
+                        nfrs[i].parentElement.querySelector('.nfr-msg').insertAdjacentHTML("afterbegin", passed);
+                    }else{
+                        nfrs[i].parentElement.querySelector('.nfr-msg').insertAdjacentHTML("afterbegin", failed);
+                    }
+                }
             }
         </script>
 
