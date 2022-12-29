@@ -5,29 +5,18 @@
 <link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/nfrs.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
     <main>
         {% include 'includes/preloader2.html' %}
         <div class="main-background">
             {% include 'includes/sidebar.html' %}
-            <div class="main-body align-items-center justify-content-center">
-                <div class="section section-sm pb-0 mb-n4">
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <h3 class="text-center">New report</h3>
-                        </div>
-                        <span class="font-weight-normal d-flex align-items-center justify-content-center">
-                            {% if msg %}
-                                {{ msg | safe }}
-                            {% else %}
-                                Add your report configuration
-                            {% endif %}   
-                        </span>
-                    </div>
+            <div class="main-body">
+                <div class="main-body-header">
+                    <a>New report config</a>
                 </div>
-                <!-- Section -->
-                <div class="section section-md pt-4">
+                <div class="full-screen-section">
                     <div class="container">
                         <form method="POST" action="/report">
                             {{ form.hidden_tag() }}
@@ -35,7 +24,7 @@
                                 <!-- Form -->
                                 <div class="mb-4">
                                     <label for="reportName">Report name</label>
-                                    {{ form.reportName(class="form-control") }}
+                                    {{ form.reportName(class="form-control-nfr") }}
                                 </div>
                                 <!-- End of Form -->
                             </div>
@@ -44,7 +33,7 @@
                                     <!-- Form -->
                                     <div class="mb-4">
                                         <label for="influxdbName">Influxdb name</label>
-                                        {{ form.influxdbName(class="form-control") }}
+                                        {{ form.influxdbName(class="form-select-nfr") }}
                                     </div>
                                     <!-- End of Form -->
                                 </div>
@@ -52,7 +41,7 @@
                                     <!-- Form -->
                                     <div class="mb-4">
                                         <label for="grafanaName">Grafana name</label>
-                                        {{ form.grafanaName(class="form-control") }}
+                                        {{ form.grafanaName(class="form-select-nfr") }}
                                     </div>
                                     <!-- End of Form -->
                                 </div>
@@ -60,7 +49,7 @@
                                     <!-- Form -->
                                     <div class="mb-4">
                                         <label for="azureName">Azure name</label>
-                                        {{ form.azureName(class="form-control") }}
+                                        {{ form.azureName(class="form-select-nfr") }}
                                     </div>
                                     <!-- End of Form -->
                                 </div>
