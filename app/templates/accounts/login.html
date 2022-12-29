@@ -2,9 +2,9 @@
 {% block title %} Sign IN {% endblock %} 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-<link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/login.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
     <main>
@@ -12,40 +12,35 @@
         <div class="main-background flex-center-center">
             <div class="signin-inner">
                 <h1>Easy Reporter</h1>
-                <h4 class="m-4">Login</h4>
+                <br />
+                <h2>Login</h2>
+                <br />
                 <form method="post">
                     {{ form.hidden_tag() }}
-                    <!-- Form -->
-                    <div class="form-group mb-3">
-                        <label for="email">Username</label>
-                        <div class="input-group">
-                            <span class="input-group-text" id="basic-addon1"><span class="fas fa-user"></span></span>
-                            {{ form.username(class="form-control") }}
-                        </div>  
+                    <h4>Username</h4>
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">
+                            <span class="fas fa-user"></span>
+                        </span>
+                        {{ form.username(class="form-control") }}
                     </div>
-                    <!-- End of Form -->
-                    <div class="form-group">
-                        <!-- Form -->
-                        <div class="form-group mb-3">
-                            <label for="password">Password</label>
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon2"><span class="fas fa-unlock-alt"></span></span>
-                                {{ form.password(class="form-control", type="password") }}
-                            </div>  
-                        </div>
-                        <!-- End of Form -->
+                    <br />
+                    <h4>Password</h4>
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon2">
+                            <span class="fas fa-unlock-alt"></span>
+                        </span>
+                        {{ form.password(class="form-control", type="password") }}
                     </div>
-                    <div class="d-grid mt-md">
-                        <button type="submit" name="login" class="btn btn-success">Sign in</button>
+                    <br />
+                    <div class="d-grid">
+                        <button type="submit" name="login" class="btn-success">Sign in</button>
                     </div>
-                    <div class="mt-4">
-                      <div><a href="{{ url_for('register') }}">Register</a></div>
-                    </div>
+                    <br />
+                    <a href="{{ url_for('register') }}">Register</a>
                 </form>
                 <br />
-                  <span class="fw-normal">
-                      &copy; Coded by ushklianik & svetoshkin
-                  </span>
+                <h4>&copy; Coded by ushklianik & svetoshkin</h4>
             </div>
         </div>
     </main>
