@@ -146,5 +146,4 @@ class htmlReport:
         self.getRPS_graph()
         nfrObj = nfr(self.project)
         self.report['nfrs'] = nfrObj.compareWithNFRs(appName = self.report['appName'], runId = self.report['runId'],start = self.report["startTimeStamp"], end = self.report["endTimeStamp"])
-        print(self.report['nfrs'] )
         self.influxdbObj.closeInfluxdbConnection()

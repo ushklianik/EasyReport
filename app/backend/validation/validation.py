@@ -171,30 +171,33 @@ class nfr:
         nfrs = self.getNFR(appName)
         # Create INfluxdb connection
         influxdbObj = influxdb(self.project)
-        # Iterates through NFRs
-        for nfr in nfrs["rows"]:
-            # Generate flux query to get test data based on NFR definition
-            query = self.generateFluxQuery(appName, runId, start, end, nfr)
-            
-            # Get test data to compare with NFR
-            results = influxdbObj.sendQuery(query)
+        if "status" in nfrs:
+            return nfrs            
+        else:
+            # Iterates through NFRs
+            for nfr in nfrs["rows"]:
+                # Generate flux query to get test data based on NFR definition
+                query = self.generateFluxQuery(appName, runId, start, end, nfr)
+                
+                # Get test data to compare with NFR
+                results = influxdbObj.sendQuery(query)
 
-            # If influxdb query returns 0 rows
-            if len(results) == 0:
-                compResult.append({"name": nfr['name'], "result": "no data"})
-            # If influxdb query returns 1 row
-            elif len(results) == 1:
-                compResult.append({"name": nfr['name'], "result": self.compareValue(results[0]['_value'], nfr['operation'], nfr['threshold'])})
-            # If influxdb query returns more than 1 rows
-            elif len(results) > 1:
-                status = "PASSED"
-                # If onw request doesn't meet treashold the whole nfr will be failed
-                for result in results:
-                    a = self.compareValue(result['_value'], nfr['operation'], nfr['threshold'])
-                    if a == "FAILED":
-                        status = "FAILED"
-                        break
-                compResult.append({"name": nfr['name'], "result": status})
+                # If influxdb query returns 0 rows
+                if len(results) == 0:
+                    compResult.append({"name": nfr['name'], "result": "no data"})
+                # If influxdb query returns 1 row
+                elif len(results) == 1:
+                    compResult.append({"name": nfr['name'], "result": self.compareValue(results[0]['_value'], nfr['operation'], nfr['threshold'])})
+                # If influxdb query returns more than 1 rows
+                elif len(results) > 1:
+                    status = "PASSED"
+                    # If onw request doesn't meet treashold the whole nfr will be failed
+                    for result in results:
+                        a = self.compareValue(result['_value'], nfr['operation'], nfr['threshold'])
+                        if a == "FAILED":
+                            status = "FAILED"
+                            break
+                    compResult.append({"name": nfr['name'], "result": status})
         return compResult
 
 

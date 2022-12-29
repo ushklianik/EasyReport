@@ -6,83 +6,10 @@
                 "scope": "all",
                 "metric": "response-time",
                 "aggregation": "avg",
-                "operation": "<",
-                "threshold": "1000",
-                "weight": ""
-            },
-            {
-                "scope": "each",
-                "metric": "response-time",
-                "aggregation": "avg",
-                "operation": "<",
-                "threshold": "1200",
-                "weight": ""
-            },
-            {
-                "scope": "R_01_02-200",
-                "metric": "rps",
-                "aggregation": "avg",
-                "operation": ">=",
-                "threshold": "100",
-                "weight": ""
-            }
-        ]
-    },
-    {
-        "appName": "demoapp2",
-        "rows": [
-            {
-                "scope": "all",
-                "metric": "response-time",
-                "aggregation": "avg",
-                "operation": "<",
-                "threshold": "1000",
-                "weight": ""
-            },
-            {
-                "scope": "each",
-                "metric": "response-time",
-                "aggregation": "avg",
-                "operation": "<",
-                "threshold": "1200",
-                "weight": ""
-            },
-            {
-                "scope": "R_01_02-200",
-                "metric": "rps",
-                "aggregation": "avg",
-                "operation": ">=",
-                "threshold": "100",
-                "weight": ""
-            }
-        ]
-    },
-    {
-        "appName": "demoapp3",
-        "rows": [
-            {
-                "scope": "all",
-                "metric": "response-time",
-                "aggregation": "avg",
-                "operation": "<",
-                "threshold": "1000",
-                "weight": ""
-            },
-            {
-                "scope": "each",
-                "metric": "response-time",
-                "aggregation": "avg",
-                "operation": "<",
-                "threshold": "1200",
-                "weight": ""
-            },
-            {
-                "scope": "R_01_02-200",
-                "metric": "rps",
-                "aggregation": "avg",
-                "operation": ">=",
-                "threshold": "100",
-                "weight": ""
+                "operation": ">",
+                "threshold": 33,
+                "weight": "",
+                "name": "Avg response-time for all requests is greater than 33"
             }
         ]
     }

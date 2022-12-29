@@ -153,10 +153,19 @@
             }
         </script>
         <script>
-            passed = '<img src="/static/assets/img/reports/bleu-lighning.png" height="30">'
-            failed = '<img src="/static/assets/img/reports/red-lighning.png" height="30">'
-            nfrs = document.getElementsByClassName("nfr-result");
-            if (nfrs.length != 0){
+            var passed = '<img src="/static/assets/img/reports/bleu-lighning.png" height="30">'
+            var failed = '<img src="/static/assets/img/reports/red-lighning.png" height="30">'
+            var nfrs = document.getElementsByClassName("nfr-result");
+            var nfrsJson = JSON.parse('{{ report.nfrs | tojson }}');
+            if(nfrsJson["status"] != null){
+                var elem;
+                for(var i = 0; i < nfrs.length; i++) {
+                    elem = nfrs[i].parentElement;
+                    elem.querySelector('.nfr-msg').remove();
+                }
+                elem.insertAdjacentHTML('afterbegin', '<div class="nfr-msg"><span>NO NFRS</span></div>');
+            }
+            else if (nfrs.length != 0){
                 for(var i = 0; i < nfrs.length; i++) {
                     if (nfrs[i].textContent == "PASSED"){
                         nfrs[i].parentElement.querySelector('.nfr-msg').insertAdjacentHTML("afterbegin", passed);
