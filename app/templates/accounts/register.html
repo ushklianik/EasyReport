@@ -4,11 +4,12 @@
 {% block stylesheets %}
 <link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
     <main>
         <!-- Section -->
-        <div class="main-background align-items-center justify-content-center">
+        <div class="main-background flex-center-center">
             <div class="signin-inner">
                 <h1>Easy Reporter</h1>
                 <h4 class="m-4">Register</h4>
@@ -45,7 +46,7 @@
                         <button type="submit" name="register" class="btn btn-warning">Sign UP</button>
                     </div>
                     <div class="mt-4">
-                      <div><a href="{{ url_for('login') }}">Login</a></div>
+                    <div><a href="{{ url_for('login') }}">Login</a></div>
                     </div>
                 </form>
                 <br />
