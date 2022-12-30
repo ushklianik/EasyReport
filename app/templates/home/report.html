@@ -6,6 +6,7 @@
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/nfrs.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/report.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
     <main>
@@ -17,7 +18,10 @@
                     <a>New report config</a>
                 </div>
                 <div class="full-screen-section">
-                    <div class="container">
+                    <div class="card-container-fx">
+                        <span class="circle-with-number">1</span>
+                    </div>
+                    <div>
                         <form method="POST" action="/report">
                             {{ form.hidden_tag() }}
                             <div class="col-lg-4 col-sm-6">

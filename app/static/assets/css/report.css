@@ -225,3 +225,18 @@ textarea {
   font-size: 12pt;
   color: #cdcdcd;
 }
+
+/* report config page */
+
+.circle-with-number {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 32px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    background-color: rgb(17, 18, 23);
+    font-size: 18px;
+    margin-right: 16px;
+}
