@@ -236,7 +236,86 @@ textarea {
     border-radius: 32px;
     text-align: center;
     color: rgb(255, 255, 255);
-    background-color: rgb(17, 18, 23);
+    background-color: #1d58a5;
     font-size: 18px;
     margin-right: 16px;
+}
+
+.col-4 {
+    display: flex;
+    flex: 0 0 auto;
+    width: 25%; 
+}
+
+.input-search-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    width: 100%;
+    border-radius: 1rem;
+    transition: all 0.2s ease;
+}
+
+.input-search-group > .form-control, .input-search-group > .form-select {
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+}
+
+.input-search-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu), .input-search-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n + 3) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-search-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    margin-left: -0.0625rem;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.d-none {
+    display: none !important;
+}
+
+.input-form-select {
+    width: 100%;
+    padding: 0.55rem 1rem 0.55rem 0.75rem;
+    color: #ffffff;
+    background-color: #383838;
+    appearance: none;
+}
+
+.metric-group {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    color: #cfcfcf;
+    background-color: #383838;
+    width: 350px;
+    border-radius: 1rem;
+    margin-bottom: 10px;
+}
+
+.metric-element {
+    width: 100%;
+    padding: 0.75rem 0.75rem;
+    line-height: 0;
+    text-align: center;
+    color: #cfcfcf;
+    background-color: #383838;
+    border: 0rem;
+}
+
+.metric-btn-close {
+    box-sizing: content-box;
+    width: 0.75em;
+    height: 0.75em;
+    padding: 0.25em 0.25em;
+    color: #171f38;
+    background: transparent url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23171f38'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e) center/0.75em auto no-repeat;
+    border: 0;
+    border-radius: 1rem;
+    opacity: 0.5;
 }

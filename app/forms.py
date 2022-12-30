@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 from flask_wtf          import FlaskForm
 from flask_wtf.file     import FileField, FileRequired
-from wtforms            import StringField, PasswordField, SelectMultipleField, FieldList, BooleanField
+from wtforms            import StringField, PasswordField, FieldList, BooleanField, SelectField
 from wtforms.validators import InputRequired, Email, DataRequired
 
 class LoginForm(FlaskForm):
@@ -53,9 +53,9 @@ class azureForm(FlaskForm):
 class reportForm(FlaskForm):
 	reportName            = StringField         (u'Name'             , validators=[DataRequired()])
 	metrics               = FieldList           (StringField()                                    )
-	influxdbName          = SelectMultipleField (u'Influxdb config'  , validators=[DataRequired()])
-	grafanaName           = SelectMultipleField (u'Grafana config'   , validators=[DataRequired()])
-	azureName             = SelectMultipleField (u'Azure config'     , validators=[DataRequired()])
+	influxdbName          = SelectField         (u'Influxdb config'  , validators=[DataRequired()])
+	grafanaName           = SelectField         (u'Grafana config'   , validators=[DataRequired()])
+	azureName             = SelectField         (u'Azure config'     , validators=[DataRequired()])
 
 class metricForm(FlaskForm):
 	viewPanel             = StringField         (u'View panel id'    , validators=[DataRequired()])
