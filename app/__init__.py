@@ -1,7 +1,3 @@
-# -*- encoding: utf-8 -*-
-"""
-Copyright (c) 2019 - present AppSeed.us
-"""
 import os
 import logging
 
@@ -33,5 +29,9 @@ def initialize_database():
     db.create_all()
 
 # Import routing, models and Start the App
-from app import views, models
+from app import models
+from app.views import reports
+from app.views import auth
+from app.views import integrations
+from app.views import nfrs
 
