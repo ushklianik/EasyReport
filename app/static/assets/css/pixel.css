@@ -2709,60 +2709,6 @@ textarea.form-control-lg {
 .form-check-inline .form-check-input ~ .invalid-feedback {
   margin-left: .5em; }
 
-.btn-sidebar {
-  display: inline-block;
-  width: 8.5rem;
-  font-weight: 600;
-  line-height: 1.5;
-  color: #1F2937;
-  text-align: left;
-  vertical-align: middle;
-  cursor: pointer;
-  -webkit-user-select: none;
-          user-select: none;
-  background-color: transparent;
-  border: 0.0625rem solid transparent;
-  padding: 0.55rem 0.75rem;
-  font-size: 1rem;
-  border-radius: 1rem;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
-
-.btn-sidebar-small {
-  display: inline-block;
-  width: 6.5rem;
-  font-weight: 600;
-  line-height: 1.5;
-  color: #1F2937;
-  text-align: left;
-  vertical-align: middle;
-  cursor: pointer;
-  -webkit-user-select: none;
-          user-select: none;
-  background-color: transparent;
-  border: 0.0625rem solid transparent;
-  padding: 0.55rem 0.75rem;
-  font-size: 1rem;
-  border-radius: 1rem;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
-
-  .btn-sidebar-dropdown {
-    display: inline-block;
-    width: 2rem;
-    font-weight: 600;
-    line-height: 1.5;
-    color: #1F2937;
-    text-align: center;
-    vertical-align: middle;
-    cursor: pointer;
-    -webkit-user-select: none;
-            user-select: none;
-    background-color: transparent;
-    border: 0.0625rem solid transparent;
-    padding: 0.55rem 0.75rem;
-    font-size: 1rem;
-    border-radius: 1rem;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
-
 .btn {
   display: inline-block;
   font-weight: 600;
@@ -3949,27 +3895,6 @@ textarea.form-control-lg {
   .dropdown-toggle:empty::after {
     margin-left: 0; }
 
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  z-index: 1000;
-  display: none;
-  min-width: 10rem;
-  padding: 0.5rem 0;
-  margin: 0;
-  font-size: 1rem;
-  color: #1F2937;
-  text-align: left;
-  list-style: none;
-  background-color: #212529 !important;
-  background-clip: padding-box;
-  border: 0.0625rem solid #E5E7EB;
-  border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; }
-  .dropdown-menu[data-bs-popper] {
-    left: 0;
-    margin-top: 0.125rem; }
-
 .dropdown-menu-start {
   --bs-position: start; }
   .dropdown-menu-start[data-bs-popper] {
@@ -4123,32 +4048,6 @@ textarea.form-control-lg {
   margin: 0.5rem 0;
   overflow: hidden;
   border-top: 1px solid #F3F4F6; }
-
-.dropdown-item {
-  display: block;
-  width: 100%;
-  padding: 0.25rem 1rem;
-  clear: both;
-  font-weight: 400;
-  color: #1F2937;
-  text-align: inherit;
-  white-space: nowrap;
-  background-color: transparent;
-  border: 0; }
-  .dropdown-item:hover, .dropdown-item:focus {
-    color: #161d27;
-    background-color: #F3F4F6; }
-  .dropdown-item.active, .dropdown-item:active {
-    color: #1F2937;
-    text-decoration: none;
-    background-color: #D1D5DB; }
-  .dropdown-item.disabled, .dropdown-item:disabled {
-    color: #6B7280;
-    pointer-events: none;
-    background-color: transparent; }
-
-.dropdown-menu.show {
-  display: block; }
 
 .dropdown-header {
   display: block;
