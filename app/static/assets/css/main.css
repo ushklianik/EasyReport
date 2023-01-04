@@ -141,7 +141,7 @@ img {
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    margin: 15px;
+    margin: 15px 15px 0 15px;
 }
 
 .card-container-fl {
