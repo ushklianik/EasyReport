@@ -1,5 +1,5 @@
 from influxdb_client import InfluxDBClient
-from app.backend import tools
+from app.backend import pkg
 from app.backend.influxdb import custom
 import logging
 
@@ -11,11 +11,9 @@ class influxdb:
 
     def connectToInfluxDB(self):
         try:
-            path  = tools.getDefaultInfluxdb(self.project)
-            url   = tools.getValueFromYaml(path, "influxdbUrl")
-            org   = tools.getValueFromYaml(path, "influxdbOrg")
-            token = tools.getValueFromYaml(path, "influxdbToken")
-            influxdbClient = InfluxDBClient(url=url, org=org, token=token)
+            configName   = pkg.getDefaultInfluxdb(self.project)
+            influxdbConf = pkg.getInfluxdbConfigValues(self.project, configName)
+            influxdbClient = InfluxDBClient(url=influxdbConf["influxdbUrl"], org=influxdbConf["influxdbOrg"], token=influxdbConf["influxdbToken"])
             return influxdbClient
         except Exception as er:
             logging.warning('ERROR: connection to influxdb failed')

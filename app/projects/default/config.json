@@ -1,0 +1,73 @@
+{
+    "integrations": {
+        "grafana": [
+            {
+                "name": "grafana",
+                "grafanaServer": "serv",
+                "grafanaToken": "scdscsdc",
+                "grafanaDashboard": "dash",
+                "grafanaOrgId": "dcscsdc",
+                "grafanaDashRenderPath": "decsc",
+                "grafanaDashRenderCompPath": "dcsc"
+            },
+            {
+                "name": "grafana2",
+                "grafanaServer": "serv",
+                "grafanaToken": "scdscsdc",
+                "grafanaDashboard": "dash",
+                "grafanaOrgId": "dcscsdc",
+                "grafanaDashRenderPath": "decsc",
+                "grafanaDashRenderCompPath": "dcsc"
+            }
+        ],
+        "influxdb": [
+            {
+                "name": "influxdb",
+                "influxdbUrl": "http://localhost:8086",
+                "influxdbOrg": "ORG",
+                "influxdbToken": "w2sXp3SMwBFirht6HvGQRTh6L7kh1Y6tPknGibNuHYmVKuWvbELIrXiGMNaFKfSLHLAZjBpvF9YUdiekx2dk1A==",
+                "influxdbTimeout": 60000,
+                "influxdbBucket": "jmeter",
+                "influxdbMeasurement": "requestsRaw",
+                "influxdbField": "responseTime",
+                "influxdbTestIdTag": "runId",
+                "isDefault": "y"
+            }
+        ],
+        "azure": [
+            {
+                "name": "azure",
+                "azurePersonalAccessToken": "7fesk3s5ddj4dscsdcl62ivr37gdt75j45gbzzysoukvmaaxjlu2bc7usa",
+                "azureWikiOrganizationUrl": "https://pmiorg.visualstudio.com",
+                "azureWikiProject": "Digital%20Assets",
+                "azureWikiIdentifier": "Digital-Assets.wiki",
+                "azureWikiPath": "/Sitecore 9 Azure Migration/Performance Metrics/Azure Candidate/Candidate jMeter Tests/Results",
+                "azureAppInsighsLogsServer": "https://api.applicationinsights.io",
+                "azureAppInsighsAppId": "1e2b2cf1-a13dcscdsc3-4204-a6b3-351571d5a84a",
+                "azureAppInsighsApiKey": "csdcsdcsdcsdc"
+            }
+        ]
+    },
+    "reportConfigs": [
+        {
+            "name": "a",
+            "influxdbName": "influxdb",
+            "grafanaName": "grafana2",
+            "azureName": "azure",
+            "metrics-1": "avg",
+            "metrics-2": "90%-tile",
+            "metrics-0": "90%-tile"
+        }
+    ],
+    "metrics": [
+        {
+            "name": "avg"
+        },
+        {
+            "name": "median"
+        },
+        {
+            "name": "90%-tile"
+        }
+    ]
+}

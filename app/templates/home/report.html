@@ -18,7 +18,7 @@
                     <a>New report config</a>
                 </div>
                 <div class="marging-10">
-                    <form method="POST" action="/report2">
+                    <form method="POST" action="/report">
                         {{ form.hidden_tag() }}
                         <div class="full-screen-section">
                             <div class="col-4">
@@ -26,8 +26,8 @@
                                     <span class="circle-with-number">1</span>
                                 </div>
                                 <div>
-                                    <label for="reportName">Report name</label>
-                                    {{ form.reportName(class="form-control-nfr", style="width:250px") }}
+                                    <label for="name">Report name</label>
+                                    {{ form.name(class="form-control-nfr", style="width:250px") }}
                                 </div>
                             </div>
                             <div class="col-4">
@@ -91,9 +91,10 @@
                             <div style="width:60%;display:flex;justify-content: center;">
                                 <div id='wrapper' class='wrapper'> 
                                     {% for metric in form.metrics %}
-                                        <div class="fade show toast-header mb-2" aria-atomic="true">
-                                            <button type="button" class="btn-close-right btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                                            {{ metric(class="form-control-metric") }}
+                                        <div class="metric-group" aria-atomic="true">
+                                            <button class="btn-close-id btn-close"></button>
+                                            <!-- <input class="metric-element" id="metrics-0" name="metrics-0" type="text" value="avg"> -->
+                                            {{ metric(class="metric-element") }}
                                         </div>
                                     {% endfor %}
                                 </div>
@@ -179,6 +180,12 @@
                             this.parentElement.remove();
                         }
                     }
+                }
+            }
+            var closeBtn = document.getElementsByClassName('btn-close-id');
+            for(var i = 0; i < closeBtn.length; i++){
+                closeBtn[i].onclick = function(){
+                    this.parentElement.remove();
                 }
             }
         </script>

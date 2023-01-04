@@ -22,8 +22,8 @@
                     <form method="POST" action="/influxdb">
                         {{ form.hidden_tag() }}
                         <div class="center-section width-500">
-                            <label for="influxdbName">Name</label>
-                            {{ form.influxdbName(class="form-control") }}
+                            <label for="name">Name</label>
+                            {{ form.name(class="form-control") }}
                             <label for="influxdbUrl">Url</label>
                             {{ form.influxdbUrl(class="form-control") }}
                             <label for="influxdbOrg">Org</label>
@@ -47,7 +47,7 @@
                             {{ form.isDefault }}
                             <button class="btn-primary" type="submit">Save</button>
                             {% if influxdbConfig %}
-                                <button href="/delete/influxdb?influxdbConfig={{ influxdbConfig }}" class="btn-secondary">Delete</button>
+                                <a href="/delete/influxdb?influxdbConfig={{ influxdbConfig }}" class="btn-secondary">Delete</a>
                             {% endif %}
                         </div>
                     </form>

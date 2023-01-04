@@ -19,7 +19,7 @@ class RegisterForm(FlaskForm):
 	email         = StringField  (u'Email'     , validators=[DataRequired(), Email()])
 
 class InfluxDBForm(FlaskForm):
-	influxdbName         = StringField  (u'Name'         , validators=[DataRequired()])
+	name                 = StringField  (u'Name'         , validators=[DataRequired()])
 	influxdbUrl          = StringField  (u'Url'          , validators=[DataRequired()])
 	influxdbOrg          = StringField  (u'Org'          , validators=[DataRequired()])
 	influxdbToken        = StringField  (u'Token'        , validators=[DataRequired()])
@@ -31,7 +31,7 @@ class InfluxDBForm(FlaskForm):
 	isDefault            = BooleanField()
 
 class grafanaForm(FlaskForm):
-	grafanaName                = StringField  (u'Name'             , validators=[DataRequired()])
+	name                       = StringField  (u'Name'             , validators=[DataRequired()])
 	grafanaServer              = StringField  (u'Server'           , validators=[DataRequired()])
 	grafanaToken               = StringField  (u'Token'            , validators=[DataRequired()])
 	grafanaDashboard           = StringField  (u'Dashboard'        , validators=[DataRequired()])
@@ -40,7 +40,7 @@ class grafanaForm(FlaskForm):
 	grafanaDashRenderCompPath  = StringField  (u'Render path comp' , validators=[DataRequired()])
 
 class azureForm(FlaskForm):
-	azureName             = StringField  (u'Name'                    , validators=[DataRequired()])
+	name                  = StringField  (u'Name'                    , validators=[DataRequired()])
 	personalAccessToken   = StringField  (u'Personal Access Token'   , validators=[DataRequired()])
 	wikiOrganizationUrl   = StringField  (u'Wiki Organization Url'   , validators=[DataRequired()])
 	wikiProject           = StringField  (u'Wiki Project'            , validators=[DataRequired()])
@@ -50,8 +50,8 @@ class azureForm(FlaskForm):
 	appInsighsAppId       = StringField  (u'App Insighs App Id'      , validators=[DataRequired()])
 	appInsighsApiKey      = StringField  (u'App Insighs Api Key'     , validators=[DataRequired()])
 
-class reportForm(FlaskForm):
-	reportName            = StringField         (u'Name'             , validators=[DataRequired()])
+class reportConfigForm(FlaskForm):
+	name                  = StringField         (u'Name'             , validators=[DataRequired()])
 	metrics               = FieldList           (StringField()                                    )
 	influxdbName          = SelectField         (u'Influxdb config'  , validators=[DataRequired()])
 	grafanaName           = SelectField         (u'Grafana config'   , validators=[DataRequired()])

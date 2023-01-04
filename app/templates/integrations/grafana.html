@@ -22,8 +22,8 @@
                     <form method="POST" action="/grafana">
                         {{ form.hidden_tag() }}
                         <div class="center-section width-500">
-                            <label for="grafanaName">Name</label>
-                            {{ form.grafanaName(class="form-control") }}
+                            <label for="name">Name</label>
+                            {{ form.name(class="form-control") }}
                             <label for="grafanaServer">Grafana server</label>
                             {{ form.grafanaServer(class="form-control") }}
                             <label for="grafanaOrgId">Grafana org ID</label>
@@ -41,7 +41,7 @@
                             {{ form.grafanaDashRenderCompPath(class="form-control") }}
                             <button class="btn-primary" type="submit">Save</button>
                             {% if grafanaConfig %}
-                                <button href="/delete/grafana?grafanaConfig={{ grafanaConfig }}" class="btn-secondary">Delete</button>
+                                <a href="/delete/grafana?grafanaConfig={{ grafanaConfig }}" class="btn-secondary">Delete</a>
                             {% endif %}
                         </div>
                     </form>

@@ -1,7 +1,7 @@
 # Python modules
-from app.backend import tools
+from app.backend import pkg
 from app.backend.influxdb.main import influxdb
-from app.backend.reporting.htmlreport import htmlReport
+from app.backend.reporting.html.htmlreport import htmlReport
 
 # Flask modules
 from flask                   import render_template, request, url_for, redirect
@@ -9,7 +9,7 @@ from flask_login             import current_user
 
 # App modules
 from app         import app
-from app.forms   import reportForm, metricForm
+from app.forms   import reportConfigForm, metricForm
 
 
 @app.route('/report', methods=['GET', 'POST'])
@@ -22,7 +22,7 @@ def report():
     # Get current project
     project = request.cookies.get('project')  
 
-    metrics = tools.getMetrics(project)
+    metrics = pkg.getMetrics(project)
 
     # Flask message injected into the page, in case of any errors
     msg = None
@@ -31,21 +31,25 @@ def report():
     formForMerics = metricForm(request.form)
 
     # Declare the Influxdb form
-    form = reportForm(request.form)
-    form.influxdbName.choices = tools.getInfluxdbConfigs(project)
-    form.grafanaName.choices  = tools.getGrafanaConfigs(project)
-    form.azureName.choices    = tools.getAzureConfigs(project)
+    form = reportConfigForm(request.form)
+    form.influxdbName.choices = pkg.getInfluxdbConfigs(project)
+    form.grafanaName.choices  = pkg.getGrafanaConfigs(project)
+    form.azureName.choices    = pkg.getAzureConfigs(project)
     
     if form.validate_on_submit():
-        msg = tools.saveReport(project, request.form.to_dict())
+        msg = pkg.saveReportConfig(project, request.form.to_dict())
     
     # get grafana parameter if provided
     reportConfig = None
     reportConfig = request.args.get('reportConfig')
 
     if reportConfig != None:
-        output = tools.getReportConfigValues(project, reportConfig)
-        form = reportForm(output)
+        output = pkg.getReportConfigValuesInDict(project, reportConfig)
+        print(output)
+        form = reportConfigForm(output)
+        form.influxdbName.choices = pkg.getInfluxdbConfigs(project)
+        form.grafanaName.choices  = pkg.getGrafanaConfigs(project)
+        form.azureName.choices    = pkg.getAzureConfigs(project)
 
     return render_template('home/report.html', form = form, reportConfig = reportConfig, metrics = metrics, msg = msg, formForMerics = formForMerics)
 
@@ -64,7 +68,7 @@ def deleteReportConfig():
     project = request.cookies.get('project')  
 
     if reportConfig != None:
-        tools.deleteReport(project, reportConfig)
+        pkg.deleteConfig(project, reportConfig)
 
     return redirect(url_for('integrations'))
 
@@ -78,7 +82,7 @@ def allReports():
     # Get current project
     project = request.cookies.get('project')  
 
-    reports = tools.getReports(project)
+    reports = pkg.getReportConfigs(project)
     return render_template('home/all-reports.html', reports = reports)
 
 
@@ -99,7 +103,7 @@ def newMetric():
         fileName       = request.form.get("fileName")
         width          = request.form.get("width")
         height         = request.form.get("height")
-        msg = tools.saveMetric(project, viewPanel, dashId, fileName, width, height)
+        msg = pkg.saveMetric(project, viewPanel, dashId, fileName, width, height)
 
     return render_template('home/all-reports.html')
 
@@ -129,7 +133,7 @@ def getProjects():
         return redirect(url_for('login'))
 
     # Get all projects
-    projects = tools.getProjects()
+    projects = pkg.getProjects()
     return {'projects': projects}
 
 @app.route('/tests', methods=['GET'])
@@ -143,7 +147,7 @@ def getTests():
     project = request.cookies.get('project')  
 
     tests = influxdb(project).getTestLog()
-    tests = tools.sortTests(tests)
+    tests = pkg.sortTests(tests)
 
     return render_template('home/tests.html', tests=tests)
 

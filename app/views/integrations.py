@@ -7,7 +7,7 @@ from flask_login             import current_user
 # App modules
 from app         import app
 from app.forms   import InfluxDBForm, grafanaForm, azureForm
-from app.backend import tools
+from app.backend import pkg
 
 
 @app.route('/integrations')
@@ -21,9 +21,9 @@ def integrations():
     project = request.cookies.get('project')  
 
     # Get integrations configs
-    influxdbConfigs = tools.getInfluxdbConfigs(project)
-    grafanaConfigs  = tools.getGrafanaConfigs(project)
-    azureConfigs    = tools.getAzureConfigs(project)
+    influxdbConfigs = pkg.getInfluxdbConfigs(project)
+    grafanaConfigs  = pkg.getGrafanaConfigs(project)
+    azureConfigs    = pkg.getAzureConfigs(project)
 
     return render_template('integrations/integrations.html', influxdbConfigs = influxdbConfigs, grafanaConfigs = grafanaConfigs, azureConfigs = azureConfigs)
     
@@ -48,22 +48,12 @@ def addInfluxdb():
     project = request.cookies.get('project')  
 
     if influxdbConfig != None:
-        output = tools.getInfluxdbConfigValues(project, influxdbConfig)
+        output = pkg.getInfluxdbConfigValues(project, influxdbConfig)
         form = InfluxDBForm(output)
                     
     if form.validate_on_submit():
-        # assign form data to variables
-        influxdbName        = request.form.get("influxdbName")
-        influxdbUrl         = request.form.get("influxdbUrl")
-        influxdbOrg         = request.form.get("influxdbOrg")
-        influxdbToken       = request.form.get("influxdbToken")
-        influxdbTimeout     = request.form.get("influxdbTimeout")
-        influxdbBucket      = request.form.get("influxdbBucket")
-        influxdbMeasurement = request.form.get("influxdbMeasurement")
-        influxdbField       = request.form.get("influxdbField")
-        influxdbTestIdTag   = request.form.get("influxdbTestIdTag")
-        isDefault           = request.form.get("isDefault")
-        msg = tools.saveInfluxDB(project, influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdbTimeout, influxdbBucket, influxdbMeasurement, influxdbField, influxdbTestIdTag, isDefault)
+        # 
+        msg = pkg.saveInfluxDB(project, request.form.to_dict())
 
     return render_template('integrations/influxdb.html', form = form, msg = msg, influxdbConfig = influxdbConfig)
 
@@ -81,7 +71,7 @@ def deleteInfluxdb():
     project = request.cookies.get('project')  
 
     if influxdbConfig != None:
-        tools.deleteInfluxdbConfig(project, influxdbConfig)
+        pkg.deleteConfig(project, influxdbConfig)
 
     return redirect(url_for('integrations'))
 
@@ -107,19 +97,12 @@ def addGrafana():
     grafanaConfig = request.args.get('grafanaConfig')
 
     if grafanaConfig != None:
-        output = tools.getGrafnaConfigValues(project, grafanaConfig)
+        output = pkg.getGrafnaConfigValues(project, grafanaConfig)
         form = grafanaForm(output)
                     
     if form.validate_on_submit():
         # assign form data to variables
-        grafanaName               = request.form.get("grafanaName")
-        grafanaServer             = request.form.get("grafanaServer")
-        grafanaToken              = request.form.get("grafanaToken")
-        grafanaDashboard          = request.form.get("grafanaDashboard")
-        grafanaOrgId              = request.form.get("grafanaOrgId")
-        grafanaDashRenderPath     = request.form.get("grafanaDashRenderPath")
-        grafanaDashRenderCompPath = request.form.get("grafanaDashRenderCompPath")
-        msg = tools.saveGrafana( project, grafanaName, grafanaServer, grafanaToken, grafanaDashboard, grafanaOrgId, grafanaDashRenderPath, grafanaDashRenderCompPath )
+        msg = pkg.saveGrafana( project, request.form.to_dict() )
 
     return render_template('integrations/grafana.html', form = form, msg = msg, grafanaConfig = grafanaConfig)
 
@@ -139,7 +122,7 @@ def deleteGrafanaConfig():
     project = request.cookies.get('project')  
 
     if grafanaConfig != None:
-        tools.deleteGrafana(project, grafanaConfig)
+        pkg.deleteConfig(project, grafanaConfig)
 
     return redirect(url_for('integrations'))
 
@@ -165,21 +148,12 @@ def addAzure():
     azureConfig = request.args.get('azureConfig')
 
     if azureConfig != None:
-        output = tools.getAzureConfigValues(project, azureConfig)
+        output = pkg.getAzureConfigValues(project, azureConfig)
         form = azureForm(output)
                     
     if form.validate_on_submit():
         # assign form data to variables
-        azureName            = request.form.get("azureName")
-        personalAccessToken  = request.form.get("personalAccessToken")
-        wikiOrganizationUrl  = request.form.get("wikiOrganizationUrl")
-        wikiProject          = request.form.get("wikiProject")
-        wikiIdentifier       = request.form.get("wikiIdentifier")
-        wikiPathToReport     = request.form.get("wikiPathToReport")
-        appInsighsLogsServer = request.form.get("appInsighsLogsServer")
-        appInsighsAppId      = request.form.get("appInsighsAppId")
-        appInsighsApiKey     = request.form.get("appInsighsApiKey")
-        msg = tools.saveAzure( project, azureName, personalAccessToken, wikiOrganizationUrl, wikiProject, wikiIdentifier, wikiPathToReport, appInsighsLogsServer, appInsighsAppId, appInsighsApiKey )
+        msg = pkg.saveAzure( project, request.form.to_dict() )
 
     return render_template('integrations/azure.html', form = form, msg = msg, azureConfig = azureConfig)
 
@@ -195,6 +169,6 @@ def deleteAzureConfig():
     project = request.cookies.get('project')  
 
     if azureConfig != None:
-        tools.deleteAzure(project, azureConfig)
+        pkg.deleteConfig(project, azureConfig)
 
     return redirect(url_for('integrations'))
