@@ -8,7 +8,8 @@
                 "grafanaDashboard": "dash",
                 "grafanaOrgId": "dcscsdc",
                 "grafanaDashRenderPath": "decsc",
-                "grafanaDashRenderCompPath": "dcsc"
+                "grafanaDashRenderCompPath": "dcsc",
+                "isDefault": "y"
             },
             {
                 "name": "grafana2",
@@ -36,38 +37,64 @@
         ],
         "azure": [
             {
-                "name": "azure",
-                "azurePersonalAccessToken": "7fesk3s5ddj4dscsdcl62ivr37gdt75j45gbzzysoukvmaaxjlu2bc7usa",
-                "azureWikiOrganizationUrl": "https://pmiorg.visualstudio.com",
-                "azureWikiProject": "Digital%20Assets",
-                "azureWikiIdentifier": "Digital-Assets.wiki",
-                "azureWikiPath": "/Sitecore 9 Azure Migration/Performance Metrics/Azure Candidate/Candidate jMeter Tests/Results",
-                "azureAppInsighsLogsServer": "https://api.applicationinsights.io",
-                "azureAppInsighsAppId": "1e2b2cf1-a13dcscdsc3-4204-a6b3-351571d5a84a",
-                "azureAppInsighsApiKey": "csdcsdcsdcsdc"
+                "name": "a",
+                "personalAccessToken": "b",
+                "wikiOrganizationUrl": "v",
+                "wikiProject": "v",
+                "wikiIdentifier": "v",
+                "wikiPathToReport": "v",
+                "appInsighsLogsServer": "v",
+                "appInsighsAppId": "v",
+                "appInsighsApiKey": "v"
             }
         ]
     },
     "reportConfigs": [
         {
-            "name": "a",
+            "graphs": [
+                {
+                    "position": 0,
+                    "name": "median"
+                },
+                {
+                    "position": 1,
+                    "name": "avg"
+                },
+                {
+                    "position": 2,
+                    "name": "90%-tile"
+                },
+                {
+                    "position": 3,
+                    "name": "median"
+                },
+                {
+                    "position": 4,
+                    "name": "avg"
+                }
+            ],
+            "name": "b",
             "influxdbName": "influxdb",
-            "grafanaName": "grafana2",
-            "azureName": "azure",
-            "metrics-1": "avg",
-            "metrics-2": "90%-tile",
-            "metrics-0": "90%-tile"
+            "grafanaName": "grafana",
+            "azureName": "a"
         }
     ],
-    "metrics": [
+    "graphs": [
         {
-            "name": "avg"
+            "name": "Requests Per Second VS Transactions Per Second",
+            "id":"91",
+            "dash_id":"/render/d-solo/jmeter-results/jmeter-test-results",
+            "filename":"requests-per-second",
+            "width":"1000",
+            "height":"400"
         },
         {
-            "name": "median"
-        },
-        {
-            "name": "90%-tile"
+            "name": "Requests Per Second VS Transactions Per Second2",
+            "id":"91",
+            "dash_id":"/render/d-solo/jmeter-results/jmeter-test-results",
+            "filename":"requests-per-second",
+            "width":"1000",
+            "height":"400"
         }
     ]
 }

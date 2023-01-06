@@ -52,12 +52,12 @@ class azureForm(FlaskForm):
 
 class reportConfigForm(FlaskForm):
 	name                  = StringField         (u'Name'             , validators=[DataRequired()])
-	metrics               = FieldList           (StringField()                                    )
+	graphs                = FieldList           (StringField()                                    )
 	influxdbName          = SelectField         (u'Influxdb config'  , validators=[DataRequired()])
 	grafanaName           = SelectField         (u'Grafana config'   , validators=[DataRequired()])
 	azureName             = SelectField         (u'Azure config'     , validators=[DataRequired()])
 
-class metricForm(FlaskForm):
+class graphForm(FlaskForm):
 	viewPanel             = StringField         (u'View panel id'    , validators=[DataRequired()])
 	dashId                = StringField         (u'Dashboard Id'     , validators=[DataRequired()])
 	fileName              = StringField         (u'File name'        , validators=[DataRequired()])

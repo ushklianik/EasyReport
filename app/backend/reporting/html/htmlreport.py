@@ -1,4 +1,4 @@
-from app.backend.influxdb.main import influxdb
+from app.backend.influxdb.influxdb import influxdb
 from app.backend.influxdb import custom
 from app.backend.validation.validation import nfr
 from datetime import datetime
@@ -11,8 +11,8 @@ class htmlReport:
     def __init__(self, project, runId):
         self.project = project
         self.runId = runId
-        self.influxdbObj = influxdb(project)
-        self.queryApi = self.influxdbObj.connectToInfluxDB().query_api()
+        self.influxdbObj = influxdb(project).connectToInfluxDB()
+        self.queryApi = self.influxdbObj.influxdbConnection.query_api()
         self.report = {}
         self.report['runId'] = runId
         self.report['stats'] = {}

@@ -65,12 +65,12 @@
                                         <span class="circle-with-number">5</span>
                                     </div>
                                     <div>
-                                        <label>Choose metrics</label>
+                                        <label>Choose graph</label>
                                         <input type="search" class="form-control-nfr" id="search"  placeholder="Search" onkeyup='searchFilter()' style="width:250px">
                                         <div id='options' class='d-none'>
                                             <select class="input-form-select" multiple="">
-                                                {% for metric in metrics %}
-                                                    <option id='metric-item'>{{ metric }}</option>
+                                                {% for graph in graphs %}
+                                                    <option id='graph-item'>{{ graph }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -83,43 +83,43 @@
                                     {% else %}
                                         <a class="btn-secondary" style="width: 70px;">Delete</a>
                                     {% endif %}   
-                                    <button type="button" class="btn-success" data-bs-toggle="modal" data-bs-target="#addnewmetric">
-                                        Add metric
+                                    <button type="button" class="btn-success" data-bs-toggle="modal" data-bs-target="#addnewgraph">
+                                        Add graph
                                     </button>
                                 </div>
                             </div>
                             <div style="width:60%;display:flex;justify-content: center;">
                                 <div id='wrapper' class='wrapper'> 
-                                    {% for metric in form.metrics %}
-                                        <div class="metric-group" aria-atomic="true">
+                                    {% for graph in form.graphs %}
+                                        <div class="graph-group" aria-atomic="true">
                                             <button class="btn-close-id btn-close"></button>
-                                            <!-- <input class="metric-element" id="metrics-0" name="metrics-0" type="text" value="avg"> -->
-                                            {{ metric(class="metric-element") }}
+                                            <!-- <input class="graph-element" id="graphs-0" name="graphs-0" type="text" value="avg"> -->
+                                            {{ graph(class="graph-element") }}
                                         </div>
                                     {% endfor %}
                                 </div>
                             </div>
                         </div>
                     </form>
-                    <div class="modal fade" id="addnewmetric" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addnewmetricLabel" aria-hidden="true">
+                    <div class="modal fade" id="addnewgraph" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addnewgraphLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="addnewmetricLabel">Add metric</h1>
+                                    <h1 class="modal-title fs-5" id="addnewgraphLabel">Add graph</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    {{ formForMerics.hidden_tag() }} 
+                                    {{ formForGraphs.hidden_tag() }} 
                                         <label for="viewPanel">View panel</label>
-                                        {{ formForMerics.viewPanel(class="form-control") }}  
+                                        {{ formForGraphs.viewPanel(class="form-control") }}  
                                         <label for="dashId">Dashboard Id</label>
-                                        {{ formForMerics.dashId(class="form-control") }} 
+                                        {{ formForGraphs.dashId(class="form-control") }} 
                                         <label for="fileName">File name</label>
-                                        {{ formForMerics.fileName(class="form-control") }} 
+                                        {{ formForGraphs.fileName(class="form-control") }} 
                                         <label for="width">Panel width</label>
-                                        {{ formForMerics.width(class="form-control") }} 
+                                        {{ formForGraphs.width(class="form-control") }} 
                                         <label for="height">Panel height</label>
-                                        {{ formForMerics.height(class="form-control") }} 
+                                        {{ formForGraphs.height(class="form-control") }} 
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -132,21 +132,21 @@
             </div>
         </div>
         <script>
-            var metrics = document.getElementById('wrapper');
+            var graphs = document.getElementById('wrapper');
             var search = document.getElementById('search');
             var options = document.getElementById('options');
-            var metric = document.querySelectorAll('#metric-item');
+            var graph = document.querySelectorAll('#graph-item');
             var txtVal, filter;
             var card_id = 0;
 
             function searchFilter(){
-                for(var i = 0; i < metric.length; i++){
-                    txtVal = metric[i].innerText;
+                for(var i = 0; i < graph.length; i++){
+                    txtVal = graph[i].innerText;
                     filter = search.value.toUpperCase();
                     if(txtVal.toUpperCase().indexOf(filter) > -1){
-                        metric[i].style.display = '';
+                        graph[i].style.display = '';
                     }else{
-                        metric[i].style.display = 'none';
+                        graph[i].style.display = 'none';
                     }    
                 }
             }
@@ -155,20 +155,20 @@
                 options.classList.toggle('d-none');
             }
 
-            for (var i = 0; i < metric.length; i++) {
+            for (var i = 0; i < graph.length; i++) {
                 
-                metric[i].onclick = function() {
+                graph[i].onclick = function() {
 
                     const name = this.innerHTML;
-                    id = "metrics-" + card_id;
+                    id = "graphs-" + card_id;
                     card_id = card_id + 1;
                     
-                    const cardElement = "<div class='metric-group' aria-atomic='true'>" +
+                    const cardElement = "<div class='graph-group' aria-atomic='true'>" +
                                 "<button class='btn-close-id btn-close'></button>" +
-                                "<input class='metric-element' id='"+id+"' name='"+id+"' type='text' value='"+name+"'>" +
+                                "<input class='graph-element' id='"+id+"' name='"+id+"' type='text' value='"+name+"'>" +
                             "</div>"
 
-                    metrics.insertAdjacentHTML("beforeend", cardElement);
+                    graphs.insertAdjacentHTML("beforeend", cardElement);
 
                     const cardName = document.querySelector('.card .details .name');
 

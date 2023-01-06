@@ -78,9 +78,6 @@ def saveInfluxDB(project, form):
         if key != "csrf_token":
             newConfig[key] = form[key]
 
-    if "isDefault" not in newConfig:
-        newConfig["isDefault"] = "n"
-
     if form["name"] not in config_list:
         fl["integrations"]["influxdb"].append(newConfig)
     else: 
@@ -124,9 +121,6 @@ def saveGrafana(project, form):
         if key != "csrf_token":
             newConfig[key] = form[key]
 
-    if "isDefault" not in newConfig:
-        newConfig["isDefault"] = "n"
-
     if form["name"] not in config_list:
         fl["integrations"]["grafana"].append(newConfig)
     else: 
@@ -136,6 +130,12 @@ def saveGrafana(project, form):
     
     saveNewConfig(project, fl)
     return "Grafana added"
+
+def getDefaultGrafana(project):
+    fl = json.load(getJsonConfig(project))
+    for config in fl["integrations"]["grafana"]:
+        if config["isDefault"] == "y":
+            return config["name"]
 
 ####################### AZURE:
 
@@ -163,9 +163,6 @@ def saveAzure(project, form):
         if key != "csrf_token":
             newConfig[key] = form[key]
 
-    if "isDefault" not in newConfig:
-        newConfig["isDefault"] = "n"
-
     if form["name"] not in config_list:
         fl["integrations"]["azure"].append(newConfig)
     else: 
@@ -175,6 +172,12 @@ def saveAzure(project, form):
     
     saveNewConfig(project, fl)
     return "Azure added"
+
+def getDefaultAzure(project):
+    fl = json.load(getJsonConfig(project))
+    for config in fl["integrations"]["azure"]:
+        if config["isDefault"] == "y":
+            return config["name"]
 
 ####################### REPORT CONFIG:          
         
@@ -189,8 +192,11 @@ def saveReportConfig(project, form):
     config_list = getReportConfigs(project)
     fl = json.load(getJsonConfig(project))
     newConfig = {}
+    newConfig["graphs"] = []
     for key in form:
-        if key != "csrf_token":
+        if "graphs" in key:
+            newConfig["graphs"].append({ "position": int(key[8:]), "name" : form[key] })
+        elif key != "csrf_token":
             newConfig[key] = form[key]
 
     if form["name"] not in config_list:
@@ -209,50 +215,51 @@ def getReportConfigValuesInDict(project, reportConfig):
     for item in fl["reportConfigs"]:
         if item["name"] == reportConfig:
             for key in item:
-                if key == "metrics":
-                    for x in range(len(item[key])):
-                        output.add(key+"-"+str(x), item[key][x])
+                if key == "graphs":
+                    for graph in item[key]:
+                        output.add(key+"-"+str(graph["position"]), graph["name"])
                 else:
                     output.add(key, item[key])
     return output
 
 def getReportConfigValues(project, reportConfig):
     fl = json.load(getJsonConfig(project))
-    output = MultiDict()
+    output = {}
     for item in fl["reportConfigs"]:
         if item["name"] == reportConfig:
             for key in item:
-                if key == "metrics":
+                if key == "graphs":
+                    output[key] = []
                     for x in range(len(item[key])):
                         output[key].append(item[key][x])
                 else:
                     output[key] = item[key]
     return output
     
-####################### METRICS:  
+####################### GRAPHS:  
 
-def getMetrics(project):
+def getGraphs(project):
     result = []
     fl = json.load(getJsonConfig(project))
-    for config in fl["metrics"]:
+    for config in fl["graphs"]:
         result.append(config["name"])
     return result
 
-def saveMetric(project, form):
-    metricList = getMetrics(project)
-    if form["name"] in metricList:
+def saveGraph(project, form):
+    graphList = getGraphs(project)
+    if form["name"] in graphList:
         return "Such name alrwady exixts"
     else:
         fl = json.load(getJsonConfig(project))
-        newMetric = {}
+        newGraph = {}
         for key in form:
             if key != "csrf_token":
-                newMetric[key] = form[key]
+                newGraph[key] = form[key]
 
-        fl["metrics"].append(newMetric)
+        fl["graphs"].append(newGraph)
         
         saveNewConfig(project, fl)
-        return "Metric added"
+        return "Graph added"
 
 def sortTests(tests):
     def startTime(e): return e['startTime']

@@ -1,4 +1,4 @@
-from app.backend.validation.validation import nfr
+from app.backend.reporting.azurewiki.azreport import azreport
 
-nfrObj = nfr("default")
-nfrs = nfrObj.compareWithNFRs("new")
+az = azreport("default", "b")
+az.pmetrics()

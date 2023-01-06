@@ -1,6 +1,6 @@
 # Python modules
 from app.backend import pkg
-from app.backend.influxdb.main import influxdb
+from app.backend.influxdb.influxdb import influxdb
 from app.backend.reporting.html.htmlreport import htmlReport
 
 # Flask modules
@@ -9,7 +9,7 @@ from flask_login             import current_user
 
 # App modules
 from app         import app
-from app.forms   import reportConfigForm, metricForm
+from app.forms   import reportConfigForm, graphForm
 
 
 @app.route('/report', methods=['GET', 'POST'])
@@ -22,13 +22,13 @@ def report():
     # Get current project
     project = request.cookies.get('project')  
 
-    metrics = pkg.getMetrics(project)
+    graphs = pkg.getGraphs(project)
 
     # Flask message injected into the page, in case of any errors
     msg = None
 
-    # Declare the Metrics form
-    formForMerics = metricForm(request.form)
+    # Declare the graphs form
+    formForGraphs = graphForm(request.form)
 
     # Declare the Influxdb form
     form = reportConfigForm(request.form)
@@ -51,7 +51,7 @@ def report():
         form.grafanaName.choices  = pkg.getGrafanaConfigs(project)
         form.azureName.choices    = pkg.getAzureConfigs(project)
 
-    return render_template('home/report.html', form = form, reportConfig = reportConfig, metrics = metrics, msg = msg, formForMerics = formForMerics)
+    return render_template('home/report.html', form = form, reportConfig = reportConfig, graphs = graphs, msg = msg, formForGraphs = formForGraphs)
 
 @app.route('/delete/report', methods=['GET'])
 def deleteReportConfig():
@@ -86,14 +86,14 @@ def allReports():
     return render_template('home/all-reports.html', reports = reports)
 
 
-@app.route('/new-metric', methods=['POST'])
-def newMetric():
+@app.route('/new-graph', methods=['POST'])
+def newGraph():
 
     # Check if user is logged in
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
 
-    formForMerics = metricForm(request.form)
+    formForMerics = graphForm(request.form)
     # Get current project
     project = request.cookies.get('project')  
 
@@ -103,7 +103,7 @@ def newMetric():
         fileName       = request.form.get("fileName")
         width          = request.form.get("width")
         height         = request.form.get("height")
-        msg = pkg.saveMetric(project, viewPanel, dashId, fileName, width, height)
+        msg = pkg.saveGraph(project, viewPanel, dashId, fileName, width, height)
 
     return render_template('home/all-reports.html')
 
@@ -146,13 +146,29 @@ def getTests():
     # Get current project
     project = request.cookies.get('project')  
 
-    tests = influxdb(project).getTestLog()
+    influxdbObj = influxdb(project)
+    influxdbObj.connectToInfluxDB()
+    tests = influxdbObj.getTestLog()
     tests = pkg.sortTests(tests)
 
     return render_template('home/tests.html', tests=tests)
 
 @app.route('/test-results', methods=['GET'])
 def getTestResults():
+
+    # Check if user is logged in
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+
+    # Get current project
+    project = request.cookies.get('project')  
+    runId = request.args.get('runId')
+    report = htmlReport(project, runId)
+    report.createReport()
+    return render_template('home/test-results.html', report=report.report)
+
+@app.route('/report-flow', methods=['GET'])
+def proceedWithFlow():
 
     # Check if user is logged in
     if not current_user.is_authenticated:

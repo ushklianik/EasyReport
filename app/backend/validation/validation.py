@@ -1,7 +1,7 @@
 import json
 from os import path
 import os
-from app.backend.influxdb.main import influxdb
+from app.backend.influxdb.influxdb import influxdb
 from app.backend.influxdb import custom
 
 class nfr:
@@ -175,7 +175,7 @@ class nfr:
         # Gets NFRs for specific application
         nfrs = self.getNFR(appName)
         # Create INfluxdb connection
-        influxdbObj = influxdb(self.project)
+        influxdbObj = influxdb(self.project).connectToInfluxDB()
         if "status" in nfrs:
             return nfrs            
         else:
