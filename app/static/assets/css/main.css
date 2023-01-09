@@ -73,7 +73,13 @@ body{
     font-size: 16px;
     font-weight: 400;
     line-height: 1.5;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
+
+body::-webkit-scrollbar {
+    display: none;
+  }
 
 footer {
     position: relative;
@@ -197,9 +203,11 @@ img {
     border-radius: 20px;
     color: var(--bs-white);
     background-color: var(--bs-tertiary);
-    border-color: #242e4c;
+    border-color: var(--bs-black);
+    transition: border-radius 0.2s ease-in;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
     .btn-primary:hover {
+        border-radius: 10px;
         color: var(--bs-white);
         background-color: var(--bs-cyan);
         border-color: var(--bs-dark); 
@@ -215,8 +223,10 @@ img {
     color: var(--bs-white);
     background-color: var(--bs-danger);
     border-color: var(--bs-dark);
+    transition: border-radius 0.2s ease-in;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
     .btn-secondary:hover {
+        border-radius: 10px;
         color: var(--bs-white);
         background-color: var(--bs-orange);
         border-color: var(--bs-dark); }
@@ -231,8 +241,10 @@ img {
     color: var(--bs-black);
     background-color: var(--bs-teal);
     border-color: var(--bs-dark);
+    transition: border-radius 0.2s ease-in;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
     .btn-success:hover {
+        border-radius: 10px;
         color: var(--bs-white);
         background-color: var(--bs-green);
         border-color: var(--bs-dark); }
@@ -247,8 +259,10 @@ img {
     color: var(--bs-black);
     background-color: var(--bs-warning);
     border-color: var(--bs-dark);
+    transition: border-radius 0.2s ease-in;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
     .btn-warning:hover {
+        border-radius: 10px;
         color: var(--bs-white);
         background-color: var(--bs-orange);
         border-color: var(--bs-black); }
@@ -264,9 +278,11 @@ img {
     background-color: var(--bs-background);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075);
     width: 140px;
+    transition: border-radius 0.2s ease-in;
     border: 1px;
     border-color: var(--bs-black); }
     .btn-sidebar:hover {
+        border-radius: 10px;
         color: var(--bs-white);
         background-color: var(--bs-background-dark);
         border-color: var(--bs-black); }
@@ -282,9 +298,11 @@ img {
     background-color: var(--bs-background);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075);
     width: 100px;
+    transition: border-radius 0.2s ease-in;
     border: 1px;
     border-color: var(--bs-black); }
     .btn-sidebar-small:hover {
+        border-radius: 10px;
         color: var(--bs-white);
         background-color: var(--bs-background-dark);
         border-color: var(--bs-black); }
@@ -300,9 +318,11 @@ img {
     background-color: var(--bs-background);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075);
     width: 37px;
+    transition: border-radius 0.2s ease-in;
     border: 1px;
     border-color: var(--bs-black); }
     .btn-sidebar-dropdown:hover {
+        border-radius: 10px;
         color: var(--bs-white);
         background-color: var(--bs-background-dark);
         border-color: var(--bs-black); }
