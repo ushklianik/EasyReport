@@ -2,6 +2,9 @@ from os import path
 from app.backend import pkg
 import os
 import json
+import requests
+import logging
+import base64
 
 class grafana:
     def __init__(self, project, name = None):
@@ -29,30 +32,43 @@ class grafana:
                     else:
                         return {"status":"error", "message":"No such config name"}
 
-    def getGrafanaLink(self, dashId, start, end, testName):
-        url = self.grafanaServer + dashId + '?orgId=' + self.grafanaOrgId + '&from='+str(start)+'&to='+str(end)+'&var-aggregation=60&var-sampleType=transaction&var-testName='+str(testName)
+    def getGrafanaLink(self, start, end, testName, dashId = None):
+        if dashId != None:
+            url = self.grafanaServer + dashId + '?orgId=' + self.grafanaOrgId + '&from='+str(start)+'&to='+str(end)+'&var-aggregation=60&var-sampleType=transaction&var-testName='+str(testName)
+        else:
+            url = self.grafanaServer + self.grafanaDashboard + '?orgId=' + self.grafanaOrgId + '&from='+str(start)+'&to='+str(end)+'&var-aggregation=60&var-sampleType=transaction&var-testName='+str(testName)
         # if "render" not in dash_id:
         #     url = url + "&var-runId="+str(param.current_runId)
         return url  
     
-    def renderImage(self, metricNames):
-        metrics = []
-        for metricName in metricNames:
-            
+    def getGrafanaTestLink(self, start, end, testName, runId, dashId = None):
+        url = self.getGrafanaLink(start, end, testName, dashId)
+        url = url+"&var-runId="+runId
+        return url  
+    
+    def renderImage(self, graphNames, start, stop, testName, runId, baseline_runId = None):
+        graphs = []
+        screenshots = []
+        for graph in graphNames:
+            graphJson = pkg.getGraph(self.project, graph["name"])
+            graphJson["position"] = graph["position"]
+            graphs.append(graphJson)
 
-        # if "comparison" in dash_id:
-        #     url = getGrafanaLink(dash_id, param.current_runId_start_tmp, param.current_runId_end_tmp)
-        #     url = url+"&var-current_runId="+param.current_runId+"&var-baseline_runId="+param.baseline_runId+"&panelId="+panelId+"&width="+width+"&height="+height 
-        # else:
-        #     url = getGrafanaLink(dash_id, param.current_runId_start_tmp, param.current_runId_end_tmp)
-        #     url = url+"&var-runId="+str(param.current_runId)+"&panelId="+panelId+"&width="+width+"&height="+height
-        # try:   
-        #     response = requests.get(url=url, headers=param.headers_grafana, timeout=180)
-        # except Exception as er:
-        #     logging.warning('ERROR: downloading image from Grafana failed')
-        #     logging.warning(er)
-        # if response.status_code == 200:
-        #         image = base64.b64encode(response.content)
-        #         putImageToAzure(metric, image, filename+".png") 
-        # else:
-        #     logging.info('ERROR: downloading image from Grafana failed, metric: ' + metric)
+        for graph in graphs:
+            if "comparison" in graph["dashId"]:
+                url = self.getGrafanaLink(start, stop, testName, graph["dashId"])
+                url = url+"&var-current_runId="+runId+"&var-baseline_runId="+baseline_runId+"&panelId="+graph["id"]+"&width="+graph["width"]+"&height="+graph["height"]
+            else:
+                url = self.getGrafanaLink(start, stop, testName, graph["dashId"])
+                url = url+"&var-runId="+runId+"&panelId="+graph["id"]+"&width="+graph["width"]+"&height="+graph["height"]
+            try:   
+                response = requests.get(url=url, headers={ 'Authorization': 'Bearer ' + self.grafanaToken}, timeout=180)
+                if response.status_code == 200:
+                    image = base64.b64encode(response.content)
+                    screenshots.append({"image": image, "position": graph["position"], "name": graph["name"]})
+                else:
+                    logging.info('ERROR: downloading image from Grafana failed, metric: ' + graph["name"])
+            except Exception as er:
+                logging.warning('ERROR: downloading image from Grafana failed')
+                logging.warning(er)
+        return screenshots

@@ -2,6 +2,7 @@
 from app.backend import pkg
 from app.backend.influxdb.influxdb import influxdb
 from app.backend.reporting.html.htmlreport import htmlReport
+from app.backend.reporting.azurewiki.azureport import azureport
 
 # Flask modules
 from flask                   import render_template, request, url_for, redirect
@@ -85,57 +86,6 @@ def allReports():
     reports = pkg.getReportConfigs(project)
     return render_template('home/all-reports.html', reports = reports)
 
-
-@app.route('/new-graph', methods=['POST'])
-def newGraph():
-
-    # Check if user is logged in
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    formForMerics = graphForm(request.form)
-    # Get current project
-    project = request.cookies.get('project')  
-
-    if formForMerics.validate_on_submit():
-        viewPanel      = request.form.get("viewPanel")
-        dashId         = request.form.get("dashId")
-        fileName       = request.form.get("fileName")
-        width          = request.form.get("width")
-        height         = request.form.get("height")
-        msg = pkg.saveGraph(project, viewPanel, dashId, fileName, width, height)
-
-    return render_template('home/all-reports.html')
-
-
-@app.route('/set-project', methods=['GET'])
-def setProject():
-
-    # Check if user is logged in
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    # Get current project
-    project = request.args.get('project')
-    # If project not provided, the default value is selected
-    if project == None:
-        project = "default"
-
-    res = redirect(url_for('index'))
-    res.set_cookie(key = 'project', value = project, max_age=None)
-    return res
-
-@app.route('/get-projects', methods=['GET'])
-def getProjects():
-
-    # Check if user is logged in
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    # Get all projects
-    projects = pkg.getProjects()
-    return {'projects': projects}
-
 @app.route('/tests', methods=['GET'])
 def getTests():
 
@@ -180,3 +130,21 @@ def proceedWithFlow():
     report = htmlReport(project, runId)
     report.createReport()
     return render_template('home/test-results.html', report=report.report)
+
+@app.route('/generate-az-report', methods=['GET'])
+def generateAzReport():
+
+    # Check if user is logged in
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+
+    # Get current project
+    project = request.cookies.get('project')  
+    runId = request.args.get('runId')
+    baseline_runId = request.args.get('baseline_runId')
+    reportName = request.args.get('reportName')
+
+    azreport = azureport(project, reportName)
+    azreport.generateReport(runId, baseline_runId)
+
+    getTests()

@@ -30,8 +30,9 @@ def initialize_database():
 
 # Import routing, models and Start the App
 from app import models
-from app.views import reports
+from app.views import reporting
 from app.views import auth
 from app.views import integrations
 from app.views import nfrs
+from app.views import other
 

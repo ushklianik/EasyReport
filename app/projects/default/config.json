@@ -3,22 +3,12 @@
         "grafana": [
             {
                 "name": "grafana",
-                "grafanaServer": "serv",
-                "grafanaToken": "scdscsdc",
-                "grafanaDashboard": "dash",
-                "grafanaOrgId": "dcscsdc",
-                "grafanaDashRenderPath": "decsc",
-                "grafanaDashRenderCompPath": "dcsc",
-                "isDefault": "y"
-            },
-            {
-                "name": "grafana2",
-                "grafanaServer": "serv",
-                "grafanaToken": "scdscsdc",
-                "grafanaDashboard": "dash",
-                "grafanaOrgId": "dcscsdc",
-                "grafanaDashRenderPath": "decsc",
-                "grafanaDashRenderCompPath": "dcsc"
+                "grafanaServer": "http://127.0.0.1:3000",
+                "grafanaOrgId": "1",
+                "grafanaToken": "eyJrIjoiaDQ4NDdXV1EzWEFEOVBnZWpzQ1ZwZGw4NE4yTnIwemQiLCJuIjoia2V5IiwiaWQiOjF9",
+                "grafanaDashboard": "/d/jmeter-results/jmeter-test-results",
+                "grafanaDashRenderPath": "/render/d-solo/jmeter-results/jmeter-test-results",
+                "grafanaDashRenderCompPath": "/render/d-solo/jmeter-comp/jmeter-load-test-comparison"
             }
         ],
         "influxdb": [
@@ -37,12 +27,12 @@
         ],
         "azure": [
             {
-                "name": "a",
-                "personalAccessToken": "b",
-                "wikiOrganizationUrl": "v",
-                "wikiProject": "v",
-                "wikiIdentifier": "v",
-                "wikiPathToReport": "v",
+                "name": "azure",
+                "personalAccessToken": "token",
+                "wikiOrganizationUrl": "https://dev.azure.com/UladzislauShklianik",
+                "wikiProject": "DEMOPIPE",
+                "wikiIdentifier": "DEMOPIPE.wiki",
+                "wikiPathToReport": "/DEMO-TESTS/JMETER-REPORTS",
                 "appInsighsLogsServer": "v",
                 "appInsighsAppId": "v",
                 "appInsighsApiKey": "v"
@@ -54,47 +44,35 @@
             "graphs": [
                 {
                     "position": 0,
-                    "name": "median"
+                    "name": "Requests Per Second VS Transactions Per Second"
                 },
                 {
                     "position": 1,
-                    "name": "avg"
-                },
-                {
-                    "position": 2,
-                    "name": "90%-tile"
-                },
-                {
-                    "position": 3,
-                    "name": "median"
-                },
-                {
-                    "position": 4,
-                    "name": "avg"
+                    "name": "Requests Per Second VS Transactions Per Second2"
                 }
             ],
             "name": "b",
             "influxdbName": "influxdb",
             "grafanaName": "grafana",
-            "azureName": "a"
+            "azureName": "azure"
         }
     ],
     "graphs": [
         {
             "name": "Requests Per Second VS Transactions Per Second",
-            "id":"91",
-            "dash_id":"/render/d-solo/jmeter-results/jmeter-test-results",
-            "filename":"requests-per-second",
-            "width":"1000",
-            "height":"400"
+            "id": "91",
+            "dashId": "/render/d-solo/jmeter-results/jmeter-test-results",
+            "filename": "requests-per-second",
+            "width": "1000",
+            "height": "400"
         },
         {
             "name": "Requests Per Second VS Transactions Per Second2",
-            "id":"91",
-            "dash_id":"/render/d-solo/jmeter-results/jmeter-test-results",
-            "filename":"requests-per-second",
-            "width":"1000",
-            "height":"400"
+            "id": "91",
+            "dashId": "/render/d-solo/jmeter-results/jmeter-test-results",
+            "filename": "requests-per-second",
+            "width": "1000",
+            "height": "400"
         }
     ]
 }

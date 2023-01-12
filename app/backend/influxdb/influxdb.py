@@ -42,7 +42,6 @@ class influxdb:
 
     def connectToInfluxDB(self):
         try:
-            print(self.influxdbUrl)
             influxdbClient = InfluxDBClient(url=self.influxdbUrl, org=self.influxdbOrg, token=self.influxdbToken)
             self.influxdbConnection = influxdbClient
             return self
@@ -88,7 +87,23 @@ class influxdb:
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         for fluxTable in fluxTables:
             for fluxRecord in fluxTable:
-                tmp = datetime.strftime(fluxRecord['_time'].astimezone(self.tmz), "%Y-%m-%d %I:%M:%S %p")   
+                tmp = datetime.strftime(fluxRecord['_time'],"%Y-%m-%dT%H:%M:%SZ") 
+        return tmp
+
+    def getStartTmp(self, runId):
+        fluxTables = self.influxdbConnection.query_api().query(custom.getStartTime(runId))
+        # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
+        for fluxTable in fluxTables:
+            for fluxRecord in fluxTable:
+                tmp = int(fluxRecord['_time'].astimezone(self.tmz).timestamp() * 1000)
+        return tmp
+
+    def getEndTmp(self, runId):
+        fluxTables = self.influxdbConnection.query_api().query(custom.getEndTime(runId))
+        # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
+        for fluxTable in fluxTables:
+            for fluxRecord in fluxTable:
+                tmp = int(fluxRecord['_time'].astimezone(self.tmz).timestamp() * 1000)
         return tmp
 
     def getHumanEndTime(self, runId):
@@ -115,12 +130,12 @@ class influxdb:
                 users = fluxRecord['_value'] 
         return users  
 
-    # def getAppName(self, runId):
-    #     fluxTables = self.influxdbConnection.query_api().query(query)
-    #     for fluxTable in fluxTables:
-    #         for fluxRecord in fluxTable:
-    #             results.append(fluxRecord)
-    #     return results
+    def getTestName(self, runId, start, end):
+        fluxTables = self.influxdbConnection.query_api().query(custom.getAppName(runId, start, end))
+        for fluxTable in fluxTables:
+            for fluxRecord in fluxTable:
+                appName = fluxRecord['testName']
+        return appName
             
 
 

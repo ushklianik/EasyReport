@@ -245,6 +245,13 @@ def getGraphs(project):
         result.append(config["name"])
     return result
 
+def getGraph(project, name):
+    fl = json.load(getJsonConfig(project))
+    for graph in fl["graphs"]:
+        if graph["name"] == name:
+            return graph
+    return "no graph"
+
 def saveGraph(project, form):
     graphList = getGraphs(project)
     if form["name"] in graphList:
