@@ -10,11 +10,11 @@ from flask_login             import current_user
 
 # App modules
 from app         import app
-from app.forms   import reportConfigForm, graphForm
+from app.forms   import flowConfigForm, graphForm
 
 
-@app.route('/report', methods=['GET', 'POST'])
-def report():
+@app.route('/flow', methods=['GET', 'POST'])
+def flow():
 
     # Check if user is logged in
     if not current_user.is_authenticated:
@@ -32,49 +32,49 @@ def report():
     formForGraphs = graphForm(request.form)
 
     # Declare the Influxdb form
-    form = reportConfigForm(request.form)
+    form = flowConfigForm(request.form)
     form.influxdbName.choices = pkg.getInfluxdbConfigs(project)
     form.grafanaName.choices  = pkg.getGrafanaConfigs(project)
     form.azureName.choices    = pkg.getAzureConfigs(project)
     
     if form.validate_on_submit():
-        msg = pkg.saveReportConfig(project, request.form.to_dict())
+        msg = pkg.saveFlowConfig(project, request.form.to_dict())
     
     # get grafana parameter if provided
-    reportConfig = None
-    reportConfig = request.args.get('reportConfig')
+    flowConfig = None
+    flowConfig = request.args.get('flowConfig')
 
-    if reportConfig != None:
-        output = pkg.getReportConfigValuesInDict(project, reportConfig)
+    if flowConfig != None:
+        output = pkg.getFlowConfigValuesInDict(project, flowConfig)
         print(output)
-        form = reportConfigForm(output)
+        form = flowConfigForm(output)
         form.influxdbName.choices = pkg.getInfluxdbConfigs(project)
         form.grafanaName.choices  = pkg.getGrafanaConfigs(project)
         form.azureName.choices    = pkg.getAzureConfigs(project)
 
-    return render_template('home/report.html', form = form, reportConfig = reportConfig, graphs = graphs, msg = msg, formForGraphs = formForGraphs)
+    return render_template('home/flow.html', form = form, flowConfig = flowConfig, graphs = graphs, msg = msg, formForGraphs = formForGraphs)
 
-@app.route('/delete/report', methods=['GET'])
-def deleteReportConfig():
+@app.route('/delete/flow', methods=['GET'])
+def deleteFlow():
 
     # Check if user is logged in
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
 
     # get azure parameter if provided
-    reportConfig = None
-    reportConfig = request.args.get('reportConfig')
+    flowConfig = None
+    flowConfig = request.args.get('flowConfig')
 
     # Get current project
     project = request.cookies.get('project')  
 
-    if reportConfig != None:
-        pkg.deleteConfig(project, reportConfig)
+    if flowConfig != None:
+        pkg.deleteConfig(project, flowConfig)
 
     return redirect(url_for('integrations'))
 
-@app.route('/all-reports', methods=['GET'])
-def allReports():
+@app.route('/all-flows', methods=['GET'])
+def allFlows():
 
     # Check if user is logged in
     if not current_user.is_authenticated:
@@ -83,8 +83,8 @@ def allReports():
     # Get current project
     project = request.cookies.get('project')  
 
-    reports = pkg.getReportConfigs(project)
-    return render_template('home/all-reports.html', reports = reports)
+    flows = pkg.getFlowConfigs(project)
+    return render_template('home/all-flows.html', flows = flows)
 
 @app.route('/tests', methods=['GET'])
 def getTests():
@@ -105,20 +105,6 @@ def getTests():
 
 @app.route('/test-results', methods=['GET'])
 def getTestResults():
-
-    # Check if user is logged in
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    # Get current project
-    project = request.cookies.get('project')  
-    runId = request.args.get('runId')
-    report = htmlReport(project, runId)
-    report.createReport()
-    return render_template('home/test-results.html', report=report.report)
-
-@app.route('/report-flow', methods=['GET'])
-def proceedWithFlow():
 
     # Check if user is logged in
     if not current_user.is_authenticated:

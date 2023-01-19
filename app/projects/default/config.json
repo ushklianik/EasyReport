@@ -39,7 +39,7 @@
             }
         ]
     },
-    "reportConfigs": [
+    "flowConfigs": [
         {
             "graphs": [
                 {

@@ -46,9 +46,9 @@ def deleteConfig(project, config):
         if obj["name"] == config:
             fl["integrations"]["azure"].pop(idx)    
 
-    for idx, obj in enumerate(fl["reportConfigs"]):
+    for idx, obj in enumerate(fl["flowConfigs"]):
         if obj["name"] == config:
-            fl["reportConfigs"].pop(idx)    
+            fl["flowConfigs"].pop(idx)    
 
     saveNewConfig(project, fl)
 
@@ -179,17 +179,17 @@ def getDefaultAzure(project):
         if config["isDefault"] == "y":
             return config["name"]
 
-####################### REPORT CONFIG:          
+####################### FLOW CONFIG:          
         
-def getReportConfigs(project):
+def getFlowConfigs(project):
     result = []
     fl = json.load(getJsonConfig(project))
-    for config in fl["reportConfigs"]:
+    for config in fl["flowConfigs"]:
         result.append(config["name"])
     return result
 
-def saveReportConfig(project, form):
-    config_list = getReportConfigs(project)
+def saveFlowConfig(project, form):
+    config_list = getFlowConfigs(project)
     fl = json.load(getJsonConfig(project))
     newConfig = {}
     newConfig["graphs"] = []
@@ -200,20 +200,20 @@ def saveReportConfig(project, form):
             newConfig[key] = form[key]
 
     if form["name"] not in config_list:
-        fl["reportConfigs"].append(newConfig)
+        fl["flowConfigs"].append(newConfig)
     else: 
-        for idx, obj in enumerate(fl["reportConfigs"]):
+        for idx, obj in enumerate(fl["flowConfigs"]):
             if obj["name"] == form["name"]:
-                fl["reportConfigs"][idx] = newConfig
+                fl["flowConfigs"][idx] = newConfig
     
     saveNewConfig(project, fl)
     return "Config added"
 
-def getReportConfigValuesInDict(project, reportConfig):
+def getFlowConfigValuesInDict(project, flowConfig):
     fl = json.load(getJsonConfig(project))
     output = MultiDict()
-    for item in fl["reportConfigs"]:
-        if item["name"] == reportConfig:
+    for item in fl["flowConfigs"]:
+        if item["name"] == flowConfig:
             for key in item:
                 if key == "graphs":
                     for graph in item[key]:
@@ -222,11 +222,11 @@ def getReportConfigValuesInDict(project, reportConfig):
                     output.add(key, item[key])
     return output
 
-def getReportConfigValues(project, reportConfig):
+def getFlowConfigValues(project, flowConfig):
     fl = json.load(getJsonConfig(project))
     output = {}
-    for item in fl["reportConfigs"]:
-        if item["name"] == reportConfig:
+    for item in fl["flowConfig"]:
+        if item["name"] == flowConfig:
             for key in item:
                 if key == "graphs":
                     output[key] = []

@@ -50,7 +50,7 @@ class azureForm(FlaskForm):
 	appInsighsAppId       = StringField  (u'App Insighs App Id'      , validators=[DataRequired()])
 	appInsighsApiKey      = StringField  (u'App Insighs Api Key'     , validators=[DataRequired()])
 
-class reportConfigForm(FlaskForm):
+class flowConfigForm(FlaskForm):
 	name                  = StringField         (u'Name'             , validators=[DataRequired()])
 	graphs                = FieldList           (StringField()                                    )
 	influxdbName          = SelectField         (u'Influxdb config'  , validators=[DataRequired()])

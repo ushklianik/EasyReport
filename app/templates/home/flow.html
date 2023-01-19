@@ -1,5 +1,5 @@
 {% extends "layouts/base-fullscreen.html" %}
-{% block title %} New report {% endblock %} 
+{% block title %} New flow {% endblock %} 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <!-- <link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet"> -->
@@ -15,10 +15,10 @@
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
                 <div class="main-body-header">
-                    <a>New report config</a>
+                    <a>New flow config</a>
                 </div>
                 <div class="marging-10">
-                    <form method="POST" action="/report">
+                    <form method="POST" action="/flow">
                         {{ form.hidden_tag() }}
                         <div class="full-screen-section">
                             <div class="col-4">
@@ -26,7 +26,7 @@
                                     <span class="circle-with-number">1</span>
                                 </div>
                                 <div>
-                                    <label for="name">Report name</label>
+                                    <label for="name">Flow name</label>
                                     {{ form.name(class="form-control-nfr", style="width:250px") }}
                                 </div>
                             </div>
@@ -78,8 +78,8 @@
                                 </div>
                                 <div style="margin-top: 30px;">
                                     <button class="btn-primary" type="submit" style="width: 70px;">Save</button>
-                                    {% if reportConfig %}
-                                        <a href="/delete/report?reportConfig={{ reportConfig }}" class="btn-secondary" style="width: 70px;">Delete</a>
+                                    {% if flowConfig %}
+                                        <a href="/delete/flow?flowConfig={{ flowConfig }}" class="btn-secondary" style="width: 70px;">Delete</a>
                                     {% else %}
                                         <a class="btn-secondary" style="width: 70px;">Delete</a>
                                     {% endif %}   

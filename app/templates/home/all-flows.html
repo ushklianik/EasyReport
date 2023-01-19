@@ -1,5 +1,5 @@
 {% extends "layouts/base-fullscreen.html" %}
-{% block title %} Reports {% endblock %} 
+{% block title %} Flows {% endblock %} 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
@@ -16,19 +16,19 @@
                     <a>Report flows</a>
                 </div>
                 <div class="center-section">
-                    {% for report in reports %}
+                    {% for flow in flows %}
                     <div class="card">
                         <img src="/static/assets/img/reporting.png" class="rounded-top"
-                            alt="Report" height="155" width="300">
-                            <p>{{ report }}</p>
+                            alt="Flow" height="155" width="300">
+                            <p>{{ flow }}</p>
                             <a>TO DO: Some info about test</a>
-                            <a href="/report?reportConfig={{ report }}" class="btn-primary">Configure</a>
+                            <a href="/flow?flowConfig={{ flow }}" class="btn-primary">Configure</a>
                     </div>
                     {% endfor %}
                     <div class="card">
                         <img src="/static/assets/img/blog/influxdb_new.jpg" class="rounded-top"
                             alt="New" height="245">
-                        <a href="/report" class="btn-primary">Add new report</a>
+                        <a href="/flow" class="btn-primary">Add new flow</a>
                     </div>
                 </div>
             </div>
