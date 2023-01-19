@@ -11,24 +11,16 @@ from app.forms   import graphForm
 
 @app.route('/new-graph', methods=['POST'])
 def newGraph():
+    msg = None
 
+    project = request.cookies.get('project') 
     # Check if user is logged in
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-
-    formForMerics = graphForm(request.form)
-    # Get current project
-    project = request.cookies.get('project')  
-
-    if formForMerics.validate_on_submit():
-        viewPanel      = request.form.get("viewPanel")
-        dashId         = request.form.get("dashId")
-        fileName       = request.form.get("fileName")
-        width          = request.form.get("width")
-        height         = request.form.get("height")
-        msg = pkg.saveGraph(project, viewPanel, dashId, fileName, width, height)
-
-    return render_template('home/all-reports.html')
+    if request.method == "POST":
+        msg = pkg.saveGraph(project, request.get_json())
+        print(request.get_json())
+    return msg
 
 
 @app.route('/set-project', methods=['GET'])

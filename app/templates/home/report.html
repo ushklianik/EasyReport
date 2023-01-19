@@ -2,7 +2,7 @@
 {% block title %} New report {% endblock %} 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-<link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
+<!-- <link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet"> -->
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/nfrs.css" rel="stylesheet">
@@ -83,7 +83,7 @@
                                     {% else %}
                                         <a class="btn-secondary" style="width: 70px;">Delete</a>
                                     {% endif %}   
-                                    <button type="button" class="btn-success" data-bs-toggle="modal" data-bs-target="#addnewgraph">
+                                    <button class="btn-success toggle-modal" type="button">
                                         Add graph
                                     </button>
                                 </div>
@@ -101,29 +101,31 @@
                             </div>
                         </div>
                     </form>
-                    <div class="modal fade" id="addnewgraph">
+                    <div class="modal" id="addnewgraph">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="addnewgraphLabel">Add graph</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <h1 class="modal-title" id="addnewgraphLabel">Add graph</h1>
                                 </div>
                                 <div class="modal-body">
                                     {{ formForGraphs.hidden_tag() }} 
-                                        <label for="viewPanel">View panel</label>
-                                        {{ formForGraphs.viewPanel(class="form-control") }}  
-                                        <label for="dashId">Dashboard Id</label>
-                                        {{ formForGraphs.dashId(class="form-control") }} 
-                                        <label for="fileName">File name</label>
-                                        {{ formForGraphs.fileName(class="form-control") }} 
-                                        <label for="width">Panel width</label>
-                                        {{ formForGraphs.width(class="form-control") }} 
-                                        <label for="height">Panel height</label>
-                                        {{ formForGraphs.height(class="form-control") }} 
+                                        <label>Name</label>
+                                        {{ formForGraphs.name(class="form-select-nfr") }}  
+                                        <label>View panel</label>
+                                        {{ formForGraphs.viewPanel(class="form-select-nfr") }}  
+                                        <label>Dashboard Id</label>
+                                        {{ formForGraphs.dashId(class="form-select-nfr") }} 
+                                        <label>File name</label>
+                                        {{ formForGraphs.fileName(class="form-select-nfr") }} 
+                                        <label>Panel width</label>
+                                        {{ formForGraphs.width(class="form-select-nfr") }} 
+                                        <label>Panel height</label>
+                                        {{ formForGraphs.height(class="form-select-nfr") }} 
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" type="submit">Save</button>
+                                <div>
+                                    <div class="status-place" style="float: left;"></div>
+                                    <button class="btn-secondary toggle-modal" style="float: right; width: 70px;" data-bs-dismiss="modal">Close</button>
+                                    <button class="btn-primary" type="submit" style="float: right; width: 70px;" onclick="saveGraph()">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -187,6 +189,63 @@
                 closeBtn[i].onclick = function(){
                     this.parentElement.remove();
                 }
+            }
+
+            function saveGraph(){
+                let statusPlace = document.querySelector('.status-place');
+                let modal       = document.querySelector('.modal-body');
+                let result      = {}
+                result["name"]      = modal.querySelector('#name').value;
+                result["viewPanel"] = modal.querySelector('#viewPanel').value;
+                result["dashId"]    = modal.querySelector('#dashId').value;
+                result["fileName"]  = modal.querySelector('#fileName').value;
+                result["width"]     = modal.querySelector('#width').value;
+                result["height"]    = modal.querySelector('#height').value;
+
+                $.ajax({
+                    url:'/new-graph',
+                    type:"POST",
+                    data:JSON.stringify(result),
+                    contentType:"application/json",
+                    success: function(data){
+                        if(statusPlace.querySelector('.status-message') != null){
+                            statusPlace.querySelector('.status-message').remove();
+                        }
+                        let elem = '<div class="good-msg status-message">'+data +'</div>';
+                        statusPlace.insertAdjacentHTML("afterbegin", elem);
+                    },
+                    error: function () {
+                        if(statusPlace.querySelector('.status-message') != null){
+                            statusPlace.querySelector('.status-message').remove();
+                        }
+                        let elem = '<div class="bad-msg status-message">Not saved</div>';
+                        statusPlace.insertAdjacentHTML("afterbegin", elem);
+                    },
+                })
+            }
+            
+            addListeners()
+            function addListeners(){
+                var inputElements = document.getElementsByClassName('toggle-modal');
+                if (inputElements.length != 0){
+                    for(var i = 0; i < inputElements.length; i++) {
+                        inputElements[i].addEventListener('click', (e) => {
+                            toggleModal();
+                        });
+                    }
+                }
+            }
+
+            function toggleModal(){
+                let modal = document.querySelector('#addnewgraph');
+                if (getComputedStyle(modal).display === 'none'){
+                    modal.classList.add("show")
+                    modal.style.display = "block"
+                }else{
+                    modal.classList.remove("show")
+                    modal.style.display = "none"
+                }
+
             }
         </script>
     </main>

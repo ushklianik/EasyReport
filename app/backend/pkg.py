@@ -195,7 +195,7 @@ def saveReportConfig(project, form):
     newConfig["graphs"] = []
     for key in form:
         if "graphs" in key:
-            newConfig["graphs"].append({ "position": int(key[8:]), "name" : form[key] })
+            newConfig["graphs"].append({ "position": int(key[7:]), "name" : form[key] })
         elif key != "csrf_token":
             newConfig[key] = form[key]
 

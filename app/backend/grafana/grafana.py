@@ -57,10 +57,10 @@ class grafana:
         for graph in graphs:
             if "comparison" in graph["dashId"]:
                 url = self.getGrafanaLink(start, stop, testName, graph["dashId"])
-                url = url+"&var-current_runId="+runId+"&var-baseline_runId="+baseline_runId+"&panelId="+graph["id"]+"&width="+graph["width"]+"&height="+graph["height"]
+                url = url+"&var-current_runId="+runId+"&var-baseline_runId="+baseline_runId+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
             else:
                 url = self.getGrafanaLink(start, stop, testName, graph["dashId"])
-                url = url+"&var-runId="+runId+"&panelId="+graph["id"]+"&width="+graph["width"]+"&height="+graph["height"]
+                url = url+"&var-runId="+runId+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
             try:   
                 response = requests.get(url=url, headers={ 'Authorization': 'Bearer ' + self.grafanaToken}, timeout=180)
                 if response.status_code == 200:

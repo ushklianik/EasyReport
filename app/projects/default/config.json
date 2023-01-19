@@ -51,7 +51,7 @@
                     "name": "Requests Per Second VS Transactions Per Second2"
                 }
             ],
-            "name": "b",
+            "name": "hello",
             "influxdbName": "influxdb",
             "grafanaName": "grafana",
             "azureName": "azure"
@@ -60,7 +60,7 @@
     "graphs": [
         {
             "name": "Requests Per Second VS Transactions Per Second",
-            "id": "91",
+            "viewPanel": "91",
             "dashId": "/render/d-solo/jmeter-results/jmeter-test-results",
             "filename": "requests-per-second",
             "width": "1000",
@@ -68,11 +68,19 @@
         },
         {
             "name": "Requests Per Second VS Transactions Per Second2",
-            "id": "91",
+            "viewPanel": "91",
             "dashId": "/render/d-solo/jmeter-results/jmeter-test-results",
             "filename": "requests-per-second",
             "width": "1000",
             "height": "400"
+        },
+        {
+            "name": "scsdc",
+            "viewPanel": "",
+            "dashId": "",
+            "fileName": "",
+            "width": "",
+            "height": ""
         }
     ]
 }

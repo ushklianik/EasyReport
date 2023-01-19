@@ -58,6 +58,7 @@ class reportConfigForm(FlaskForm):
 	azureName             = SelectField         (u'Azure config'     , validators=[DataRequired()])
 
 class graphForm(FlaskForm):
+	name                  = StringField         (u'Name'             , validators=[DataRequired()])
 	viewPanel             = StringField         (u'View panel id'    , validators=[DataRequired()])
 	dashId                = StringField         (u'Dashboard Id'     , validators=[DataRequired()])
 	fileName              = StringField         (u'File name'        , validators=[DataRequired()])
