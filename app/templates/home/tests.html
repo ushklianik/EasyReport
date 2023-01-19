@@ -2,10 +2,10 @@
 {% block title %} Azure {% endblock %} 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-<!-- <link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet"> -->
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/table.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/nfrs.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
     <main>
@@ -25,11 +25,7 @@
                         </label>  
                     </div>
                     <div id="data_filter" class="dataTables_filter" style="float: right;">
-                        <div class="input-group" style="height: 2.3rem;">
-                            <span class="input-group-text max-rows" id="basic-addon1"><span class="fas fa-search"></span></span>
-                            <input id="myInput" onkeyup="searchFunction()" type="search" class="form-control form-control-sm max-rows" placeholder="Search" aria-controls="data">
-                        </div>
-                        
+                        <input type="search" id="myInput" class="form-control-nfr" id="search"  placeholder="Search" onkeyup='searchFunction()' style="height: 2.3rem;">                        
                     </div>
                 </div>    
                 <div class="table" id="table-id">
@@ -64,7 +60,7 @@
                                     </ul>
                                 </div>
                                 <div style="display: inline-block;">
-                                    <button class="btn-secondary" type="button">Delete</button>
+                                    <a class="btn-secondary" type="button">Delete</a>
                                 </div>
                             </div>
                         </div>
