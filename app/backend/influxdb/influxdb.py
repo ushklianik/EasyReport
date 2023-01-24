@@ -48,7 +48,7 @@ class influxdb:
         except Exception as er:
             logging.warning(er)
             msg = {"status":"error", "message":er}
-        return msg
+        return self
 
     def closeInfluxdbConnection(self):
         try:

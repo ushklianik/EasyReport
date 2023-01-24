@@ -8,10 +8,10 @@ import plotly.express
 import json
 
 class htmlReport:
-    def __init__(self, project, runId):
+    def __init__(self, project, runId, influxdbName):
         self.project = project
         self.runId = runId
-        self.influxdbObj = influxdb(project).connectToInfluxDB()
+        self.influxdbObj = influxdb(project, influxdbName).connectToInfluxDB()
         self.queryApi = self.influxdbObj.influxdbConnection.query_api()
         self.report = {}
         self.report['runId'] = runId

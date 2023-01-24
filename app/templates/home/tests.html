@@ -59,7 +59,7 @@
                                     </a>
                                   
                                     <ul class="dropdown-menu">
-                                      <li><a class="dropdown-item" style="color: white" href="/test-results?runId={{ test.runId }}">Open report</a></li>
+                                      <li><a class="dropdown-item" style="color: white" href="/report?runId={{ test.runId }}">Open report</a></li>
                                       <li><a class="dropdown-item" style="color: white" href="#">Azure Wiki Report</a></li>
                                       <li><a class="dropdown-item" style="color: white" href="#">Generate HTML Report</a></li>
                                     </ul>
@@ -90,13 +90,24 @@
         <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="/static/assets/js/table.js"></script>
         <script>
-            var urlParams = new URLSearchParams(window.location.search);
+            let urlParams = new URLSearchParams(window.location.search);
             let queryString = urlParams.get('influxdb');
             if (queryString != null && queryString != ""){
                 options = document.getElementById("influxdbName").querySelectorAll("option");
                 for(var i = 0; i < options.length; i++) {
                     if( options[i].text == queryString){
                         options[i].selected = true;
+                    }
+                }
+            }
+            let tableRows = document.getElementsByClassName("table-row")
+            for(var i = 0; i < tableRows.length; i++) {
+                dropdownItems = tableRows[i].querySelectorAll(".dropdown-item")
+                for(var j = 0; j < dropdownItems.length; j++) {
+                    if(dropdownItems[j].text == "Open report"){
+                        if (queryString != null && queryString != ""){
+                            dropdownItems[j].href = dropdownItems[j].href + "&influxdbName=" + queryString
+                        }
                     }
                 }
             }

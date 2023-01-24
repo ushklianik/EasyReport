@@ -109,8 +109,8 @@ def getTests():
         tests = []
     return render_template('home/tests.html', tests=tests, msg=msg, influxdbNames=influxdbNames)
 
-@app.route('/test-results', methods=['GET'])
-def getTestResults():
+@app.route('/report', methods=['GET'])
+def getReport():
 
     # Check if user is logged in
     if not current_user.is_authenticated:
@@ -119,9 +119,10 @@ def getTestResults():
     # Get current project
     project = request.cookies.get('project')  
     runId = request.args.get('runId')
-    report = htmlReport(project, runId)
+    influxdbName = request.args.get('influxdbName')
+    report = htmlReport(project, runId, influxdbName)
     report.createReport()
-    return render_template('home/test-results.html', report=report.report)
+    return render_template('home/report.html', report=report.report)
 
 @app.route('/generate-az-report', methods=['GET'])
 def generateAzReport():
