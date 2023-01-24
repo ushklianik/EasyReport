@@ -96,12 +96,18 @@ def getTests():
     # Get current project
     project = request.cookies.get('project')  
 
-    influxdbObj = influxdb(project)
-    influxdbObj.connectToInfluxDB()
-    tests = influxdbObj.getTestLog()
-    tests = pkg.sortTests(tests)
+    influxdbNames = pkg.getInfluxdbConfigs(project)
 
-    return render_template('home/tests.html', tests=tests)
+    influxdbName = request.args.get('influxdb')
+
+    influxdbObj = influxdb(project=project, name=influxdbName)
+    influxdbObj.connectToInfluxDB()
+    msg = influxdbObj.getTestLog()
+    if(msg["status"] != "error"):
+        tests = pkg.sortTests(msg["message"])
+    else:
+        tests = []
+    return render_template('home/tests.html', tests=tests, msg=msg, influxdbNames=influxdbNames)
 
 @app.route('/test-results', methods=['GET'])
 def getTestResults():

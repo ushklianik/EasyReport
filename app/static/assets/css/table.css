@@ -116,6 +116,7 @@ h1,h2,h3,h4,h5,h6 {
 	color: white;
 	background-color: #313131;
 	border-color: #313131;
+	height: 100%;
 }
 
 .green {
@@ -149,5 +150,11 @@ h1,h2,h3,h4,h5,h6 {
 
 .form-select{
 	border-radius: 10px;
+}
+
+.filter-el{
+	float: right;
+	height:35px;
+	margin-left:15px;
 }
 

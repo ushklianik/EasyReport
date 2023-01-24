@@ -44,10 +44,11 @@ class influxdb:
         try:
             influxdbClient = InfluxDBClient(url=self.influxdbUrl, org=self.influxdbOrg, token=self.influxdbToken)
             self.influxdbConnection = influxdbClient
-            return self
+            msg = {"status":"created", "message":""}
         except Exception as er:
-            logging.warning('ERROR: connection to influxdb failed')
             logging.warning(er)
+            msg = {"status":"error", "message":er}
+        return msg
 
     def closeInfluxdbConnection(self):
         try:
@@ -58,13 +59,18 @@ class influxdb:
 
     def getTestLog(self):
         result = []
-        tables = self.influxdbConnection.query_api().query(custom.getTestLog)
-        for table in tables:
-            for row in table.records:
-                del row.values["result"]
-                del row.values["table"]
-                result.append(row.values)
-        return result
+        try:
+            tables = self.influxdbConnection.query_api().query(custom.getTestLog)
+            for table in tables:
+                for row in table.records:
+                    del row.values["result"]
+                    del row.values["table"]
+                    result.append(row.values)
+            msg = {"status":"good", "message":result}
+        except Exception as er:
+            logging.warning(er)
+            msg = {"status":"error", "message":er}
+        return msg
 
     def sendQuery(self, query):
         results = []

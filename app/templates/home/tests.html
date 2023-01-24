@@ -14,18 +14,23 @@
             <div class="main-body">
                 <div class="main-body-header">
                     <a class="text-white footer-logo-text">Test log</a>
-                    <div id="table-filter-count" style="float: right;">
-                        <label> 
-                            <select name="data_length" id="maxRows" class="form-select max-rows" aria-controls="data" style="height: 2.3rem;margin-left: 15px">
-                                <option selected value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                        </label>  
+                    <div id="table-filter-count" class="filter-el">
+                        <select name="data_length" id="maxRows" class="form-select-nfr max-rows" aria-controls="data">
+                            <option selected value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select> 
                     </div>
-                    <div id="data_filter" class="dataTables_filter" style="float: right;">
-                        <input type="search" id="myInput" class="form-control-nfr" id="search"  placeholder="Search" onkeyup='searchFunction()' style="height: 2.3rem;">                        
+                    <div id="data_filter" class="dataTables_filter filter-el">
+                        <input type="search" id="myInput" class="form-control-nfr" id="search"  placeholder="Search" onkeyup='searchFunction()'>                        
+                    </div>
+                    <div class="filter-el">
+                        <select class="form-select-nfr" id="influxdbName" name="influxdbName" onchange="window.location.href=this.value">
+                            {% for influxdb in influxdbNames %}
+                                <option value="/tests?influxdb={{ influxdb }}">{{ influxdb }}</option>
+                            {% endfor %} 
+                        </select>
                     </div>
                 </div>    
                 <div class="table" id="table-id">
@@ -85,6 +90,17 @@
         <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="/static/assets/js/table.js"></script>
         <script>
+            var urlParams = new URLSearchParams(window.location.search);
+            let queryString = urlParams.get('influxdb');
+            if (queryString != null && queryString != ""){
+                options = document.getElementById("influxdbName").querySelectorAll("option");
+                for(var i = 0; i < options.length; i++) {
+                    if( options[i].text == queryString){
+                        options[i].selected = true;
+                    }
+                }
+            }
+
             var properties = [
                 'runId',
                 'testName',
@@ -281,30 +297,29 @@
             }
 
             function searchFunction() {
-            // Declare variables
-            var input, filter, table, row, cell, i,j, txtValue;
-            input = document.getElementById("myInput");
-            filter = input.value.toUpperCase();
-            table = document.getElementById("table-content");
-            row = $('#table-content > div');
+                // Declare variables
+                var input, filter, table, row, cell, i,j, txtValue;
+                input = document.getElementById("myInput");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("table-content");
+                row = $('#table-content > div');
 
-            // Loop through all table rows, and hide those who don't match the search query
-            for (i = 0; i < row.length; i++) {
-                for (j = 0; j < row[i].getElementsByTagName("div").length; j++) {
-                cell = row[i].getElementsByTagName("div")[j];
-                if (cell) {
-                    txtValue = cell.textContent || cell.innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    row[i].style.display = "";
-                    break;
-                    } else {
-                    row[i].style.display = "none";
+                // Loop through all table rows, and hide those who don't match the search query
+                for (i = 0; i < row.length; i++) {
+                    for (j = 0; j < row[i].getElementsByTagName("div").length; j++) {
+                    cell = row[i].getElementsByTagName("div")[j];
+                    if (cell) {
+                        txtValue = cell.textContent || cell.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        row[i].style.display = "";
+                        break;
+                        } else {
+                        row[i].style.display = "none";
+                        }
+                    }
                     }
                 }
-                }
             }
-            }
-
           </script>
     </main>
     {% include 'includes/footer.html' %}
