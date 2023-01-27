@@ -113,40 +113,6 @@ li, ul {
     margin-top: 17px;
 }
 
-textarea {
-    overflow: auto;
-    resize: vertical;
-}
-
-textarea {
-    writing-mode: horizontal-tb !important;
-    font-family: monospace;
-    text-rendering: auto;
-    color: fieldtext;
-    letter-spacing: normal;
-    word-spacing: normal;
-    line-height: normal;
-    text-transform: none;
-    text-indent: 0px;
-    text-shadow: none;
-    display: inline-block;
-    text-align: start;
-    appearance: auto;
-    -webkit-rtl-ordering: logical;
-    resize: auto;
-    cursor: text;
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-    background-color: field;
-    column-count: initial !important;
-    margin: 0em;
-    border-width: 1px;
-    border-style: solid;
-    border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
-    border-image: initial;
-    padding: 2px;
-}
-
 
 .test-details-block {
     flex: 1;
@@ -247,6 +213,12 @@ textarea {
     width: 25%; 
 }
 
+.col-3 {
+    display: flex;
+    flex: 0 0 auto;
+    width: 35%; 
+}
+
 .input-search-group {
     position: relative;
     display: flex;
@@ -296,6 +268,7 @@ textarea {
     width: 350px;
     border-radius: 1rem;
     margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .graph-element {
@@ -357,4 +330,24 @@ textarea {
 
 .modal-title {
     margin-bottom: 0;
+}
+
+textarea  {
+    width: 100%;
+    background-color: #383838;
+    color: white;
+    border-radius: 10px;
+    resize: vertical;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-color: #4e4e4e;
+}
+
+.var-name {
+    font-size: 12px;
+}
+
+.var-description {
+    font-size: 12px;
+    color: #8e8e8e;
 }

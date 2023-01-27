@@ -2,58 +2,63 @@ from app.backend import pkg
 from app.backend.grafana.grafana import grafana
 from app.backend.influxdb.influxdb import influxdb
 from app.backend.azure.azure import azure
-from datetime import datetime
-import threading
+import re
 
 class azureport:
 
     def __init__(self, project, reportName):
         self.project        = project
         self.reportName     = reportName
-        self.influxdbName   = None
-        self.grafanaName    = None
-        self.azureName      = None
         self.setConfig()
         self.grafanaObj     = grafana(project=self.project, name=self.grafanaName)
         self.influxdbObj    = influxdb(project=self.project, name=self.influxdbName)
-        self.azureObj       = azure(project=self.project, name=self.azureName)
+        self.azureObj       = azure(project=self.project, name=self.outputName)
         self.progress       = 0
         self.status         = "Not started"
 
     def setConfig(self):
-        config = pkg.getReportConfigValues(self.project, self.reportName)
+        config = pkg.getFlowConfigValues(self.project, self.reportName)
         self.influxdbName = config["influxdbName"]
         self.grafanaName  = config["grafanaName"]
-        self.azureName    = config["azureName"]  
+        self.outputName   = config["outputName"]  
         self.graphs       = config["graphs"]
+        self.footer       = config["footer"]
+        self.header       = config["header"]
     
     def generateReport(self, current_runId, baseline_runId = None):
         self.influxdbObj.connectToInfluxDB()
-        self.current_humanStartTime = self.influxdbObj.getHumanStartTime(current_runId)
-        self.current_humanEndTime   = self.influxdbObj.getHumanEndTime(current_runId)
-        self.current_startTime = self.influxdbObj.getStartTime(current_runId)
-        self.current_endTime   = self.influxdbObj.getEndTime(current_runId)
-        self.current_startTmp  = self.influxdbObj.getStartTmp(current_runId)
-        self.current_endTmp    = self.influxdbObj.getEndTmp(current_runId)
-        self.testName = self.influxdbObj.getTestName(current_runId, self.current_startTime, self.current_endTime)
-        current_grafanaLink    = self.grafanaObj.getGrafanaTestLink(self.current_startTmp, self.current_endTmp, self.testName, current_runId)
-        if baseline_runId != None:
-            self.baseline_humanStartTime = self.influxdbObj.getHumanStartTime(baseline_runId)
-            self.baseline_humanEndTime   = self.influxdbObj.getHumanEndTime(baseline_runId)
-            self.baseline_startTime = self.influxdbObj.getStartTime(baseline_runId)
-            self.baseline_endTime   = self.influxdbObj.getEndTime(baseline_runId)
-            self.baseline_startTmp  = self.influxdbObj.getStartTmp(baseline_runId)
-            self.baseline_endTmp    = self.influxdbObj.getEndTmp(baseline_runId)
-            self.baseline_maxUsers = self.influxdbObj.getMaxActiveUsers(baseline_runId, self.baseline_startTime, self.baseline_endTime)
-            baseline_grafanaLink    = self.grafanaObj.getGrafanaTestLink(self.baseline_startTmp, self.baseline_endTmp, self.testName, baseline_runId)
 
-        self.current_maxUsers = self.influxdbObj.getMaxActiveUsers(current_runId, self.current_startTime, self.current_endTime)
+        self.current_startTimeInflux    = self.influxdbObj.getStartTime(current_runId)
+        self.current_endTimeInflux      = self.influxdbObj.getEndTime(current_runId)
+        self.current_startTimestamp     = self.influxdbObj.getStartTmp(current_runId)
+        self.current_endTimestamp       = self.influxdbObj.getEndTmp(current_runId)
+        self.testName                   = self.influxdbObj.getTestName(current_runId, self.current_startTimeInflux, self.current_endTimeInflux)
+
+        self.parameters = {}
+        self.parameters["testName"]                 = self.testName
+
+        self.parameters["current_startTime"]        = self.influxdbObj.getHumanStartTime(current_runId)
+        self.parameters["current_endTime"]          = self.influxdbObj.getHumanEndTime(current_runId)
+        self.parameters["current_grafanaLink"]      = self.grafanaObj.getGrafanaTestLink(self.current_startTimestamp, self.current_endTimestamp, self.testName, current_runId)
+        self.parameters["current_duration"]         = str(int(self.current_endTimestamp - self.current_startTimestamp))
+        self.parameters["current_vusers"]           = self.influxdbObj.getMaxActiveUsers(current_runId, self.current_startTimeInflux, self.current_endTimeInflux)
+        
+        if baseline_runId != None:
+            self.baseline_startTimeInflux           = self.influxdbObj.getStartTime(baseline_runId)
+            self.baseline_endTimeInflux             = self.influxdbObj.getEndTime(baseline_runId)
+            self.baseline_startTimestamp            = self.influxdbObj.getStartTmp(baseline_runId)
+            self.baseline_endTimestamp              = self.influxdbObj.getEndTmp(baseline_runId)
+
+            self.parameters["baseline_startTime"]   = self.influxdbObj.getHumanStartTime(baseline_runId)
+            self.parameters["baseline_endTime"]     = self.influxdbObj.getHumanEndTime(baseline_runId)
+            self.parameters["baseline_grafanaLink"] = self.grafanaObj.getGrafanaTestLink(self.baseline_startTimestamp, self.baseline_endTimestamp, self.testName, baseline_runId)
+            self.parameters["baseline_duration"]    = str(int(self.baseline_endTimestamp - self.baseline_startTimestamp))
+            self.parameters["baseline_vusers"]      = self.influxdbObj.getMaxActiveUsers(baseline_runId, self.baseline_startTimeInflux, self.baseline_endTimeInflux)
 
         self.status = "Collected data from InfluxDB"
         self.progress = 25
 
-        screenshots = self.grafanaObj.renderImage(self.graphs, self.current_startTime, self.current_endTime, self.testName, current_runId)
-
+        screenshots = self.grafanaObj.renderImage(self.graphs, self.current_startTimeInflux, self.current_endTimeInflux, self.testName, current_runId)
         self.status = "Rendered images in Grafana"
         self.progress = 50
 
@@ -64,23 +69,19 @@ class azureport:
         self.status = "Uploaded images to Azure"
         self.progress = 75
 
-        wikiPageName = str(self.current_maxUsers) + " users | Azure candidate | " + self.current_humanStartTime
+        wikiPageName = str(self.parameters["current_vusers"]) + " users | Azure candidate | " + self.parameters["current_startTime"]
         wikiPagePath = self.azureObj.getPath() + "/" + self.testName + "/" + wikiPageName
-        body = '''##Status: `To fill in manually`\n'''
-        body +='''
-[[_TOC_]]
+        
+        variables = re.findall(r"\$\{(.*?)\}", self.header)
+        for var in variables:
+            self.header = self.header.replace("${"+var+"}", str(self.parameters[var]))
+        
+        variables = re.findall(r"\$\{(.*?)\}", self.footer)
+        for var in variables:
+            self.footer = self.footer.replace("${"+var+"}", str(self.parameters[var]))
+     
+        body = self.header
 
-# Summary
- - To fill in manually
-
-# Test settings
-|vUsers | Duration | Start time | End time | Comments | Grafana dashboard |
-|--|--|--|--|--|--|--|--|
-|'''+str(self.current_maxUsers)+''' |'''+str(int(self.current_endTmp-self.current_startTmp))+''' sec |'''+str(self.current_humanStartTime)+''' |'''+str(self.current_humanEndTime)+''' | Current test | [Grafana link]('''+current_grafanaLink+''') |
-'''
-        if baseline_runId != None:
-            body +='''|'''+str(self.baseline_maxUsers)+''' |'''+str(int(self.current_endTmp-self.current_startTmp))+''' sec |'''+str(self.baseline_humanStartTime)+''' |'''+str(self.baseline_humanEndTime)+''' | Baseline test | [Grafana link]('''+baseline_grafanaLink+''') |
-            '''
         for idx in range(len(screenshots)):
             for screenshot in screenshots:
                 if idx == screenshot["position"]:
@@ -90,6 +91,8 @@ class azureport:
                     body = body + '''![image.png](/.attachments/''' + str(screenshot["filename"]) + ''')'''
                     body = body + '''\n'''
                     body = body + '''\n'''
+
+        body += self.footer
 
         self.azureObj.createOrUpdatePage(wikiPagePath, body)
 

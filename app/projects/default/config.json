@@ -23,12 +23,24 @@
                 "influxdbField": "responseTime",
                 "influxdbTestIdTag": "runId",
                 "isDefault": "y"
+            },
+            {
+                "name": "influxdb2",
+                "influxdbUrl": "http://localhost:8086",
+                "influxdbOrg": "ORG",
+                "influxdbToken": "w2sXp3SMwBFirht6HvGQRTh6L7kh1Y6tPknGibNuHYmVKuWvbELIrXiGMNaFKfSLHLAZjBpvF9YUdiekx2dk1A==",
+                "influxdbTimeout": 60000,
+                "influxdbBucket": "jmeter",
+                "influxdbMeasurement": "requestsRaw",
+                "influxdbField": "responseTime",
+                "influxdbTestIdTag": "runId",
+                "isDefault": "y"
             }
         ],
         "azure": [
             {
                 "name": "azure",
-                "personalAccessToken": "token",
+                "personalAccessToken": "vbl6cy3ubqicbujbjita532k2swdp53l6sdb6woytwucbahc5iya",
                 "wikiOrganizationUrl": "https://dev.azure.com/UladzislauShklianik",
                 "wikiProject": "DEMOPIPE",
                 "wikiIdentifier": "DEMOPIPE.wiki",
@@ -36,6 +48,15 @@
                 "appInsighsLogsServer": "v",
                 "appInsighsAppId": "v",
                 "appInsighsApiKey": "v"
+            }
+        ],
+        "conflwiki": [
+            {
+                "name": "conflwiki",
+                "personalAccessToken": "dmxhZG5uZW5AZ21haWwuY29tOm45YUNUdTdiNWxVVkpRMHYzblFCODNDQw==",
+                "wikiOrganizationUrl": "https://easyreport.atlassian.net/wiki",
+                "wikiParentId": "557057",
+                "wikiSpaceKey": "MFS"
             }
         ]
     },
@@ -51,10 +72,12 @@
                     "name": "Requests Per Second VS Transactions Per Second2"
                 }
             ],
-            "name": "hello",
-            "influxdbName": "influxdb",
+            "name": "demo",
+            "influxdbName": "influxdb2",
             "grafanaName": "grafana",
-            "azureName": "azure"
+            "outputName": "azure",
+            "header": "##Status: `To fill in manually`\r\n\r\n[[_TOC_]]\r\n\r\n# Summary\r\n - To fill in manually\r\n\r\n# Test settings\r\n|vUsers | Duration | Start time | End time | Comments | Grafana dashboard |\r\n|--|--|--|--|--|--|--|--|\r\n|${current_vusers}|${current_duration}|${current_startTime}|${current_endTime}| Current test | [Grafana link](${current_grafanaLink}) |\r\n",
+            "footer": "Some footer"
         }
     ],
     "graphs": [

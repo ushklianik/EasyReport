@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 from flask_wtf          import FlaskForm
 from flask_wtf.file     import FileField, FileRequired
-from wtforms            import StringField, PasswordField, FieldList, BooleanField, SelectField
+from wtforms            import StringField, PasswordField, FieldList, BooleanField, SelectField, TextAreaField
 from wtforms.validators import InputRequired, Email, DataRequired
 
 class LoginForm(FlaskForm):
@@ -55,7 +55,9 @@ class flowConfigForm(FlaskForm):
 	graphs                = FieldList           (StringField()                                    )
 	influxdbName          = SelectField         (u'Influxdb config'  , validators=[DataRequired()])
 	grafanaName           = SelectField         (u'Grafana config'   , validators=[DataRequired()])
-	azureName             = SelectField         (u'Azure config'     , validators=[DataRequired()])
+	outputName            = SelectField         (u'Output config'    , validators=[DataRequired()])
+	footer                = TextAreaField       (u'Footer'                                        )
+	header                = TextAreaField       (u'Header'                                        )
 
 class graphForm(FlaskForm):
 	name                  = StringField         (u'Name'             , validators=[DataRequired()])

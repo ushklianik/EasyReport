@@ -35,7 +35,7 @@ def flow():
     form = flowConfigForm(request.form)
     form.influxdbName.choices = pkg.getInfluxdbConfigs(project)
     form.grafanaName.choices  = pkg.getGrafanaConfigs(project)
-    form.azureName.choices    = pkg.getAzureConfigs(project)
+    form.outputName.choices   = pkg.getOutputConfigs(project)
     
     if form.validate_on_submit():
         msg = pkg.saveFlowConfig(project, request.form.to_dict())
@@ -50,7 +50,7 @@ def flow():
         form = flowConfigForm(output)
         form.influxdbName.choices = pkg.getInfluxdbConfigs(project)
         form.grafanaName.choices  = pkg.getGrafanaConfigs(project)
-        form.azureName.choices    = pkg.getAzureConfigs(project)
+        form.outputName.choices   = pkg.getOutputConfigs(project)
 
     return render_template('home/flow.html', form = form, flowConfig = flowConfig, graphs = graphs, msg = msg, formForGraphs = formForGraphs)
 

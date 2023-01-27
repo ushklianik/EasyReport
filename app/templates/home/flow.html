@@ -53,8 +53,8 @@
                                     <span class="circle-with-number">4</span>
                                 </div>
                                 <div>
-                                    <label for="azureName">Output name</label>
-                                    {{ form.azureName(class="form-select-nfr", style="width:250px") }}
+                                    <label for="outputName">Output name</label>
+                                    {{ form.outputName(class="form-select-nfr", style="width:250px") }}
                                 </div>
                             </div>
                         </div>
@@ -76,6 +76,49 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div style="margin-top: 30px;margin-left: 5px;">
+                                    <label>Available variables:</label>
+                                    <div>
+                                        <label class="var-name">${current_vusers}:</label>
+                                        <label class="var-description">Max number of threads</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${current_duration}:</label>
+                                        <label class="var-description">Duration of the test.</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${current_startTime}:</label>
+                                        <label class="var-description">Start datetime for the test.</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${current_endTime}:</label>
+                                        <label class="var-description">End datetime for the test.</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${current_grafanaLink}:</label>
+                                        <label class="var-description">Link to Grafana dashboard with test results.</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${baseline_vusers}:</label>
+                                        <label class="var-description">Max number of threads for baseline test (If specified).</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${baseline_duration}:</label>
+                                        <label class="var-description">Duration of the baseline test (If specified).</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${baseline_startTime}:</label>
+                                        <label class="var-description">Start datetime for the baseline test (If specified).</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${baseline_endTime}:</label>
+                                        <label class="var-description">End datetime for the baseline test (If specified).</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${baseline_grafanaLink}:</label>
+                                        <label class="var-description">Link to Grafana dashboard with baseline test results (If specified).</label>
+                                    </div>
+                                </div>
                                 <div style="margin-top: 30px;">
                                     <button class="btn-primary" type="submit" style="width: 70px;">Save</button>
                                     {% if flowConfig %}
@@ -88,7 +131,9 @@
                                     </button>
                                 </div>
                             </div>
-                            <div style="width:60%;display:flex;justify-content: center;">
+                            <div class="flex-direction-column flex-center-center" style="width:70%;margin-left:40px;">
+                                {{ form.header(wrap="off", rows="4") }}
+                                <!-- <textarea class="report-footer" rows="4" cols="50" wrap="hard"></textarea> -->
                                 <div id='wrapper' class='wrapper'> 
                                     {% for graph in form.graphs %}
                                         <div class="graph-group" aria-atomic="true">
@@ -98,6 +143,7 @@
                                         </div>
                                     {% endfor %}
                                 </div>
+                                {{ form.footer(wrap="off", rows="4") }}
                             </div>
                         </div>
                     </form>
@@ -246,6 +292,18 @@
                     modal.style.display = "none"
                 }
 
+            }
+
+            var textarea = document.querySelector('textarea');
+            textarea.addEventListener('keydown', autosize);            
+            function autosize(){
+                var el = this;
+                setTimeout(function(){
+                    el.style.cssText = 'height:auto; padding:0';
+                    // for box-sizing other than "content-box" use:
+                    // el.style.cssText = '-moz-box-sizing:content-box';
+                    el.style.cssText = 'height:' + el.scrollHeight + 'px';
+                },0);
             }
         </script>
     </main>

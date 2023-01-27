@@ -137,6 +137,17 @@ def getDefaultGrafana(project):
         if config["isDefault"] == "y":
             return config["name"]
 
+####################### OUTPUT:
+
+def getOutputConfigs(project):
+    result = []
+    fl = json.load(getJsonConfig(project))
+    for config in fl["integrations"]:
+        if config in ["azure","conflwiki"]:
+            for integration in fl["integrations"][config]:
+                result.append(integration["name"])
+    return result
+
 ####################### AZURE:
 
 def getAzureConfigs(project):
@@ -225,7 +236,7 @@ def getFlowConfigValuesInDict(project, flowConfig):
 def getFlowConfigValues(project, flowConfig):
     fl = json.load(getJsonConfig(project))
     output = {}
-    for item in fl["flowConfig"]:
+    for item in fl["flowConfigs"]:
         if item["name"] == flowConfig:
             for key in item:
                 if key == "graphs":
@@ -276,3 +287,11 @@ def sortTests(tests):
             test["endTime"] = datetime.strftime(test["endTime"], "%Y-%m-%d %I:%M:%S %p")
     tests.sort(key=startTime, reverse=True)
     return tests
+
+####################### CONFLUENCE:
+
+def getDefaultConfl(project):
+    fl = json.load(getJsonConfig(project))
+    for config in fl["integrations"]["conflwiki"]:
+        if config["isDefault"] == "y":
+            return config["name"]

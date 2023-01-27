@@ -52,14 +52,14 @@ class azure:
         for i in range(3):
             try:
                 response = requests.put(
-                url=self.wikiOrganizationUrl + "/" + self.wikiProject +"/_apis/wiki/wikis/"+self.wikiIdentifier+"/attachments?name="+name+"&api-version=6.0", headers=self.azureHeadersAttachments, data=image)
+                url=self.wikiOrganizationUrl + "/" + self.wikiProject +"/_apis/wiki/wikis/"+self.wikiIdentifier+"/attachments?name="+name+"&api-version=6.0", headers=self.azureHeadersAttachments, data=image) 
+                if response.status_code != 201:
+                    name = str(random.randint(1,100)) + name
+                elif response.status_code == 201:
+                    return name
             except Exception as er:
                 logging.warning('ERROR: uploading image to azure failed')
-                logging.warning(er)    
-            if response.status_code != 201:
-                name = str(random.randint(1,100)) + name
-            elif response.status_code == 201:
-                return name
+                logging.warning(er)   
     
     def putPage(self, path, pageContent):
         wiki_api_url = self.wikiOrganizationUrl + "/"+self.wikiProject+"/_apis/wiki/wikis/"+self.wikiIdentifier+"/pages?path="+path+"&api-version=6.0"
