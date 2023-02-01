@@ -40,7 +40,7 @@ class azureport:
         self.parameters["current_startTime"]        = self.influxdbObj.getHumanStartTime(current_runId)
         self.parameters["current_endTime"]          = self.influxdbObj.getHumanEndTime(current_runId)
         self.parameters["current_grafanaLink"]      = self.grafanaObj.getGrafanaTestLink(self.current_startTimestamp, self.current_endTimestamp, self.testName, current_runId)
-        self.parameters["current_duration"]         = str(int(self.current_endTimestamp - self.current_startTimestamp))
+        self.parameters["current_duration"]         = str(int((self.current_endTimestamp - self.current_startTimestamp)/1000))
         self.parameters["current_vusers"]           = self.influxdbObj.getMaxActiveUsers(current_runId, self.current_startTimeInflux, self.current_endTimeInflux)
         
         if baseline_runId != None:
@@ -52,13 +52,13 @@ class azureport:
             self.parameters["baseline_startTime"]   = self.influxdbObj.getHumanStartTime(baseline_runId)
             self.parameters["baseline_endTime"]     = self.influxdbObj.getHumanEndTime(baseline_runId)
             self.parameters["baseline_grafanaLink"] = self.grafanaObj.getGrafanaTestLink(self.baseline_startTimestamp, self.baseline_endTimestamp, self.testName, baseline_runId)
-            self.parameters["baseline_duration"]    = str(int(self.baseline_endTimestamp - self.baseline_startTimestamp))
+            self.parameters["baseline_duration"]    = str(int((self.baseline_endTimestamp - self.baseline_startTimestamp)/1000))
             self.parameters["baseline_vusers"]      = self.influxdbObj.getMaxActiveUsers(baseline_runId, self.baseline_startTimeInflux, self.baseline_endTimeInflux)
 
         self.status = "Collected data from InfluxDB"
         self.progress = 25
 
-        screenshots = self.grafanaObj.renderImage(self.graphs, self.current_startTimeInflux, self.current_endTimeInflux, self.testName, current_runId)
+        screenshots = self.grafanaObj.renderImageEncoded(self.graphs, self.current_startTimestamp, self.current_endTimestamp, self.testName, current_runId)
         self.status = "Rendered images in Grafana"
         self.progress = 50
 

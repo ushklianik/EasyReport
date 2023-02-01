@@ -46,7 +46,7 @@ class grafana:
         url = url+"&var-runId="+runId
         return url  
     
-    def renderImage(self, graphNames, start, stop, testName, runId, baseline_runId = None):
+    def renderImageEncoded(self, graphNames, start, stop, testName, runId, baseline_runId = None):
         graphs = []
         screenshots = []
         for graph in graphNames:
@@ -66,6 +66,33 @@ class grafana:
                 if response.status_code == 200:
                     image = base64.b64encode(response.content)
                     screenshots.append({"image": image, "position": graph["position"], "name": graph["name"]})
+                else:
+                    logging.info('ERROR: downloading image from Grafana failed, metric: ' + graph["name"])
+            except Exception as er:
+                logging.warning('ERROR: downloading image from Grafana failed')
+                logging.warning(er)
+        return screenshots
+
+    def renderImage(self, graphNames, start, stop, testName, runId, baseline_runId = None):
+        graphs = []
+        screenshots = []
+        for graph in graphNames:
+            graphJson = pkg.getGraph(self.project, graph["name"])
+            graphJson["position"] = graph["position"]
+            graphs.append(graphJson)
+
+        for graph in graphs:
+            if "comparison" in graph["dashId"]:
+                url = self.getGrafanaLink(start, stop, testName, graph["dashId"])
+                url = url+"&var-current_runId="+runId+"&var-baseline_runId="+baseline_runId+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
+            else:
+                url = self.getGrafanaLink(start, stop, testName, graph["dashId"])
+                url = url+"&var-runId="+runId+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
+            try:   
+                print(url)
+                response = requests.get(url=url, headers={ 'Authorization': 'Bearer ' + self.grafanaToken}, timeout=180)
+                if response.status_code == 200:
+                    screenshots.append({"image": response.content, "position": graph["position"], "name": graph["name"]})
                 else:
                     logging.info('ERROR: downloading image from Grafana failed, metric: ' + graph["name"])
             except Exception as er:

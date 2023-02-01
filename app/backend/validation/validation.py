@@ -208,12 +208,16 @@ class nfr:
     def calculateApdex(self, compResult):
         passed = 0
         failed = 0
-        for result in compResult:
-            if result["result"] == "PASSED":
-                passed += float(result["weight"])
-            else:
-                failed += float(result["weight"])
-        apdex = passed / (passed + failed) * 100
+        if "status" not in compResult:
+            for result in compResult:
+                if result["result"] == "PASSED":
+                    passed += float(result["weight"])
+                else:
+                    failed += float(result["weight"])
+            apdex = passed / (passed + failed) * 100
+        else:
+            apdex = 0
+            
         return int(apdex)
 
 

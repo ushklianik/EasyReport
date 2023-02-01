@@ -3,6 +3,7 @@ from app.backend import pkg
 from app.backend.influxdb.influxdb import influxdb
 from app.backend.reporting.html.htmlreport import htmlReport
 from app.backend.reporting.azurewiki.azureport import azureport
+from app.backend.reporting.confwiki.confwiki import confreport
 
 # Flask modules
 from flask                   import render_template, request, url_for, redirect
@@ -132,12 +133,30 @@ def generateAzReport():
         return redirect(url_for('login'))
 
     # Get current project
-    project = request.cookies.get('project')  
-    runId = request.args.get('runId')
+    project        = request.cookies.get('project')  
+    runId          = request.args.get('runId')
     baseline_runId = request.args.get('baseline_runId')
-    reportName = request.args.get('reportName')
+    reportName     = request.args.get('reportName')
 
     azreport = azureport(project, reportName)
     azreport.generateReport(runId, baseline_runId)
+    
+    return redirect(url_for('getTests'))
 
-    getTests()
+@app.route('/generate-confl-report', methods=['GET'])
+def generateConflReport():
+
+    # Check if user is logged in
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+
+    # Get current project
+    project        = request.cookies.get('project')  
+    runId          = request.args.get('runId')
+    baseline_runId = request.args.get('baseline_runId')
+    reportName     = request.args.get('reportName')
+
+    confl = confreport(project, reportName)
+    confl.generateReport(runId, baseline_runId)
+
+    return redirect(url_for('getTests'))

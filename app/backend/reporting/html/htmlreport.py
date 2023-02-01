@@ -147,6 +147,5 @@ class htmlReport:
         nfrObj = nfr(self.project)
         compResult = nfrObj.compareWithNFRs(appName = self.report['appName'], runId = self.report['runId'],start = self.report["startTimeStamp"], end = self.report["endTimeStamp"])
         self.report['nfrs'] = compResult
-        print(compResult)
         self.report['apdex'] = nfrObj.calculateApdex(compResult)
         self.influxdbObj.closeInfluxdbConnection()
