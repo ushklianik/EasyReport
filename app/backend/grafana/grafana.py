@@ -89,7 +89,6 @@ class grafana:
                 url = self.getGrafanaLink(start, stop, testName, graph["dashId"])
                 url = url+"&var-runId="+runId+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
             try:   
-                print(url)
                 response = requests.get(url=url, headers={ 'Authorization': 'Bearer ' + self.grafanaToken}, timeout=180)
                 if response.status_code == 200:
                     screenshots.append({"image": response.content, "position": graph["position"], "name": graph["name"]})

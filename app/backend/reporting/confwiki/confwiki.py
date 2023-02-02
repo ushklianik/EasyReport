@@ -67,6 +67,7 @@ class confreport:
             self.progress = 50
 
             response = self.conflObj.putPage(title=wikiPageName, content="")
+
             if "id" in response:
                 for screenshot in screenshots:
                     fileName = self.conflObj.putImageToConfl(screenshot["image"], screenshot["name"], pageId=response["id"])
