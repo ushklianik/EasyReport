@@ -5,7 +5,7 @@
                 "name": "grafana",
                 "grafanaServer": "http://127.0.0.1:3000",
                 "grafanaOrgId": "1",
-                "grafanaToken": "eyJrIjoiVnZqcGhKZU9RVkI5MEZpcEdMeGxzejRuc2xmOXV3aFgiLCJuIjoiZXIiLCJpZCI6MX0=",
+                "grafanaToken": "sql",
                 "grafanaDashboard": "/d/jmeter-results/jmeter-test-results",
                 "grafanaDashRenderPath": "/render/d-solo/jmeter-results/jmeter-test-results",
                 "grafanaDashRenderCompPath": "/render/d-solo/jmeter-comp/jmeter-load-test-comparison"
@@ -16,12 +16,12 @@
                 "name": "influxdb",
                 "influxdbUrl": "http://localhost:8086",
                 "influxdbOrg": "ORG",
-                "influxdbToken": "w2sXp3SMwBFirht6HvGQRTh6L7kh1Y6tPknGibNuHYmVKuWvbELIrXiGMNaFKfSLHLAZjBpvF9YUdiekx2dk1A==",
-                "influxdbTimeout": 60000,
+                "influxdbToken": "sql",
+                "influxdbTestIdTag": "runId",
+                "influxdbTimeout": "60000",
                 "influxdbBucket": "jmeter",
                 "influxdbMeasurement": "requestsRaw",
                 "influxdbField": "responseTime",
-                "influxdbTestIdTag": "runId",
                 "isDefault": "y"
             },
             {

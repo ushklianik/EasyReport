@@ -4,6 +4,7 @@ from werkzeug.datastructures import MultiDict
 import yaml
 from datetime import datetime
 import json
+from app.models import Credentials
 
 
 ####################### OTHER:
@@ -24,14 +25,32 @@ def saveNewConfig(project, fl):
 def getJsonConfig(project):
     pathToConfig = "./app/projects/" + project + "/config.json"
     if pt.isfile(pathToConfig) is False or pt.getsize(pathToConfig) == 0:
-            return {"status":"error", "message":"No config.json"}
-    else:   
-        return open(pathToConfig, 'r')  
+        saveNewConfig(project, {})
+    return open(pathToConfig, 'r')  
+
+def validateConfig(project, key1, key2 = None):
+    fl = json.load(getJsonConfig(project))
+    if key2 == None:
+        if key1 not in fl:
+            fl[key1] = []
+    else:
+        if key1 not in fl:
+            fl[key1] = {}
+            fl[key1][key2] = []
+        else:
+            if key2 not in fl[key1]:
+                fl[key1][key2] = []
+    saveNewConfig(project, fl)
 
 def getProjects():
     return getFilesInDir("./app/projects/") 
 
 def deleteConfig(project, config):
+    validateConfig(project, "integrations", "influxdb")
+    validateConfig(project, "integrations", "grafana")
+    validateConfig(project, "integrations", "azure")
+    validateConfig(project, "flowConfigs")
+
     fl = json.load(getJsonConfig(project))
 
     for idx, obj in enumerate(fl["integrations"]["influxdb"]):
@@ -56,27 +75,39 @@ def deleteConfig(project, config):
 
 def getInfluxdbConfigs(project):
     result = []
+    validateConfig(project, "integrations", "influxdb")
     fl = json.load(getJsonConfig(project))
     for config in fl["integrations"]["influxdb"]:
         result.append(config["name"])
     return result
 
 def getInfluxdbConfigValues(project, influxdbConfig):
+    validateConfig(project, "integrations", "influxdb")
     fl = json.load(getJsonConfig(project))
     output = MultiDict()
     for item in fl["integrations"]["influxdb"]:
         if item["name"] == influxdbConfig:
             for key in item:
-                output.add(key, item[key])
+                if item[key] == "sql":
+                    value = Credentials.get(key=key)
+                    output.add(key, value)
+                else:
+                    output.add(key, item[key])
     return output
 
 def saveInfluxDB(project, form):
+    validateConfig(project, "integrations", "influxdb")
     config_list = getInfluxdbConfigs(project)
     fl = json.load(getJsonConfig(project))
     newConfig = {}
     for key in form:
         if key != "csrf_token":
-            newConfig[key] = form[key]
+            if "Token" in key:
+                cred = Credentials(key=key, value=form[key])
+                cred.save()
+                newConfig[key] = "sql"
+            else:
+                newConfig[key] = form[key]
 
     if form["name"] not in config_list:
         fl["integrations"]["influxdb"].append(newConfig)
@@ -89,6 +120,7 @@ def saveInfluxDB(project, form):
     return "Influxdb added"
 
 def getDefaultInfluxdb(project):
+    validateConfig(project, "integrations", "influxdb")
     fl = json.load(getJsonConfig(project))
     for config in fl["integrations"]["influxdb"]:
         if config["isDefault"] == "y":
@@ -99,27 +131,39 @@ def getDefaultInfluxdb(project):
 
 def getGrafanaConfigs(project):
     result = []
+    validateConfig(project, "integrations", "grafana")
     fl = json.load(getJsonConfig(project))
     for config in fl["integrations"]["grafana"]:
         result.append(config["name"])
     return result
 
 def getGrafnaConfigValues(project, grafanaConfig):
+    validateConfig(project, "integrations", "grafana")
     fl = json.load(getJsonConfig(project))
     output = MultiDict()
     for item in fl["integrations"]["grafana"]:
         if item["name"] == grafanaConfig:
             for key in item:
-                output.add(key, item[key])
+                if item[key] == "sql":
+                    value = Credentials.get(key=key)
+                    output.add(key, value)
+                else:
+                    output.add(key, item[key])
     return output
 
 def saveGrafana(project, form):
+    validateConfig(project, "integrations", "grafana")
     config_list = getGrafanaConfigs(project)
     fl = json.load(getJsonConfig(project))
     newConfig = {}
     for key in form:
         if key != "csrf_token":
-            newConfig[key] = form[key]
+            if "Token" in key:
+                cred = Credentials(key=key, value=form[key])
+                cred.save()
+                newConfig[key] = "sql"
+            else:
+                newConfig[key] = form[key]
 
     if form["name"] not in config_list:
         fl["integrations"]["grafana"].append(newConfig)
@@ -132,6 +176,7 @@ def saveGrafana(project, form):
     return "Grafana added"
 
 def getDefaultGrafana(project):
+    validateConfig(project, "integrations", "grafana")
     fl = json.load(getJsonConfig(project))
     for config in fl["integrations"]["grafana"]:
         if config["isDefault"] == "y":
@@ -141,6 +186,8 @@ def getDefaultGrafana(project):
 
 def getOutputConfigs(project):
     result = []
+    validateConfig(project, "integrations", "azure")
+    validateConfig(project, "integrations", "conflwiki")
     fl = json.load(getJsonConfig(project))
     for config in fl["integrations"]:
         if config in ["azure","conflwiki"]:
@@ -152,27 +199,39 @@ def getOutputConfigs(project):
 
 def getAzureConfigs(project):
     result = []
+    validateConfig(project, "integrations", "azure")
     fl = json.load(getJsonConfig(project))
     for config in fl["integrations"]["azure"]:
         result.append(config["name"])
     return result
 
 def getAzureConfigValues(project, azureConfig):
+    validateConfig(project, "integrations", "azure")
     fl = json.load(getJsonConfig(project))
     output = MultiDict()
     for item in fl["integrations"]["azure"]:
         if item["name"] == azureConfig:
             for key in item:
-                output.add(key, item[key])
+                if item[key] == "sql":
+                    value = Credentials.get(key=key)
+                    output.add(key, value)
+                else:
+                    output.add(key, item[key])
     return output
 
 def saveAzure(project, form):
+    validateConfig(project, "integrations", "azure")
     config_list = getAzureConfigs(project)
     fl = json.load(getJsonConfig(project))
     newConfig = {}
     for key in form:
         if key != "csrf_token":
-            newConfig[key] = form[key]
+            if "Token" in key:
+                cred = Credentials(key=key, value=form[key])
+                cred.save()
+                newConfig[key] = "sql"
+            else:
+                newConfig[key] = form[key]
 
     if form["name"] not in config_list:
         fl["integrations"]["azure"].append(newConfig)
@@ -185,6 +244,7 @@ def saveAzure(project, form):
     return "Azure added"
 
 def getDefaultAzure(project):
+    validateConfig(project, "integrations", "azure")
     fl = json.load(getJsonConfig(project))
     for config in fl["integrations"]["azure"]:
         if config["isDefault"] == "y":
@@ -193,13 +253,17 @@ def getDefaultAzure(project):
 ####################### FLOW CONFIG:          
         
 def getFlowConfigs(project):
+    validateConfig(project, "flowConfigs")
     result = []
     fl = json.load(getJsonConfig(project))
-    for config in fl["flowConfigs"]:
-        result.append(config["name"])
-    return result
+    if "flowConfigs" in fl:
+        for config in fl["flowConfigs"]:
+            result.append(config["name"])
+        return result
+    else: return []
 
 def saveFlowConfig(project, form):
+    validateConfig(project, "flowConfigs")
     config_list = getFlowConfigs(project)
     fl = json.load(getJsonConfig(project))
     newConfig = {}
@@ -221,6 +285,7 @@ def saveFlowConfig(project, form):
     return "Config added"
 
 def getFlowConfigValuesInDict(project, flowConfig):
+    validateConfig(project, "flowConfigs")
     fl = json.load(getJsonConfig(project))
     output = MultiDict()
     for item in fl["flowConfigs"]:
@@ -234,6 +299,7 @@ def getFlowConfigValuesInDict(project, flowConfig):
     return output
 
 def getFlowConfigValues(project, flowConfig):
+    validateConfig(project, "flowConfigs")
     fl = json.load(getJsonConfig(project))
     output = {}
     for item in fl["flowConfigs"]:
@@ -250,13 +316,18 @@ def getFlowConfigValues(project, flowConfig):
 ####################### GRAPHS:  
 
 def getGraphs(project):
+    validateConfig(project, "graphs")
     result = []
     fl = json.load(getJsonConfig(project))
-    for config in fl["graphs"]:
-        result.append(config["name"])
-    return result
+    if "graphs" in fl:
+        for config in fl["graphs"]:
+            result.append(config["name"])
+        return result
+    else: return []
 
 def getGraph(project, name):
+    validateConfig(project, "graphs")
+    fl = getJsonConfig(project)
     fl = json.load(getJsonConfig(project))
     for graph in fl["graphs"]:
         if graph["name"] == name:
@@ -264,6 +335,7 @@ def getGraph(project, name):
     return "no graph"
 
 def saveGraph(project, form):
+    validateConfig(project, "graphs")
     graphList = getGraphs(project)
     if form["name"] in graphList:
         return "Such name alrwady exixts"
@@ -291,6 +363,7 @@ def sortTests(tests):
 ####################### CONFLUENCE:
 
 def getDefaultConfl(project):
+    validateConfig(project, "integrations", "conflwiki")
     fl = json.load(getJsonConfig(project))
     for config in fl["integrations"]["conflwiki"]:
         if config["isDefault"] == "y":
