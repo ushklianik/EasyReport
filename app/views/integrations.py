@@ -6,7 +6,7 @@ from flask_login             import current_user
 
 # App modules
 from app         import app
-from app.forms   import InfluxDBForm, grafanaForm, azureForm
+from app.forms   import InfluxDBForm, grafanaForm, azureForm, confluenceWikiForm, confluenceJiraForm
 from app.backend import pkg
 
 
@@ -21,11 +21,19 @@ def integrations():
     project = request.cookies.get('project')  
 
     # Get integrations configs
-    influxdbConfigs = pkg.getInfluxdbConfigs(project)
-    grafanaConfigs  = pkg.getGrafanaConfigs(project)
-    azureConfigs    = pkg.getAzureConfigs(project)
+    influxdbConfigs  = pkg.getInfluxdbConfigs(project)
+    grafanaConfigs   = pkg.getGrafanaConfigs(project)
+    azureConfigs     = pkg.getAzureConfigs(project)
+    conflWikiConfigs = pkg.getConflWikiConfigs(project)
+    conflJiraConfigs = pkg.getConflJiraConfigs(project)
 
-    return render_template('integrations/integrations.html', influxdbConfigs = influxdbConfigs, grafanaConfigs = grafanaConfigs, azureConfigs = azureConfigs)
+    return render_template('integrations/integrations.html', 
+                           influxdbConfigs  = influxdbConfigs, 
+                           grafanaConfigs   = grafanaConfigs, 
+                           azureConfigs     = azureConfigs, 
+                           conflWikiConfigs = conflWikiConfigs,
+                           conflJiraConfigs = conflJiraConfigs
+                           )
     
 @app.route('/influxdb', methods=['GET', 'POST'])
 def addInfluxdb():
@@ -170,5 +178,98 @@ def deleteAzureConfig():
 
     if azureConfig != None:
         pkg.deleteConfig(project, azureConfig)
+
+    return redirect(url_for('integrations'))
+
+@app.route('/confluence-wiki', methods=['GET', 'POST'])
+def addConfluenceWiki():
+
+    # Check if user is logged in
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+
+    # Declare the confluence wiki form
+    form = confluenceWikiForm(request.form)
+
+    # Flask message injected into the page, in case of any errors
+    msg = None
+
+    # Get current project
+    project = request.cookies.get('project')  
+
+    # get confluence wiki parameter if provided
+    conflWikiConfig = None
+    conflWikiConfig = request.args.get('conflWikiConfig')
+
+    if conflWikiConfig != None:
+        output = pkg.getConflWikiConfigValues(project, conflWikiConfig)
+        form   = confluenceWikiForm(output)
+                    
+    if form.validate_on_submit():
+        # assign form data to variables
+        msg = pkg.saveConfluenceWiki( project, request.form.to_dict() )
+
+    return render_template('integrations/confluence-wiki.html', form = form, msg = msg, conflWikiConfig = conflWikiConfig)
+
+
+@app.route('/delete/confluence-wiki', methods=['GET'])
+def deleteConfluenceWiki():
+
+    # get confluence wiki parameter if provided
+    conflWikiConfig = None
+    conflWikiConfig = request.args.get('conflWikiConfig')
+
+    # Get current project
+    project = request.cookies.get('project')  
+
+    if conflWikiConfig != None:
+        pkg.deleteConfig(project, conflWikiConfig)
+
+    return redirect(url_for('integrations'))
+
+@app.route('/confluence-jira', methods=['GET', 'POST'])
+def addConfluenceJira():
+
+    # Check if user is logged in
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+
+    # Declare the confluence jira form
+    # Sema: should be created in forms.py
+    form = confluenceJiraForm(request.form)
+
+    # Flask message injected into the page, in case of any errors
+    msg = None
+
+    # Get current project
+    project = request.cookies.get('project')  
+
+    # get confluence jira  parameter if provided
+    conflJiraConfig = None
+    conflJiraConfig = request.args.get('conflJiraConfig')
+
+    if conflJiraConfig != None:
+        output = pkg.getConflJiraConfigValues(project, conflJiraConfig)
+        form   = confluenceJiraForm(output)
+                    
+    if form.validate_on_submit():
+        # assign form data to variables
+        msg = pkg.saveConfluenceJira( project, request.form.to_dict() )
+
+    return render_template('integrations/confluence-jira.html', form = form, msg = msg, conflJiraConfig = conflJiraConfig)
+
+
+@app.route('/delete/confluence-jira', methods=['GET'])
+def deleteConfluenceJira():
+
+    # get confluence jira parameter if provided
+    conflJiraConfig = None
+    conflJiraConfig = request.args.get('conflJiraConfig')
+
+    # Get current project
+    project = request.cookies.get('project')  
+
+    if conflJiraConfig != None:
+        pkg.deleteConfig(project, conflJiraConfig)
 
     return redirect(url_for('integrations'))

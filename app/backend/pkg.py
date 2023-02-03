@@ -49,6 +49,8 @@ def deleteConfig(project, config):
     validateConfig(project, "integrations", "influxdb")
     validateConfig(project, "integrations", "grafana")
     validateConfig(project, "integrations", "azure")
+    validateConfig(project, "integrations", "conflwiki")
+    validateConfig(project, "integrations", "confljira")
     validateConfig(project, "flowConfigs")
 
     fl = json.load(getJsonConfig(project))
@@ -63,7 +65,15 @@ def deleteConfig(project, config):
 
     for idx, obj in enumerate(fl["integrations"]["azure"]):
         if obj["name"] == config:
-            fl["integrations"]["azure"].pop(idx)    
+            fl["integrations"]["azure"].pop(idx)  
+
+    for idx, obj in enumerate(fl["integrations"]["conflwiki"]):
+        if obj["name"] == config:
+            fl["integrations"]["conflwiki"].pop(idx)
+
+    for idx, obj in enumerate(fl["integrations"]["confljira"]):
+        if obj["name"] == config:
+            fl["integrations"]["confljira"].pop(idx)  
 
     for idx, obj in enumerate(fl["flowConfigs"]):
         if obj["name"] == config:
@@ -360,7 +370,7 @@ def sortTests(tests):
     tests.sort(key=startTime, reverse=True)
     return tests
 
-####################### CONFLUENCE:
+####################### CONFLUENCE WIKI:
 
 def getDefaultConfl(project):
     validateConfig(project, "integrations", "conflwiki")
@@ -368,3 +378,105 @@ def getDefaultConfl(project):
     for config in fl["integrations"]["conflwiki"]:
         if config["isDefault"] == "y":
             return config["name"]
+
+def getConflWikiConfigs(project):
+    result = []
+    validateConfig(project, "integrations", "conflwiki")
+    fl = json.load(getJsonConfig(project))
+    for config in fl["integrations"]["conflwiki"]:
+        result.append(config["name"])
+    return result
+
+def getConflWikiConfigValues(project, azureConfig):
+    validateConfig(project, "integrations", "conflwiki")
+    fl = json.load(getJsonConfig(project))
+    output = MultiDict()
+    for item in fl["integrations"]["conflwiki"]:
+        if item["name"] == azureConfig:
+            for key in item:
+                if item[key] == "sql":
+                    value = Credentials.get(key=key)
+                    print(value)
+                    output.add(key, value)
+                else:
+                    output.add(key, item[key])
+    return output
+
+def saveConfluenceWiki(project, form):
+    validateConfig(project, "integrations", "conflwiki")
+    config_list = getConflWikiConfigs(project)
+    fl = json.load(getJsonConfig(project))
+    newConfig = {}
+    for key in form:
+        if key != "csrf_token":
+            if "Token" in key:
+                cred = Credentials(key=key, value=form[key])
+                cred.save()
+                newConfig[key] = "sql"
+            else:
+                newConfig[key] = form[key]
+
+    if form["name"] not in config_list:
+        fl["integrations"]["conflwiki"].append(newConfig)
+    else: 
+        for idx, obj in enumerate(fl["integrations"]["conflwiki"]):
+            if obj["name"] == form["name"]:
+                fl["integrations"]["conflwiki"][idx] = newConfig
+    
+    saveNewConfig(project, fl)
+    return "Conflwiki added"
+
+####################### CONFLUENCE JIRA:
+
+def getDefaultConfl(project):
+    validateConfig(project, "integrations", "confljira")
+    fl = json.load(getJsonConfig(project))
+    for config in fl["integrations"]["confljira"]:
+        if config["isDefault"] == "y":
+            return config["name"]
+
+def getConflJiraConfigs(project):
+    result = []
+    validateConfig(project, "integrations", "confljira")
+    fl = json.load(getJsonConfig(project))
+    for config in fl["integrations"]["confljira"]:
+        result.append(config["name"])
+    return result
+
+def getConflJiraConfigValues(project, azureConfig):
+    validateConfig(project, "integrations", "confljira")
+    fl = json.load(getJsonConfig(project))
+    output = MultiDict()
+    for item in fl["integrations"]["confljira"]:
+        if item["name"] == azureConfig:
+            for key in item:
+                if item[key] == "sql":
+                    value = Credentials.get(key=key)
+                    output.add(key, value)
+                else:
+                    output.add(key, item[key])
+    return output
+
+def saveConfluenceJira(project, form):
+    validateConfig(project, "integrations", "confljira")
+    config_list = getConflJiraConfigs(project)
+    fl = json.load(getJsonConfig(project))
+    newConfig = {}
+    for key in form:
+        if key != "csrf_token":
+            if "Token" in key:
+                cred = Credentials(key=key, value=form[key])
+                cred.save()
+                newConfig[key] = "sql"
+            else:
+                newConfig[key] = form[key]
+
+    if form["name"] not in config_list:
+        fl["integrations"]["confljira"].append(newConfig)
+    else: 
+        for idx, obj in enumerate(fl["integrations"]["confljira"]):
+            if obj["name"] == form["name"]:
+                fl["integrations"]["confljira"][idx] = newConfig
+    
+    saveNewConfig(project, fl)
+    return "Confljira added"

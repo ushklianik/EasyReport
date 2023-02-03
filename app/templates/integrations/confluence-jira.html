@@ -1,0 +1,50 @@
+{% extends "layouts/base-fullscreen.html" %}
+{% block title %} Confluence Jira {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/integrations.css" rel="stylesheet">
+{% endblock stylesheets %}
+{% block content %}
+    <main>
+        <div class="main-background">
+            {% include 'includes/sidebar.html' %}
+            <div class="main-body">
+                <div class="main-body-header">
+                    <a>Confluence Jira configuration</a>
+                </div>
+                <div class="center-section">
+                    <a>Add your Confluence Jira configuration</a>
+                </div>
+                <div class="center-section">
+                    <form method="POST" action="/confluence-jira">
+                        {{ form.hidden_tag() }}
+                        <div class="center-section width-500">
+                            <label for="name">Name</label>
+                            {{ form.name(class="form-control") }}
+                            <!-- <label for="username">Username</label>
+                            {{ form.username(class="form-control") }}
+                            <label for="personalAccessToken">Personal access token</label>
+                            <div class="input-group">
+                                {{ form.personalAccessToken(class="form-control", type="password") }}
+                                <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
+                            </div>
+                            <label for="wikiOrganizationUrl">Wiki organization url</label>
+                            {{ form.wikiOrganizationUrl(class="form-control") }}
+                            <label for="wikiParentId">Wiki parent id</label>
+                            {{ form.wikiParentId(class="form-control") }}
+                            <label for="wikiSpaceKey">Wiki space key</label>
+                            {{ form.wikiSpaceKey(class="form-control") }}
+                            <button class="btn-primary" type="submit">Save</button> -->
+                            {% if conflJiraConfig %}
+                                <a href="/delete/confluence-jira?conflJiraConfig={{ conflJiraConfig }}" class="btn-secondary">Delete</a>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    {% include 'includes/footer.html' %}
+{% endblock content %}

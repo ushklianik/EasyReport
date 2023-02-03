@@ -19,7 +19,8 @@
                     <ul class="nav" id="tabs-text" role="tablist">
                         <li class="card-container-fx">
                             <a class="nav-link active" id="tabs-text-1-tab" data-bs-toggle="tab"
-                                href="#tabs-text-1" role="tab" aria-controls="tabs-text-1" aria-selected="true">InfluxDB
+                                href="#tabs-text-1" role="tab" aria-controls="tabs-text-1" 
+                                aria-selected="true">InfluxDB
                             </a>
                         </li>
                         <li class="card-container-fx">
@@ -34,6 +35,18 @@
                                 aria-selected="false">Azure
                             </a>
                         </li>
+                        <li class="card-container-fx">
+                            <a class="nav-link" id="tabs-text-4-tab" data-bs-toggle="tab"
+                                href="#tabs-text-4" role="tab" aria-controls="tabs-text-4"
+                                aria-selected="false">Confluence Wiki
+                            </a>
+                        </li>
+                        <li class="card-container-fx">
+                            <a class="nav-link" id="tabs-text-5-tab" data-bs-toggle="tab"
+                                href="#tabs-text-5" role="tab" aria-controls="tabs-text-5"
+                                aria-selected="false">Confluence Jira
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="center-section">
@@ -45,7 +58,6 @@
                                 <img src="/static/assets/img/blog/influxdb.jpg" class="rounded-top"
                                     alt="InfluxDB" height="200">
                                 <p>{{ influxdbConfig }}</p>
-                                <a>TO DO: Some info about config</a>
                                 <a href="/influxdb?influxdbConfig={{ influxdbConfig }}" class="btn-primary">Configure</a>
                             </div>
                             {% endfor %}
@@ -64,7 +76,6 @@
                                 <img src="/static/assets/img/blog/grafana.jpeg" class="rounded-top"
                                     alt="Grafana" height="200">
                                 <p>{{ grafanaConfig }}</p>
-                                <a>TO DO: Some info about test</a>
                                 <a href="/grafana?grafanaConfig={{ grafanaConfig }}" class="btn-primary">Configure</a>
                             </div>
                             {% endfor %}
@@ -83,7 +94,6 @@
                                 <img src="/static/assets/img/blog/azure.jpg" class="rounded-top"
                                     alt="Azure" height="200">
                                 <p>{{ azureConfig }}</p>
-                                <a>TO DO: Some info about test</a>
                                 <a href="/azure?azureConfig={{ azureConfig }}" class="btn-primary">Configure</a>
                             </div>
                             {% endfor %}
@@ -91,6 +101,42 @@
                                 <img src="/static/assets/img/blog/influxdb_new.jpg" class="rounded-top"
                                     alt="New" height="245">
                                 <a href="/azure" class="btn-primary">Add new config</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabs-text-4" role="tabpanel"
+                        aria-labelledby="tabs-text-4-tab">
+                        <div class="center-section">
+                            {% for conflWikiConfig in conflWikiConfigs %}
+                            <div class="card">
+                                <img src="/static/assets/img/blog/confluence.jpg" class="rounded-top"
+                                    alt="conflwiki" height="200">
+                                <p>{{ conflWikiConfig }}</p>
+                                <a href="/confluence-wiki?conflWikiConfig={{ conflWikiConfig }}" class="btn-primary">Configure</a>
+                            </div>
+                            {% endfor %}
+                            <div class="card">
+                                <img src="/static/assets/img/blog/influxdb_new.jpg" class="rounded-top"
+                                    alt="New" height="245">
+                                <a href="/confluence-wiki" class="btn-primary">Add new config</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabs-text-5" role="tabpanel"
+                        aria-labelledby="tabs-text-5-tab">
+                        <div class="center-section">
+                            {% for conflJiraConfig in conflJiraConfigs %}
+                            <div class="card">
+                                <img src="/static/assets/img/blog/confluence.jpg" class="rounded-top"
+                                    alt="confljira" height="200">
+                                <p>{{ conflJiraConfig }}</p>
+                                <a href="/confluence-jira?conflJiraConfig={{ conflJiraConfig }}" class="btn-primary">Configure</a>
+                            </div>
+                            {% endfor %}
+                            <div class="card">
+                                <img src="/static/assets/img/blog/influxdb_new.jpg" class="rounded-top"
+                                    alt="New" height="245">
+                                <a href="/confluence-jira" class="btn-primary">Add new config</a>
                             </div>
                         </div>
                     </div>

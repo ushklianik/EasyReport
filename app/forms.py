@@ -66,3 +66,15 @@ class graphForm(FlaskForm):
 	fileName              = StringField         (u'File name'        , validators=[DataRequired()])
 	width                 = StringField         (u'Panel width'      , validators=[DataRequired()])
 	height                = StringField         (u'Panel height'     , validators=[DataRequired()])
+
+class confluenceWikiForm(FlaskForm):
+	name                  = StringField         (u'Name'                   , validators=[DataRequired()])
+	personalAccessToken   = StringField         (u'personalAccessToken'    , validators=[DataRequired()])
+	wikiOrganizationUrl   = StringField         (u'wikiOrganizationUrl'    , validators=[DataRequired()])
+	wikiParentId          = StringField         (u'wikiParentId'           , validators=[DataRequired()])
+	wikiSpaceKey          = StringField         (u'wikiSpaceKey'           , validators=[DataRequired()])
+	username              = StringField         (u'username'               , validators=[DataRequired()])
+
+class confluenceJiraForm(FlaskForm):
+	name                  = StringField         (u'Name'                   , validators=[DataRequired()])
+

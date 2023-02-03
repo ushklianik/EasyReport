@@ -53,13 +53,14 @@
         "conflwiki": [
             {
                 "name": "conflwiki",
-                "personalAccessToken": "ATATT3xFfGF0JUcoa0lSvPtDELBeJSVE1V4QB5oukT7m2Y6SAZ1GnfH6bpuRkNJfkJs9PTsKcnIPoD8mLOF0L66FX5ixroFXcI8fyVBIOaFjeHZF7WUtxhWIF-FB6Z2XrGmUcszg6p8Wbzank99GOohsKI3ea8X2yIX5yOOPNFQngBL6Tvsv-Sg=6CB168A0",
+                "username": "vladnnen@gmail.com",
+                "personalAccessToken": "sql",
                 "wikiOrganizationUrl": "https://easyreport.atlassian.net/",
                 "wikiParentId": "557057",
-                "wikiSpaceKey": "MFS",
-                "username": "vladnnen@gmail.com"
+                "wikiSpaceKey": "MFS"
             }
-        ]
+        ],
+        "confljira": []
     },
     "flowConfigs": [
         {
