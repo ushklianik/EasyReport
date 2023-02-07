@@ -45,7 +45,7 @@
     --bs-gray-900: #212529;
     --bs-background: rgba(0, 0, 0, 0.12);
     --bs-background-dark: rgba(0, 0, 0, 0.2);
-    --bs-font-sans-serif: "Nunito Sans", sans-serif;
+    --bs-font-sans-serif: "Montserrat", sans-serif;
     --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --bs-gradient: radial-gradient(circle at -10% -10%, rgb(37, 35, 40) 0.5%, rgb(30, 30, 30) 90%);
 }
@@ -58,7 +58,7 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
     color: var(--bs-white); }
 
 a {
-    font-weight: 600;
+    font-weight: 500;
     color: var(--bs-white);
     transition: all 0.2s ease;
     text-decoration: none; }

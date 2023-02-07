@@ -49,7 +49,6 @@ class Credentials(db.Model):
         return str(self.id) + ' - ' + str(self.key)
 
     def save(self):
-
         # inject self into db session    
         db.session.add ( self )
 
@@ -65,3 +64,7 @@ class Credentials(db.Model):
             return result.value
         else:
             return "Token not found"
+
+    @classmethod
+    def delete(cls, key):
+        db.session.query(cls).filter_by(key=key).delete()
