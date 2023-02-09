@@ -158,6 +158,19 @@ def getDefaultGrafana(project):
         if config["isDefault"] == "y":
             return config["name"]
 
+####################### OUTPUT:
+
+def getOutputConfigs(project):
+    result = []
+    validateConfig(project, "integrations", "azure")
+    validateConfig(project, "integrations", "conflwiki")
+    fl = json.load(getJsonConfig(project))
+    for config in fl["integrations"]:
+        if config in ["azure","conflwiki"]:
+            for integration in fl["integrations"][config]:
+                result.append(integration["name"])
+    return result
+
 ####################### AZURE:
 
 def getAzureConfigs(project):

@@ -24,7 +24,7 @@ def flow():
     form = flowConfigForm(request.form)
     form.influxdbName.choices = pkg.getInfluxdbConfigs(project)
     form.grafanaName.choices  = pkg.getGrafanaConfigs(project)
-    form.outputName.choices   = pkg.getInfluxdbConfigs(project)
+    form.outputName.choices   = pkg.getOutputConfigs(project)
     if form.validate_on_submit():
         msg = pkg.saveFlowConfig(project, request.form.to_dict())
     # get grafana parameter if provided
@@ -35,7 +35,7 @@ def flow():
         form = flowConfigForm(output)
         form.influxdbName.choices = pkg.getInfluxdbConfigs(project)
         form.grafanaName.choices  = pkg.getGrafanaConfigs(project)
-        form.outputName.choices   = pkg.getInfluxdbConfigs(project)
+        form.outputName.choices   = pkg.getOutputConfigs(project)
     return render_template('home/flow.html', form = form, flowConfig = flowConfig, graphs = graphs, msg = msg, formForGraphs = formForGraphs)
 
 @app.route('/delete/flow', methods=['GET'])
