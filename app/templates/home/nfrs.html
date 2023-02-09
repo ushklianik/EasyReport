@@ -1,0 +1,98 @@
+{% extends "layouts/base-fullscreen.html" %}
+{% block title %} Azure {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
+{% endblock stylesheets %}
+{% block content %}
+    <main>
+        <div class="main-background">
+            {% include 'includes/sidebar.html' %}
+            <div class="main-body">
+                <div class="main-body-header">
+                    <a>NFRs</a>
+                </div> 
+                <div class="full-screen-section flex-direction-column" id="nfrs-accordion">
+                    <div class="marging-10">
+                        {% for nfrsItem in nfrsList %}
+                        <div class="nfrs-item">
+                            <button class="nfrs-button">
+                                <div class="grey-text-color" style="font-size: 1rem;padding-right: 8px;">App name:</div>{{ nfrsItem.appName }}
+                                <div class="grey-text-color" style="font-size: 1rem;padding-left: 32px;">Number of NFRs:</div>
+                                <div class="nfr-circle" id="{{ nfrsItem.appName }}"></div>
+                            </button>
+                            <div class="nfr-panel">
+                                <div class="nfrs-body">
+                                    <div>
+                                        <a class="btn-primary" style="width: 80px;" href="/nfr?appName={{ nfrsItem.appName }}" role="button">Edit</a>
+                                        <a class="btn-secondary" style="width: 80px;" href="/delete-nfr?appName={{ nfrsItem.appName }}" role="button">Delete</a>
+                                    </div>
+                                    <div class="nfr-table-wraper">
+                                        <div class="nfr-table">
+                                            <div class="nfr-table-header grey-text-color">Scope</div>
+                                            <div class="nfr-table-header grey-text-color">Metric</div>
+                                            <div class="nfr-table-header grey-text-color">Aggregation</div>
+                                            <div class="nfr-table-header grey-text-color">Operation</div>
+                                            <div class="nfr-table-header grey-text-color">Threshold</div>
+                                            <div class="nfr-table-header grey-text-color">Weight</div>
+                                        </div>
+                                        <div class="nfr-table">
+                                            {% for nfr in nfrsItem.rows %}
+                                                <div class="nfr-table-column">{{ nfr.scope }}</div>
+                                                <div class="nfr-table-column">
+                                                    <div>
+                                                        <span class="nfr-metric-name">{{ nfr.metric }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="nfr-table-column">{{ nfr.aggregation }}</div>
+                                                <div class="nfr-table-column">{{ nfr.operation }}</div>
+                                                <div class="nfr-table-column">{{ nfr.threshold }}</div>
+                                                <div class="nfr-table-column">{{ nfr.weight }}</div>
+                                            {% endfor %} 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %} 
+                    </div>
+                    <a class="btn-primary" href="/nfr" style="width: 150px;" role="button">Create new</a>
+                </div>
+            </div>
+        </div>
+        <script>
+            var nfrsJson = JSON.parse('{{ nfrsList | tojson }}');
+            var nfrsPanel = document.getElementById("nfrs-panel");
+            if(nfrsJson["status"] != null){
+                if(nfrsJson["status"] == "error"){
+                    if(nfrsPanel.querySelector('.status-message') != null){
+                        nfrsPanel.querySelector('.status-message').remove();
+                    }
+                    let elem = '<div class="bad-msg status-message">'+nfrsJson["message"]+'</div>';
+                    nfrsPanel.insertAdjacentHTML("beforeend", elem);
+                }
+            }
+            for(var i = 0; i < nfrsJson.length; i++) {
+                if(nfrsJson[i]["appName"] != null){
+                    var elem = document.getElementById(nfrsJson[i]["appName"]);
+                    elem.textContent = nfrsJson[i]["rows"].length;
+                }
+            }
+
+            var acc = document.getElementsByClassName("nfrs-button");
+            var i;
+
+            for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("nfr-panel-active");
+                var panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+                } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+                } 
+            });
+            }
+        </script>
+    </main>
+{% endblock content %}

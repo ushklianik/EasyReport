@@ -1,0 +1,25 @@
+[
+    {
+        "appName": "demoapp",
+        "rows": [
+            {
+                "scope": "all",
+                "metric": "response-time",
+                "aggregation": "avg",
+                "operation": ">",
+                "threshold": 400,
+                "weight": 50.0,
+                "name": "Avg response-time for all requests is greater than 400"
+            },
+            {
+                "scope": "each",
+                "metric": "response-time",
+                "aggregation": "avg",
+                "operation": ">",
+                "threshold": 50000,
+                "weight": 50.0,
+                "name": "Avg response-time for each requests is greater than 50000"
+            }
+        ]
+    }
+]

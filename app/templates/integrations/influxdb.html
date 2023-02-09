@@ -1,133 +1,55 @@
-<!DOCTYPE html>
-
-<html lang="en">
-
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-<!-- Favicon -->
-<link rel="apple-touch-icon" sizes="120x120" href="/static/assets/img/favicon/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/static/assets/img/favicon/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/static/assets/img/favicon/favicon-16x16.png">
-<link rel="manifest" href="/static/assets/img/favicon/site.webmanifest">
-<link rel="mask-icon" href="/static/assets/img/favicon/safari-pinned-tab.svg" color="#ffffff">
-<meta name="msapplication-TileColor" content="#ffffff">
-<meta name="theme-color" content="#ffffff">
-
-<!-- Fontawesome -->
-<link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
-
-<!-- Pixel CSS -->
-<link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet">
-
-<link type="text/css" href="/static/assets/css/sidebars.css" rel="stylesheet">
-
-</head>
-
-<body>
+{% extends "layouts/base-fullscreen.html" %}
+{% block title %} InfluxDB {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
+{% endblock stylesheets %}
+{% block content %}
     <main>
-        
-        {% block content %}
-
-        {% include 'includes/sidebar.html' %}
-
-        <div class="section section-md pb-0">
-            <div class="container">
-                <!-- Title -->
-                <div class="row">
-                    <div class="col">
-                        <h2 class="h5">Influxdb configuration</h2>
-                    </div>
-                    <span class="font-weight-normal">
-                        {% if msg %}
-                            {{ msg | safe }}
-                        {% else %}
-                            Add your InfluDB configuration
-                        {% endif %}                                  
-                    </span>
+        <div class="main-background">
+            {% include 'includes/sidebar.html' %}
+            <div class="main-body">
+                <div class="main-body-header">
+                    <a>InfluxDB configuration</a>
                 </div>
-                <!-- End of Title -->
-            </div>
-        </div>
-
-        <!-- Section -->
-        <div class="section section-md pt-4">
-            <div class="container">
-                <form method="POST" action="/influxdb">
-                    {{ form.hidden_tag() }}
-                    <div class="row mb-4 mb-lg-5">
-                        <div class="col-lg-4 col-sm-6">
-                            <!-- Form -->
-                            <div class="mb-4">
-                                <label for="influxdbName">Name</label>
-                                {{ form.influxdbName(class="form-control") }}
+                <div class="center-section">
+                    <h3>Add your InfluDB configuration</h3>
+                </div>
+                <div class="center-section">
+                    <form method="POST" action="/influxdb">
+                        {{ form.hidden_tag() }}
+                        <div class="center-section width-500">
+                            <label for="name">Name</label>
+                            {{ form.name(class="form-control") }}
+                            <label for="influxdbUrl">Url</label>
+                            {{ form.influxdbUrl(class="form-control") }}
+                            <label for="influxdbOrg">Org</label>
+                            {{ form.influxdbOrg(class="form-control") }}
+                            <label for="influxdbToken">Token</label>
+                            <div class="input-group">
+                                {{ form.influxdbToken(class="form-control", type="password") }}
+                                <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
                             </div>
-                            <!-- End of Form -->
-                            <!-- Form -->
-                            <div class="mb-4">
-                                <label for="influxdbUrl">Url</label>
-                                {{ form.influxdbUrl(class="form-control") }}
-                            </div>
-                            <!-- End of Form -->
-                            <!-- Form -->
-                            <div class="mb-4">
-                                <label for="influxdbOrg">Org</label>
-                                {{ form.influxdbOrg(class="form-control") }}
-                            </div>
-                            <!-- End of Form -->
-                            <!-- Form -->
-                            <div class="mb-3">
-                                <label for="influxdbToken">Token</label>
-                                <div class="input-group">
-                                    {{ form.influxdbToken(class="form-control", type="password") }}
-                                    <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
-                                </div>
-                            </div>
-                            <!-- End of Form -->
-            
-                            <button class="btn btn-primary" type="submit">Save</button>
+                            <label for="influxdbTestIdTag">Test Id Tag</label>
+                            {{ form.influxdbTestIdTag(class="form-control") }}
+                            <label for="influxdbTimeout">Timeout</label>
+                            {{ form.influxdbTimeout(class="form-control") }}
+                            <label for="influxdbBucket">Bucket</label>
+                            {{ form.influxdbBucket(class="form-control") }}
+                            <label for="influxdbMeasurement">Measurement</label>
+                            {{ form.influxdbMeasurement(class="form-control") }}
+                            <label for="influxdbField">Field</label>
+                            {{ form.influxdbField(class="form-control") }}
+                            <label for="isDefault">Default</label>
+                            {{ form.isDefault }}
+                            <button class="btn-primary" type="submit">Save</button>
                             {% if influxdbConfig %}
-                                <a href="/delete/influxdb?influxdbConfig={{ influxdbConfig }}" class="btn btn-danger">Delete</a>
-                            {% else %}
-                                <a class="btn btn-gray">Delete</a>
-                            {% endif %}   
+                                <a href="/delete/influxdb?influxdbConfig={{ influxdbConfig }}" class="btn-secondary">Delete</a>
+                            {% endif %}
                         </div>
-                        <div class="col-lg-4 col-sm-6">
-                            <!-- Form -->
-                            <div class="mb-4">
-                                <label for="influxdbTimeout">Timeout</label>
-                                {{ form.influxdbTimeout(class="form-control") }}
-                            </div>
-                            <!-- End of Form -->
-                            <!-- Form -->
-                            <div class="mb-4">
-                                <label for="influxdbBucket">Bucket</label>
-                                {{ form.influxdbBucket(class="form-control") }}
-                            </div>
-                            <div class="mb-4">
-                                <label for="influxdbMeasurement">Measurement</label>
-                                {{ form.influxdbMeasurement(class="form-control") }}
-                            </div>
-                            <div class="mb-4">
-                                <label for="influxdbField">Field</label>
-                                {{ form.influxdbField(class="form-control") }}
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-        <!-- End of Section -->
-
     </main>
-    
-    {% endblock content %}
-
-    {% include 'includes/footer.html' %}
-
-    {% include 'includes/scripts.html' %}
-
-    {% block javascripts %}{% endblock javascripts %}
-
-</body>
-</html>
+{% endblock content %}

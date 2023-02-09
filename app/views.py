@@ -1,167 +1,102 @@
 # Python modules
-import os, logging 
-from app.tools.tools import saveAzure, saveInfluxDB, getReports, getInfluxdbConfigs, getInfluxdbConfigValues, deleteInfluxdbConfig, getGrafanaConfigs, saveGrafana, getGrafnaConfigValues, deleteGrafana, getAzureConfigValues, deleteAzure, getAzureConfigs
-
+from app.backend import pkg
 # Flask modules
-from flask                   import render_template, request, url_for, redirect, flash
-from flask_login             import login_user, logout_user, current_user
-from werkzeug.exceptions     import HTTPException, NotFound
-from werkzeug.datastructures import MultiDict
-from jinja2                  import TemplateNotFound
-
+from flask       import render_template, request, url_for, redirect, make_response
 # App modules
-from app         import app, lm, db, bc
-from app.models  import Users
-from app.forms   import LoginForm, RegisterForm, InfluxDBForm, grafanaForm, azureForm
+from app         import app
+from app.forms   import flowConfigForm, graphForm, InfluxDBForm, grafanaForm, azureForm
+from app.backend.validation.validation import nfr
+from app.backend.reporting.azurewiki.azureport import azureport
+from app.backend.influxdb.influxdb import influxdb
+from app.backend.grafana.grafana import grafana
 
-# provide login manager with load_user callback
-@lm.user_loader
-def load_user(user_id):
-    return Users.query.get(int(user_id))
 
-# Logout user
-@app.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
 
-# Register a new user
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    
-    # declare the Registration Form
-    form = RegisterForm(request.form)
-
-    msg     = None
-    success = False
-
-    if request.method == 'GET': 
-
-        return render_template( 'accounts/register.html', form=form, msg=msg )
-
-    # check if both http method is POST and form is valid on submit
-    if form.validate_on_submit():
-
-        # assign form data to variables
-        username = request.form.get('username', '', type=str)
-        password = request.form.get('password', '', type=str) 
-        email    = request.form.get('email'   , '', type=str) 
-
-        # filter User out of database through username
-        user = Users.query.filter_by(user=username).first()
-
-        # filter User out of database through username
-        user_by_email = Users.query.filter_by(email=email).first()
-
-        if user or user_by_email:
-            msg = 'Error: User exists!'
-        
-        else:         
-
-            pw_hash = bc.generate_password_hash(password)
-
-            user = Users(username, email, pw_hash)
-
-            user.save()
-
-            msg     = 'User created, please <a href="' + url_for('login') + '">login</a>'     
-            success = True
-
-    else:
-        msg = 'Input error'     
-
-    return render_template( 'accounts/register.html', form=form, msg=msg, success=success )
-
-# Authenticate user
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    
-    # Declare the login form
-    form = LoginForm(request.form)
-
+@app.route('/flow', methods=['GET', 'POST'])
+def flow():
+    project = "default"
+    graphs = pkg.getGraphs(project)
     # Flask message injected into the page, in case of any errors
     msg = None
-
-    # check if both http method is POST and form is valid on submit
+    # Declare the graphs form
+    formForGraphs = graphForm(request.form)
+    # Declare the Influxdb form
+    form = flowConfigForm(request.form)
+    form.influxdbName.choices = pkg.getInfluxdbConfigs(project)
+    form.grafanaName.choices  = pkg.getGrafanaConfigs(project)
+    form.outputName.choices   = pkg.getInfluxdbConfigs(project)
     if form.validate_on_submit():
+        msg = pkg.saveFlowConfig(project, request.form.to_dict())
+    # get grafana parameter if provided
+    flowConfig = None
+    flowConfig = request.args.get('flowConfig')
+    if flowConfig != None:
+        output = pkg.getFlowConfigValuesInDict(project, flowConfig)
+        form = flowConfigForm(output)
+        form.influxdbName.choices = pkg.getInfluxdbConfigs(project)
+        form.grafanaName.choices  = pkg.getGrafanaConfigs(project)
+        form.outputName.choices   = pkg.getInfluxdbConfigs(project)
+    return render_template('home/flow.html', form = form, flowConfig = flowConfig, graphs = graphs, msg = msg, formForGraphs = formForGraphs)
 
-        # assign form data to variables
-        username = request.form.get('username', '', type=str)
-        password = request.form.get('password', '', type=str) 
+@app.route('/delete/flow', methods=['GET'])
+def deleteFlow():
+    # get azure parameter if provided
+    flowConfig = None
+    flowConfig = request.args.get('flowConfig')
+    project = "default"
+    if flowConfig != None:
+        pkg.deleteConfig(project, flowConfig)
+    return redirect(url_for('integrations'))
 
-        # filter User out of database through username
-        user = Users.query.filter_by(user=username).first()
+@app.route('/all-flows', methods=['GET'])
+def allFlows():
+    project = "default"
+    flows = pkg.getFlowConfigs(project)
+    return render_template('home/all-flows.html', flows = flows)
 
-        if user:
-            
-            if bc.check_password_hash(user.password, password):
-                login_user(user)
-                return redirect(url_for('index'))
-            else:
-                msg = "Wrong password. Please try again."
-        else:
-            msg = "Unknown user"
 
-    return render_template( 'accounts/login.html', form=form, msg=msg )
+@app.route('/', methods=['GET'])
+def index():
+    return render_template( 'home/index.html')
 
-# App main route + generic routing
-@app.route('/', defaults={'path': 'index.html'})
-@app.route('/<path>')
-def index(path):
-    
-    reports = getReports()
 
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    try:
-        
-        # Serve the file (if exists) from app/templates/FILE.html
-        return render_template( 'home/' + path, reports = reports)
-    
-    except TemplateNotFound:
-        return render_template('home/page-404.html'), 404
-    
-    except:
-        return render_template('home/page-500.html'), 500
+@app.route('/new-graph', methods=['POST'])
+def newGraph():
+    msg = None
+    project = "default"
+    if request.method == "POST":
+        msg = pkg.saveGraph(project, request.get_json())
+        print(request.get_json())
+    return msg
 
 
 @app.route('/integrations')
 def integrations():
-    influxdbConfigs = getInfluxdbConfigs()
-    grafanaConfigs  = getGrafanaConfigs()
-    azureConfigs = getAzureConfigs()
-    return render_template('integrations/integrations.html', influxdbConfigs = influxdbConfigs, grafanaConfigs = grafanaConfigs, azureConfigs = azureConfigs)
+    project = "default"
+    # Get integrations configs
+    influxdbConfigs  = pkg.getInfluxdbConfigs(project)
+    grafanaConfigs   = pkg.getGrafanaConfigs(project)
+    azureConfigs     = pkg.getAzureConfigs(project)
+    return render_template('integrations/integrations.html', 
+                           influxdbConfigs  = influxdbConfigs, 
+                           grafanaConfigs   = grafanaConfigs, 
+                           azureConfigs     = azureConfigs)
     
 @app.route('/influxdb', methods=['GET', 'POST'])
 def addInfluxdb():
-
     # Declare the Influxdb form
     form = InfluxDBForm(request.form)
-
     # Flask message injected into the page, in case of any errors
     msg = None
-
     # get influxdb parameter if provided
     influxdbConfig = None
     influxdbConfig = request.args.get('influxdbConfig')
-
+    project = "default"
     if influxdbConfig != None:
-        output = getInfluxdbConfigValues(influxdbConfig)
-        form = InfluxDBForm(output)
-                    
+        output = pkg.getInfluxdbConfigValues(project, influxdbConfig)
+        form = InfluxDBForm(output)                 
     if form.validate_on_submit():
-        # assign form data to variables
-        influxdbName        = request.form.get("influxdbName")
-        influxdbUrl         = request.form.get("influxdbUrl")
-        influxdbOrg         = request.form.get("influxdbOrg")
-        influxdbToken       = request.form.get("influxdbToken")
-        influxdbTimeout     = request.form.get("influxdbTimeout")
-        influxdbBucket      = request.form.get("influxdbBucket")
-        influxdbMeasurement = request.form.get("influxdbMeasurement")
-        influxdbField       = request.form.get("influxdbField")
-        msg = saveInfluxDB(influxdbName, influxdbUrl, influxdbOrg, influxdbToken, influxdbTimeout, influxdbBucket, influxdbMeasurement, influxdbField)
-
+        msg = pkg.saveInfluxDB(project, request.form.to_dict())
     return render_template('integrations/influxdb.html', form = form, msg = msg, influxdbConfig = influxdbConfig)
 
 @app.route('/delete/influxdb', methods=['GET'])
@@ -169,41 +104,28 @@ def deleteInfluxdb():
     # get influxdb parameter if provided
     influxdbConfig = None
     influxdbConfig = request.args.get('influxdbConfig')
-
+    project = "default"
     if influxdbConfig != None:
-        deleteInfluxdbConfig(influxdbConfig)
-
+        pkg.deleteConfig(project, influxdbConfig)
     return redirect(url_for('integrations'))
 
 
 @app.route('/grafana', methods=['GET', 'POST'])
 def addGrafana():
-
     # Declare the grafana form
     form = grafanaForm(request.form)
-
     # Flask message injected into the page, in case of any errors
     msg = None
-
+    project = "default"
     # get grafana parameter if provided
     grafanaConfig = None
     grafanaConfig = request.args.get('grafanaConfig')
-
     if grafanaConfig != None:
-        output = getGrafnaConfigValues(grafanaConfig)
-        form = grafanaForm(output)
-                    
+        output = pkg.getGrafnaConfigValues(project, grafanaConfig)
+        form = grafanaForm(output)               
     if form.validate_on_submit():
         # assign form data to variables
-        grafanaName               = request.form.get("grafanaName")
-        grafanaServer             = request.form.get("grafanaServer")
-        grafanaToken              = request.form.get("grafanaToken")
-        grafanaDashboard          = request.form.get("grafanaDashboard")
-        grafanaOrgId              = request.form.get("grafanaOrgId")
-        grafanaDashRenderPath     = request.form.get("grafanaDashRenderPath")
-        grafanaDashRenderCompPath = request.form.get("grafanaDashRenderCompPath")
-        msg = saveGrafana( grafanaName, grafanaServer, grafanaToken, grafanaDashboard, grafanaOrgId, grafanaDashRenderPath, grafanaDashRenderCompPath )
-
+        msg = pkg.saveGrafana( project, request.form.to_dict() )
     return render_template('integrations/grafana.html', form = form, msg = msg, grafanaConfig = grafanaConfig)
 
 
@@ -212,43 +134,28 @@ def deleteGrafanaConfig():
     # get grafana parameter if provided
     grafanaConfig = None
     grafanaConfig = request.args.get('grafanaConfig')
-
+    project = "default"
     if grafanaConfig != None:
-        deleteGrafana(grafanaConfig)
-
+        pkg.deleteConfig(project, grafanaConfig)
     return redirect(url_for('integrations'))
 
 
 @app.route('/azure', methods=['GET', 'POST'])
 def addAzure():
-
     # Declare the azure form
     form = azureForm(request.form)
-
     # Flask message injected into the page, in case of any errors
     msg = None
-
+    project = "default"
     # get azure parameter if provided
     azureConfig = None
     azureConfig = request.args.get('azureConfig')
-
     if azureConfig != None:
-        output = getAzureConfigValues(azureConfig)
-        form = azureForm(output)
-                    
+        output = pkg.getAzureConfigValues(project, azureConfig)
+        form = azureForm(output)            
     if form.validate_on_submit():
         # assign form data to variables
-        azureName            = request.form.get("azureName")
-        personalAccessToken  = request.form.get("personalAccessToken")
-        wikiOrganizationUrl  = request.form.get("wikiOrganizationUrl")
-        wikiProject          = request.form.get("wikiProject")
-        wikiIdentifier       = request.form.get("wikiIdentifier")
-        wikiPathToReport     = request.form.get("wikiPathToReport")
-        appInsighsLogsServer = request.form.get("appInsighsLogsServer")
-        appInsighsAppId      = request.form.get("appInsighsAppId")
-        appInsighsApiKey     = request.form.get("appInsighsApiKey")
-        msg = saveAzure( azureName, personalAccessToken, wikiOrganizationUrl, wikiProject, wikiIdentifier, wikiPathToReport, appInsighsLogsServer, appInsighsAppId, appInsighsApiKey )
-
+        msg = pkg.saveAzure( project, request.form.to_dict() )
     return render_template('integrations/azure.html', form = form, msg = msg, azureConfig = azureConfig)
 
 
@@ -257,8 +164,89 @@ def deleteAzureConfig():
     # get azure parameter if provided
     azureConfig = None
     azureConfig = request.args.get('azureConfig')
-
+    project = "default"
     if azureConfig != None:
-        deleteAzure(azureConfig)
-
+        pkg.deleteConfig(project, azureConfig)
     return redirect(url_for('integrations'))
+
+
+@app.route('/nfrs', methods=['GET'])
+def getNFRs():
+    project = "default"
+    nfrObject = nfr(project)
+    nfrsList = nfrObject.getNFRs()
+    return render_template('home/nfrs.html', nfrsList=nfrsList)
+
+@app.route('/nfr', methods=['GET', 'POST'])
+def getNFR(): 
+    nfrs = {}
+    project = "default"
+    if request.method == "POST":
+        nfrObject = nfr(project)
+        nfrObject.saveNFRs(request.get_json())
+    if request.args.get('appName') != None:
+        nfrObject = nfr(project)
+        nfrs = nfrObject.getNFR(request.args.get('appName'))
+    return render_template('home/nfr.html', nfrs=nfrs)
+
+@app.route('/delete-nfr', methods=['GET'])
+def deleteNFR():
+    nfrs = {}
+    project = "default"
+    if request.args.get('appName') != None:
+        nfrObject = nfr(project)
+        nfrs = nfrObject.deleteNFR(request.args.get('appName'))
+    return render_template('home/nfrs.html', nfrs=nfrs)
+
+@app.route('/generate-az-report', methods=['GET'])
+def generateAzReport():
+    # Get current project
+    project        = "default"
+    runId          = request.args.get('runId')
+    baseline_runId = request.args.get('baseline_runId')
+    reportName     = request.args.get('reportName')
+    azreport = azureport(project, reportName)
+    azreport.generateReport(runId, baseline_runId)
+    return redirect(url_for('index'))
+
+
+@app.route('/set-baseline', methods=['GET'])
+def setBaseline():
+    infludxObj = influxdb("default")
+    grafanaObj = grafana("default")
+    infludxObj.connectToInfluxDB()
+    if request.args.get('user') == "admin":
+        infludxObj.addOrUpdateTest(runId = request.args.get('runId'),status = request.args.get('status'), build = request.args.get('build'), testName = request.args.get('testName'))
+    resp = make_response("Done")
+    resp.headers['Access-Control-Allow-Origin'] = grafanaObj.grafanaServer
+    resp.headers['access-control-allow-methods'] = '*'
+    resp.headers['access-control-allow-credentials'] = 'true'
+    infludxObj.closeInfluxdbConnection()
+    return resp
+
+@app.route('/delete-influxdata', methods=['GET'])
+def influxDataDelete():
+    infludxObj = influxdb("default")
+    grafanaObj = grafana("default")
+    infludxObj.connectToInfluxDB()
+    runId  = request.args.get('runId')
+    start  = request.args.get('start')
+    end    = request.args.get('end')
+    status = request.args.get('status')
+    if request.args.get('user') == "admin":
+        if status == "delete_test_status":
+            infludxObj.deleteTestData("tests", runId)
+        elif status == "delete_test":
+            infludxObj.deleteTestData(infludxObj.influxdbMeasurement, runId)
+            infludxObj.deleteTestData("tests", runId)
+            infludxObj.deleteTestData("virtualUsers", runId)
+            infludxObj.deleteTestData("testStartEnd", runId)
+        elif status == "delete_timerange":
+            infludxObj.deleteTestData(infludxObj.influxdbMeasurement, runId, start, end)
+            infludxObj.deleteTestData("virtualUsers", runId, start, end)
+            infludxObj.deleteTestData("testStartEnd", runId, start, end)
+    resp = make_response("Done")
+    resp.headers['Access-Control-Allow-Origin'] = grafanaObj.grafanaServer
+    resp.headers['access-control-allow-methods'] = '*'
+    resp.headers['access-control-allow-credentials'] = 'true'
+    return resp
