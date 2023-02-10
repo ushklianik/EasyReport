@@ -58,7 +58,7 @@ class azureport:
         self.status = "Collected data from InfluxDB"
         self.progress = 25
 
-        screenshots = self.grafanaObj.renderImageEncoded(self.graphs, self.current_startTimestamp, self.current_endTimestamp, self.testName, current_runId)
+        screenshots = self.grafanaObj.renderImageEncoded(self.graphs, self.current_startTimestamp, self.current_endTimestamp, self.testName, current_runId, baseline_runId)
         self.status = "Rendered images in Grafana"
         self.progress = 50
 
@@ -70,7 +70,7 @@ class azureport:
         self.progress = 75
 
         wikiPageName = str(self.parameters["current_vusers"]) + " users | Azure candidate | " + self.parameters["current_startTime"]
-        wikiPagePath = self.azureObj.getPath() + "/" + self.testName + "/" + wikiPageName
+        wikiPagePath = self.azureObj.getPath() + wikiPageName
         
         variables = re.findall(r"\$\{(.*?)\}", self.header)
         for var in variables:

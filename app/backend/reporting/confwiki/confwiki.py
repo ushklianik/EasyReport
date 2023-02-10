@@ -62,7 +62,7 @@ class confreport:
 
             wikiPageName = str(self.parameters["current_vusers"]) + " users | " + self.parameters["current_startTime"]
 
-            screenshots = self.grafanaObj.renderImage(self.graphs, self.current_startTimestamp, self.current_endTimestamp, self.testName, current_runId)
+            screenshots = self.grafanaObj.renderImage(self.graphs, self.current_startTimestamp, self.current_endTimestamp, self.testName, current_runId, baseline_runId)
             self.status = "Rendered images in Grafana"
             self.progress = 50
 
