@@ -114,6 +114,7 @@ def saveInfluxDB(project, form):
         if key != "csrf_token":
             if "Token" in key:
                 cred = Credentials(key=key, value=form[key])
+                cred.delete(key)
                 cred.save()
                 newConfig[key] = "sql"
             else:
@@ -198,9 +199,10 @@ def getOutputConfigs(project):
     result = []
     validateConfig(project, "integrations", "azure")
     validateConfig(project, "integrations", "conflwiki")
+    validateConfig(project, "integrations", "confljira")
     fl = json.load(getJsonConfig(project))
     for config in fl["integrations"]:
-        if config in ["azure","conflwiki"]:
+        if config in ["azure","conflwiki","confljira"]:
             for integration in fl["integrations"][config]:
                 result.append(integration["name"])
     return result
@@ -428,7 +430,7 @@ def saveConfluenceWiki(project, form):
 
 ####################### CONFLUENCE JIRA:
 
-def getDefaultConfl(project):
+def getDefaultJira(project):
     validateConfig(project, "integrations", "confljira")
     fl = json.load(getJsonConfig(project))
     for config in fl["integrations"]["confljira"]:

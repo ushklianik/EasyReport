@@ -77,4 +77,8 @@ class confluenceWikiForm(FlaskForm):
 
 class confluenceJiraForm(FlaskForm):
 	name                  = StringField         (u'Name'                   , validators=[DataRequired()])
-
+	email                 = StringField         (u'Email'                  , validators=[DataRequired()])
+	password              = StringField         (u'Password'               , validators=[DataRequired()])
+	jiraOrganizationUrl   = StringField         (u'jiraOrganizationUrl'    , validators=[DataRequired()])
+	project               = StringField         (u'Project'                , validators=[DataRequired()])
+	epic                  = StringField         (u'Epic'                                                )

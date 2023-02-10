@@ -65,3 +65,7 @@ class Credentials(db.Model):
             return result.value
         else:
             return "Token not found"
+
+    @classmethod
+    def delete(cls, key):
+        db.session.query(cls).filter_by(key=key).delete()

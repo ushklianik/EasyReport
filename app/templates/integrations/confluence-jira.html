@@ -23,20 +23,20 @@
                         <div class="center-section width-500">
                             <label for="name">Name</label>
                             {{ form.name(class="form-control") }}
-                            <!-- <label for="username">Username</label>
-                            {{ form.username(class="form-control") }}
-                            <label for="personalAccessToken">Personal access token</label>
+                            <label for="email">Email</label>
+                            {{ form.email(class="form-control") }}
+                            <label for="password">Password</label>
                             <div class="input-group">
-                                {{ form.personalAccessToken(class="form-control", type="password") }}
+                                {{ form.password(class="form-control", type="password") }}
                                 <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
                             </div>
-                            <label for="wikiOrganizationUrl">Wiki organization url</label>
-                            {{ form.wikiOrganizationUrl(class="form-control") }}
-                            <label for="wikiParentId">Wiki parent id</label>
-                            {{ form.wikiParentId(class="form-control") }}
-                            <label for="wikiSpaceKey">Wiki space key</label>
-                            {{ form.wikiSpaceKey(class="form-control") }}
-                            <button class="btn-primary" type="submit">Save</button> -->
+                            <label for="jiraOrganizationUrl">Jira organization url</label>
+                            {{ form.jiraOrganizationUrl(class="form-control") }}
+                            <label for="project">Project</label>
+                            {{ form.project(class="form-control") }}
+                            <label for="epic">Epic</label>
+                            {{ form.epic(class="form-control") }}
+                            <button class="btn-primary" type="submit">Save</button>
                             {% if conflJiraConfig %}
                                 <a href="/delete/confluence-jira?conflJiraConfig={{ conflJiraConfig }}" class="btn-secondary">Delete</a>
                             {% endif %}
