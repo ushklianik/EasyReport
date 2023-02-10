@@ -15,5 +15,5 @@ app/static/assets/node_modules
 app/static/assets/yarn.lock
 app/static/assets/.temp
 app/logs
-*/config.json
-*/nfrs.json
+**/config.json
+**/nfrs.json
