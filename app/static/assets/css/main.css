@@ -19,7 +19,7 @@
     --bs-white: #fff;
     --bs-primary: #0d6efd;
     --bs-secondary: #6c757d;
-    --bs-tertiary: #1d58a5;
+    --bs-tertiary: #0d3161;
     --bs-primary-app: #EBF4F6;
     --bs-secondary-app: #424AA0;
     --bs-success: #198754;
@@ -195,19 +195,13 @@ img {
     padding: 10px;
     display: inline-flex;
     justify-content: center;
-    border-radius: 20px;
+    border-radius: 5px;
     color: var(--bs-white);
     background-color: var(--bs-tertiary);
     border-color: var(--bs-black);
     border: 0;
     transition: border-radius 0.2s ease-in;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
-    .btn-primary:hover {
-        border-radius: 10px;
-        color: var(--bs-white);
-        background-color: var(--bs-cyan);
-        border-color: var(--bs-dark); 
-}
 
 .btn-secondary {
     cursor: pointer;
@@ -215,18 +209,13 @@ img {
     padding: 10px;
     display: inline-flex;
     justify-content: center;
-    border-radius: 20px;
+    border-radius: 5px;
     border: 0;
     color: var(--bs-white);
     background-color: var(--bs-danger);
     border-color: var(--bs-dark);
     transition: border-radius 0.2s ease-in;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
-    .btn-secondary:hover {
-        border-radius: 10px;
-        color: var(--bs-white);
-        background-color: var(--bs-orange);
-        border-color: var(--bs-dark); }
 
 .btn-success {
     cursor: pointer;
@@ -234,18 +223,13 @@ img {
     padding: 10px;
     display: inline-flex;
     justify-content: center;
-    border-radius: 20px;
+    border-radius: 5px;
     color: var(--bs-black);
     border: 0;
     background-color: var(--bs-teal);
     border-color: var(--bs-dark);
     transition: border-radius 0.2s ease-in;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
-    .btn-success:hover {
-        border-radius: 10px;
-        color: var(--bs-white);
-        background-color: var(--bs-green);
-        border-color: var(--bs-dark); }
 
 .btn-warning {
     cursor: pointer;
@@ -253,81 +237,21 @@ img {
     padding: 10px;
     display: inline-flex;
     justify-content: center;
-    border-radius: 20px;
+    border-radius: 5px;
     border: 0;
     color: var(--bs-black);
     background-color: var(--bs-warning);
     border-color: var(--bs-dark);
     transition: border-radius 0.2s ease-in;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
-    .btn-warning:hover {
-        border-radius: 10px;
-        color: var(--bs-white);
-        background-color: var(--bs-orange);
-        border-color: var(--bs-black); }
 
 
 .btn-sidebar {
-      /* cursor: pointer; */
       margin: 15px 15px 0 15px;
-      /* padding: 10px; */
       display: inline-block;
       text-align: left;
-      /* border-radius: 20px; */
-      /* color: var(--bs-white); */
-      /* background-color: var(--bs-background); */
-      /* box-shadow: inset 0 1px 0 rgb(255 255 255 / 15%), 0 1px 1px rgb(23 31 56 / 8%); */
       width: 140px;
-      /* transition: border-radius 0.2s ease-in; */
-      /* border: 1px; */
-      /* border-color: var(--bs-black); */
   }
-
-.dropdown-menu {
-    position: absolute;
-    top: 100%;
-    z-index: 1000;
-    display: none;
-    min-width: 170px;
-    padding: 8px 0;
-    margin: 0;
-    font-size: 16px;
-    color: var(--bs-white);
-    text-align: left;
-    list-style: none;
-    background-color: var(--bs-background-dark);
-    background-clip: padding-box;
-    border: 1px solid var(--bs-white);
-    border-radius: 16px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; }
-    .dropdown-menu[data-bs-popper] {
-        left: 0;
-        margin-top: 2px; }
-    .dropdown-menu.show {
-        display: block; }
-
-.dropdown-item {
-    display: block;
-    width: 100%;
-    padding: 4px 16px;
-    clear: both;
-    font-weight: 400;
-    color: var(--bs-white);
-    text-align: inherit;
-    white-space: nowrap;
-    background-color: transparent;
-    border: 0; }
-    .dropdown-item:hover, .dropdown-item:focus {
-        color: var(--bs-black);
-        background-color: #F3F4F6; }
-    .dropdown-item.active, .dropdown-item:active {
-        color: var(--bs-dark);
-        text-decoration: none;
-        background-color: #D1D5DB; }
-    .dropdown-item.disabled, .dropdown-item:disabled {
-        color: var(--bs-gray-300);
-        pointer-events: none;
-        background-color: transparent; }
 
 /* ########### nfrs page ########### */
 

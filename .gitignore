@@ -16,6 +16,5 @@ app/static/assets/yarn.lock
 app/static/assets/.temp
 app/__pycache__
 app/tools/__pycache__
-app/integrations/grafana/
-app/integrations/influxdb/
-app/reports/
+**/config.json
+**/nfrs.json
