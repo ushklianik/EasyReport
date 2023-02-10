@@ -14,11 +14,6 @@ app/db.sqlite3
 app/static/assets/node_modules
 app/static/assets/yarn.lock
 app/static/assets/.temp
-app/__pycache__
-app/backend/__pycache__
-app/projects/default/integrations/azure/*.yaml
-app/projects/default/integrations/grafana/*.yaml
-app/projects/default/integrations/influxdb/*.yaml
-app/projects/default/metrics/*.json
-app/projects/default/reports/*.yaml
 app/logs
+*/config.json
+*/nfrs.json
