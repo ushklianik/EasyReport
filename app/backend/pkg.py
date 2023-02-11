@@ -112,12 +112,13 @@ def saveInfluxDB(project, form):
     newConfig = {}
     for key in form:
         if key != "csrf_token":
-            if "Token" in key:
-                cred = Credentials(key=key, value=form[key])
-                value = cred.save()
-                newConfig[key] = value
-            else:
-                newConfig[key] = form[key]
+            for key_word in ["Token", "password"]:
+                if key_word in key:
+                    cred = Credentials(key=key, value=form[key])
+                    value = cred.save()
+                    newConfig[key] = value
+                else:
+                    newConfig[key] = form[key]
 
     if form["name"] not in config_list:
         fl["integrations"]["influxdb"].append(newConfig)
@@ -168,12 +169,13 @@ def saveGrafana(project, form):
     newConfig = {}
     for key in form:
         if key != "csrf_token":
-            if "Token" in key:
-                cred = Credentials(key=key, value=form[key])
-                value = cred.save()
-                newConfig[key] = value
-            else:
-                newConfig[key] = form[key]
+            for key_word in ["Token", "password"]:
+                if key_word in key:
+                    cred = Credentials(key=key, value=form[key])
+                    value = cred.save()
+                    newConfig[key] = value
+                else:
+                    newConfig[key] = form[key]
 
     if form["name"] not in config_list:
         fl["integrations"]["grafana"].append(newConfig)
@@ -237,12 +239,13 @@ def saveAzure(project, form):
     newConfig = {}
     for key in form:
         if key != "csrf_token":
-            if "Token" in key:
-                cred = Credentials(key=key, value=form[key])
-                value = cred.save()
-                newConfig[key] = value
-            else:
-                newConfig[key] = form[key]
+            for key_word in ["Token", "password"]:
+                if key_word in key:
+                    cred = Credentials(key=key, value=form[key])
+                    value = cred.save()
+                    newConfig[key] = value
+                else:
+                    newConfig[key] = form[key]
 
     if form["name"] not in config_list:
         fl["integrations"]["azure"].append(newConfig)
@@ -409,12 +412,13 @@ def saveConfluenceWiki(project, form):
     newConfig = {}
     for key in form:
         if key != "csrf_token":
-            if "Token" in key:
-                cred = Credentials(key=key, value=form[key])
-                value = cred.save()
-                newConfig[key] = value
-            else:
-                newConfig[key] = form[key]
+            for key_word in ["Token", "password"]:
+                if key_word in key:
+                    cred = Credentials(key=key, value=form[key])
+                    value = cred.save()
+                    newConfig[key] = value
+                else:
+                    newConfig[key] = form[key]
 
     if form["name"] not in config_list:
         fl["integrations"]["conflwiki"].append(newConfig)
@@ -464,12 +468,13 @@ def saveConfluenceJira(project, form):
     newConfig = {}
     for key in form:
         if key != "csrf_token":
-            if "Token" in key:
-                cred = Credentials(key=key, value=form[key])
-                value = cred.save()
-                newConfig[key] = value
-            else:
-                newConfig[key] = form[key]
+            for key_word in ["Token", "password"]:
+                if key_word in key:
+                    cred = Credentials(key=key, value=form[key])
+                    value = cred.save()
+                    newConfig[key] = value
+                else:
+                    newConfig[key] = form[key]
 
     if form["name"] not in config_list:
         fl["integrations"]["confljira"].append(newConfig)

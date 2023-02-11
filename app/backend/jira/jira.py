@@ -20,22 +20,21 @@ class jira:
         else:   
             if name == None:
                 name = pkg.getDefaultJira(self.project)
-            with open(self.path, 'r') as fp:
-                fl = json.load(fp)
-                for config in fl["integrations"]["confljira"]:
-                    if config['name'] == name:
-                        self.name                 = config["name"]
-                        self.password             = config["password"]
-                        self.jiraOrganizationUrl  = config["jiraOrganizationUrl"]
-                        self.project              = config["project"]
-                        self.epic                 = config["epic"]
-                        self.email                = config["email"]
-                        self.authjira                = JIRA(
-                            basic_auth=(self.email, self.password),
-                            options={'server': self.jiraOrganizationUrl}
-                        )
-                    else:
-                        return {"status":"error", "message":"No such config name"}
+            config = pkg.getConflJiraConfigValues(self.project, name)
+            if "name" in config:
+                if config['name'] == name:
+                    self.name                 = config["name"]
+                    self.password             = config["password"]
+                    self.jiraOrganizationUrl  = config["jiraOrganizationUrl"]
+                    self.project              = config["project"]
+                    self.epic                 = config["epic"]
+                    self.email                = config["email"]
+                    self.authjira                = JIRA(
+                        basic_auth=(self.email, self.password),
+                        options={'server': self.jiraOrganizationUrl}
+                    )
+                else:
+                    return {"status":"error", "message":"No such config name"}
 
     def putPageToJira(self, title):
         issueDict = {
