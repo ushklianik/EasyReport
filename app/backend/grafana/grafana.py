@@ -18,19 +18,18 @@ class grafana:
         else:   
             if name == None:
                 name = pkg.getDefaultGrafana(self.project)
-            with open(self.path, 'r') as fp:
-                fl = json.load(fp)
-                for config in fl["integrations"]["grafana"]:
-                    if config['name'] == name:
-                        self.name                      = config["name"]
-                        self.grafanaServer             = config["grafanaServer"]
-                        self.grafanaToken              = config["grafanaToken"]
-                        self.grafanaDashboard          = config["grafanaDashboard"]
-                        self.grafanaOrgId              = config["grafanaOrgId"]
-                        self.grafanaDashRenderPath     = config["grafanaDashRenderPath"]
-                        self.grafanaDashRenderCompPath = config["grafanaDashRenderCompPath"]
-                    else:
-                        return {"status":"error", "message":"No such config name"}
+            config = pkg.getGrafnaConfigValues(self.project, name)
+            if "name" in config:
+                if config['name'] == name:
+                    self.name                      = config["name"]
+                    self.grafanaServer             = config["grafanaServer"]
+                    self.grafanaToken              = config["grafanaToken"]
+                    self.grafanaDashboard          = config["grafanaDashboard"]
+                    self.grafanaOrgId              = config["grafanaOrgId"]
+                    self.grafanaDashRenderPath     = config["grafanaDashRenderPath"]
+                    self.grafanaDashRenderCompPath = config["grafanaDashRenderCompPath"]
+                else:
+                    return {"status":"error", "message":"No such config name"}
 
     def getGrafanaLink(self, start, end, testName, dashId = None):
         if dashId != None:

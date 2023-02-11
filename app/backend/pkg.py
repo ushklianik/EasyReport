@@ -98,8 +98,8 @@ def getInfluxdbConfigValues(project, influxdbConfig):
     for item in fl["integrations"]["influxdb"]:
         if item["name"] == influxdbConfig:
             for key in item:
-                if item[key] == "sql":
-                    value = Credentials.get(key=key)
+                if "token_in_sql:" in item[key]:
+                    value = Credentials.get(key=item[key])
                     output.add(key, value)
                 else:
                     output.add(key, item[key])
@@ -114,9 +114,8 @@ def saveInfluxDB(project, form):
         if key != "csrf_token":
             if "Token" in key:
                 cred = Credentials(key=key, value=form[key])
-                cred.delete(key)
-                cred.save()
-                newConfig[key] = "sql"
+                value = cred.save()
+                newConfig[key] = value
             else:
                 newConfig[key] = form[key]
 
@@ -155,8 +154,8 @@ def getGrafnaConfigValues(project, grafanaConfig):
     for item in fl["integrations"]["grafana"]:
         if item["name"] == grafanaConfig:
             for key in item:
-                if item[key] == "sql":
-                    value = Credentials.get(key=key)
+                if "token_in_sql:" in item[key]:
+                    value = Credentials.get(key=item[key])
                     output.add(key, value)
                 else:
                     output.add(key, item[key])
@@ -171,8 +170,8 @@ def saveGrafana(project, form):
         if key != "csrf_token":
             if "Token" in key:
                 cred = Credentials(key=key, value=form[key])
-                cred.save()
-                newConfig[key] = "sql"
+                value = cred.save()
+                newConfig[key] = value
             else:
                 newConfig[key] = form[key]
 
@@ -224,8 +223,8 @@ def getAzureConfigValues(project, azureConfig):
     for item in fl["integrations"]["azure"]:
         if item["name"] == azureConfig:
             for key in item:
-                if item[key] == "sql":
-                    value = Credentials.get(key=key)
+                if "token_in_sql:" in item[key]:
+                    value = Credentials.get(key=item[key])
                     output.add(key, value)
                 else:
                     output.add(key, item[key])
@@ -240,8 +239,8 @@ def saveAzure(project, form):
         if key != "csrf_token":
             if "Token" in key:
                 cred = Credentials(key=key, value=form[key])
-                cred.save()
-                newConfig[key] = "sql"
+                value = cred.save()
+                newConfig[key] = value
             else:
                 newConfig[key] = form[key]
 
@@ -396,9 +395,8 @@ def getConflWikiConfigValues(project, azureConfig):
     for item in fl["integrations"]["conflwiki"]:
         if item["name"] == azureConfig:
             for key in item:
-                if item[key] == "sql":
-                    value = Credentials.get(key=key)
-                    print(value)
+                if "token_in_sql:" in item[key]:
+                    value = Credentials.get(key=item[key])
                     output.add(key, value)
                 else:
                     output.add(key, item[key])
@@ -413,8 +411,8 @@ def saveConfluenceWiki(project, form):
         if key != "csrf_token":
             if "Token" in key:
                 cred = Credentials(key=key, value=form[key])
-                cred.save()
-                newConfig[key] = "sql"
+                value = cred.save()
+                newConfig[key] = value
             else:
                 newConfig[key] = form[key]
 
@@ -452,8 +450,8 @@ def getConflJiraConfigValues(project, azureConfig):
     for item in fl["integrations"]["confljira"]:
         if item["name"] == azureConfig:
             for key in item:
-                if item[key] == "sql":
-                    value = Credentials.get(key=key)
+                if "token_in_sql:" in item[key]:
+                    value = Credentials.get(key=item[key])
                     output.add(key, value)
                 else:
                     output.add(key, item[key])
@@ -468,8 +466,8 @@ def saveConfluenceJira(project, form):
         if key != "csrf_token":
             if "Token" in key:
                 cred = Credentials(key=key, value=form[key])
-                cred.save()
-                newConfig[key] = "sql"
+                value = cred.save()
+                newConfig[key] = value
             else:
                 newConfig[key] = form[key]
 

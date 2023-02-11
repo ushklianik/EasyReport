@@ -19,30 +19,29 @@ class azure:
         else:   
             if name == None:
                 name = pkg.getDefaultAzure(self.project)
-            with open(self.path, 'r') as fp:
-                fl = json.load(fp)
-                for config in fl["integrations"]["azure"]:
-                    if config['name'] == name:
-                        self.name                 = config["name"]
-                        self.personalAccessToken  = config["personalAccessToken"]
-                        self.wikiOrganizationUrl  = config["wikiOrganizationUrl"]
-                        self.wikiProject          = config["wikiProject"]
-                        self.wikiIdentifier       = config["wikiIdentifier"]
-                        self.wikiPathToReport     = config["wikiPathToReport"]
-                        self.appInsighsLogsServer = config["appInsighsLogsServer"]
-                        self.appInsighsAppId      = config["appInsighsAppId"]
-                        self.appInsighsApiKey     = config["appInsighsApiKey"]
-                        self.azureHeadersAttachments = {
-                                'Accept': 'application/json',
-                                'Authorization': 'Basic ' + str(base64.b64encode(bytes(':'+ self.personalAccessToken, 'ascii')), 'ascii'),
-                                'Content-Type': 'application/octet-stream'
-                            }
-                        self.azureAuthorizationHeaders = {
-                                'Accept': 'application/json',
-                                'Authorization': 'Basic ' + str(base64.b64encode(bytes(':'+ self.personalAccessToken, 'ascii')), 'ascii')
-                            }
-                    else:
-                        return {"status":"error", "message":"No such config name"}
+            config = pkg.getAzureConfigValues(self.project, name)
+            if "name" in config:
+                if config['name'] == name:
+                    self.name                 = config["name"]
+                    self.personalAccessToken  = config["personalAccessToken"]
+                    self.wikiOrganizationUrl  = config["wikiOrganizationUrl"]
+                    self.wikiProject          = config["wikiProject"]
+                    self.wikiIdentifier       = config["wikiIdentifier"]
+                    self.wikiPathToReport     = config["wikiPathToReport"]
+                    self.appInsighsLogsServer = config["appInsighsLogsServer"]
+                    self.appInsighsAppId      = config["appInsighsAppId"]
+                    self.appInsighsApiKey     = config["appInsighsApiKey"]
+                    self.azureHeadersAttachments = {
+                            'Accept': 'application/json',
+                            'Authorization': 'Basic ' + str(base64.b64encode(bytes(':'+ self.personalAccessToken, 'ascii')), 'ascii'),
+                            'Content-Type': 'application/octet-stream'
+                        }
+                    self.azureAuthorizationHeaders = {
+                            'Accept': 'application/json',
+                            'Authorization': 'Basic ' + str(base64.b64encode(bytes(':'+ self.personalAccessToken, 'ascii')), 'ascii')
+                        }
+                else:
+                    return {"status":"error", "message":"No such config name"}
 
     def getPath(self):
         return self.wikiPathToReport

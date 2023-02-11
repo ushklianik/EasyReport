@@ -11,8 +11,11 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 
-if (os.path.exists("./app/logs/info.log") == False):
-    f = open("./app/logs/info.log", "w")
+if not os.path.exists("./app/logs"):
+    os.makedirs("./app/logs")
+if not os.path.exists("./app/logs/info.log"):
+    open("./app/logs/info.log", "w")
+
 logging.basicConfig(filename='./app/logs/info.log', level=logging.INFO)
 
 app.config.from_object('app.config.Config')
@@ -35,4 +38,5 @@ from app.views import auth
 from app.views import integrations
 from app.views import nfrs
 from app.views import other
+from app.views import grafana
 

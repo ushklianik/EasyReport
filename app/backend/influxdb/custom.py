@@ -1,5 +1,5 @@
-getTestLog = '''
-data = from(bucket: "jmeter")
+def getTestLogQuery(bucket):
+  return '''data = from(bucket: "'''+bucket+'''")
   |> range(start: 0, stop: now())
   |> filter(fn: (r) => r["_measurement"] == "virtualUsers")
   |> filter(fn: (r) => r["_field"] == "maxActiveThreads")
@@ -35,18 +35,18 @@ join(tables: {d1: join1, d2: endTime}, on: ["runId", "testName"])
   |> group(columns: ["1"])
 '''
 
-def getResponseTime(runId):
-  return '''from(bucket: "jmeter")
+def getResponseTime(runId, bucket):
+  return '''from(bucket: "'''+bucket+'''")
   |> range(start: 2022-11-28T09:44:47.47Z, stop: 2022-11-28T09:48:47.47Z)
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["_field"] == "responseTime")
-  |> filter(fn: (r) => r["runId"] == "R001")
+  |> filter(fn: (r) => r["runId"] == "'''+runId+'''")
   |> group(columns: ["_field"])
   |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)
   '''
 
-def getStartTime(runId):
-  return '''from(bucket: "jmeter")
+def getStartTime(runId, bucket):
+  return '''from(bucket: "'''+bucket+'''")
   |> range(start: -2y)
   |> filter(fn: (r) => r["_measurement"] == "virtualUsers")
   |> filter(fn: (r) => r["_field"] == "maxActiveThreads")
@@ -54,8 +54,8 @@ def getStartTime(runId):
   |> keep(columns: ["_time"])
   |> min(column: "_time")'''
 
-def getEndTime(runId):
-  return '''from(bucket: "jmeter")
+def getEndTime(runId, bucket):
+  return '''from(bucket: "'''+bucket+'''")
   |> range(start: -2y)
   |> filter(fn: (r) => r["_measurement"] == "virtualUsers")
   |> filter(fn: (r) => r["_field"] == "maxActiveThreads")
@@ -63,8 +63,8 @@ def getEndTime(runId):
   |> keep(columns: ["_time"])
   |> max(column: "_time")'''
 
-def getMaxActiveUsers_stats(runId, start, stop):
-  return '''from(bucket: "jmeter")
+def getMaxActiveUsers_stats(runId, start, stop, bucket):
+  return '''from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "virtualUsers")
   |> filter(fn: (r) => r["_field"] == "maxActiveThreads")
@@ -72,8 +72,8 @@ def getMaxActiveUsers_stats(runId, start, stop):
   |> keep(columns: ["_value"])
   |> max(column: "_value")'''
 
-def getAverageRPS_stats(runId, start, stop):
-  return '''from(bucket: "jmeter")
+def getAverageRPS_stats(runId, start, stop, bucket):
+  return '''from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["_field"] == "responseTime")
@@ -83,8 +83,8 @@ def getAverageRPS_stats(runId, start, stop):
   |> mean()'''
 
 
-def getErrorsPerc_stats(runId, start, stop):
-  return '''countResponseTime=from(bucket: "jmeter")
+def getErrorsPerc_stats(runId, start, stop, bucket):
+  return '''countResponseTime=from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["_field"] == "responseTime")
@@ -94,7 +94,7 @@ def getErrorsPerc_stats(runId, start, stop):
   |> toFloat()
   |> set(key: "key", value: "value")
 
-sumerrorCount=from(bucket: "jmeter")
+sumerrorCount=from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["_field"] == "errorCount")
@@ -113,8 +113,8 @@ join(
              _value: r._value_sumerrorCount / r._value_countResponseTime * 100.0        
     }))  '''
 
-def getAvgResponseTime_stats(runId, start, stop):
-  return '''from(bucket: "jmeter")
+def getAvgResponseTime_stats(runId, start, stop, bucket):
+  return '''from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["_field"] == "responseTime")
@@ -122,8 +122,8 @@ def getAvgResponseTime_stats(runId, start, stop):
   |> group(columns: ["_field"]) 
   |> mean()'''
 
-def get90ResponseTime_stats(runId, start, stop):
-  return '''from(bucket: "jmeter")
+def get90ResponseTime_stats(runId, start, stop, bucket):
+  return '''from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["_field"] == "responseTime")
@@ -132,8 +132,18 @@ def get90ResponseTime_stats(runId, start, stop):
   |> toFloat() 
   |> quantile(q: 0.90)'''
 
-def getAvgBandwidth_stats(runId, start, stop):
-  return '''sentBytes = from(bucket: "jmeter")
+def getMedianResponseTime_stats(runId, start, stop, bucket):
+  return '''from(bucket: "'''+bucket+'''")
+  |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
+  |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
+  |> filter(fn: (r) => r["_field"] == "responseTime")
+  |> filter(fn: (r) => r["runId"] == "'''+runId+'''")
+  |> group(columns: ["_field"]) 
+  |> toFloat() 
+  |> median()'''
+
+def getAvgBandwidth_stats(runId, start, stop, bucket):
+  return '''sentBytes = from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["_field"] == "sentBytes")
@@ -144,7 +154,7 @@ def getAvgBandwidth_stats(runId, start, stop):
   |> mean()
   |> set(key: "key", value: "value")
 
-receivedBytes = from(bucket: "jmeter")
+receivedBytes = from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["_field"] == "receivedBytes")
@@ -164,8 +174,8 @@ join(
              _value: r._value_sentBytes + r._value_receivedBytes     
     }))'''
 
-def getAvgResponseTime_graph(runId, start, stop):
-  return '''from(bucket: "jmeter")
+def getAvgResponseTime_graph(runId, start, stop, bucket):
+  return '''from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["_field"] == "responseTime")
@@ -174,8 +184,8 @@ def getAvgResponseTime_graph(runId, start, stop):
   |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)
   '''
 
-def getRPS_graph(runId, start, stop):
-  return '''from(bucket: "jmeter")
+def getRPS_graph(runId, start, stop, bucket):
+  return '''from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["_field"] == "responseTime")
@@ -185,8 +195,8 @@ def getRPS_graph(runId, start, stop):
   '''
 
 ################################################################# NFR requests
-def getAvgAllRT(runId, start, stop):
-  return '''from(bucket: "jmeter")
+def getAvgAllRT(runId, start, stop, bucket):
+  return '''from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["_field"] == "responseTime")
@@ -195,8 +205,8 @@ def getAvgAllRT(runId, start, stop):
   |> mean()
   '''
 
-def getAvgEachRT(runId, start, stop):
-  return '''from(bucket: "jmeter")
+def getAvgEachRT(runId, start, stop, bucket):
+  return '''from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["_field"] == "responseTime")
@@ -206,8 +216,8 @@ def getAvgEachRT(runId, start, stop):
   |> group()
   '''
 
-def getAvgRequestRT(runId, start, stop, requestName):
-  return '''from(bucket: "jmeter")
+def getAvgRequestRT(runId, start, stop, requestName, bucket):
+  return '''from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["_field"] == "responseTime")
@@ -217,8 +227,8 @@ def getAvgRequestRT(runId, start, stop, requestName):
   |> mean()
   '''
 
-def getAppName(runId, start, stop):
-  return '''from(bucket: "jmeter")
+def getAppName(runId, start, stop, bucket):
+  return '''from(bucket: "'''+bucket+'''")
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "requestsRaw")
   |> filter(fn: (r) => r["runId"] == "'''+runId+'''")
@@ -228,9 +238,9 @@ def getAppName(runId, start, stop):
   |> keep(columns: ["testName"])'''
   
 
-def fluxConstructor(appName, runId, start, stop, requestName = ''):
+def fluxConstructor(appName, runId, start, stop, bucket, requestName = ''):
   constr                                  = {}
-  constr["source"]                        = 'from(bucket: "jmeter")\n'
+  constr["source"]                        = 'from(bucket: "'+bucket+'")\n'
   constr["range"]                         = '|> range(start: '+str(start)+', stop: '+str(stop)+')\n'
   constr["_measurement"]                  = {}
   constr["_measurement"]["response-time"] = '|> filter(fn: (r) => r["_measurement"] == "requestsRaw")\n'
@@ -259,3 +269,11 @@ def fluxConstructor(appName, runId, start, stop, requestName = ''):
   return constr
 
   
+def getTestNames(runId, bucket):
+  return '''from(bucket: "'''+bucket+'''")
+  |> range(start: -1y)
+  |> filter(fn: (r) => r["_measurement"] == "tests")
+  |> filter(fn: (r) => r["runId"] == "'''+runId+'''")
+  |> group(columns: ["runId"])
+  |> count()
+  |> keep(columns: ["runId"])'''

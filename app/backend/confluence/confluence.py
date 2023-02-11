@@ -20,23 +20,22 @@ class confluence:
         else:   
             if name == None:
                 name = pkg.getDefaultConfl(self.project)
-            with open(self.path, 'r') as fp:
-                fl = json.load(fp)
-                for config in fl["integrations"]["conflwiki"]:
-                    if config['name'] == name:
-                        self.name                 = config["name"]
-                        self.personalAccessToken  = config["personalAccessToken"]
-                        self.wikiOrganizationUrl  = config["wikiOrganizationUrl"]
-                        self.wikiParentId         = config["wikiParentId"]
-                        self.wikiSpaceKey         = config["wikiSpaceKey"]
-                        self.username             = config["username"]
-                        self.confl                = Confluence(
-                            url=self.wikiOrganizationUrl,
-                            username=self.username,
-                            password=self.personalAccessToken
-                        )
-                    else:
-                        return {"status":"error", "message":"No such config name"}
+            config = pkg.getConflWikiConfigValues(self.project, name)
+            if "name" in config:
+                if config['name'] == name:
+                    self.name                 = config["name"]
+                    self.personalAccessToken  = config["personalAccessToken"]
+                    self.wikiOrganizationUrl  = config["wikiOrganizationUrl"]
+                    self.wikiParentId         = config["wikiParentId"]
+                    self.wikiSpaceKey         = config["wikiSpaceKey"]
+                    self.username             = config["username"]
+                    self.confl                = Confluence(
+                        url=self.wikiOrganizationUrl,
+                        username=self.username,
+                        password=self.personalAccessToken
+                    )
+                else:
+                    return {"status":"error", "message":"No such config name"}
 
     def putImageToConfl(self, image, name, pageId):
         name = name.replace(" ", "-") + ".png"
