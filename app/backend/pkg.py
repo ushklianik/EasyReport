@@ -1,7 +1,10 @@
-import os
 from os import path as pt
 from werkzeug.datastructures import MultiDict
 import json
+from datetime import datetime
+import os
+from dateutil import tz
+import shutil
 
 
 ####################### OTHER:
@@ -317,3 +320,26 @@ def saveGraph(project, form):
         
         saveNewConfig(project, fl)
         return "Graph added"
+
+def getHTMLReports(app_dir):
+    reports = []
+    builds = os.listdir(os.path.join(app_dir, 'templates', 'reports'))
+    for build in builds:
+        report_folders = os.listdir(os.path.join(app_dir, 'templates', 'reports', build))
+        for folder in report_folders:
+            date = datetime.strptime(folder, '%d-%m-%y_%H-%M').astimezone(tz.tzutc()).strftime('%d-%m-%y %H:%M %p')
+            url = "/reports/" + build + "/" + folder + "/index.html" 
+            reports.append({"build":build, "date":date, "folder":folder, "url":url})
+    reports = sorted(reports, key=lambda x: datetime.strptime(x['date'], '%d-%m-%y %H:%M %p'), reverse=True)
+
+    return reports
+
+def deleteHTMLReport(app_dir, build, report):
+    full_path = os.path.join(app_dir, 'templates', 'reports', build, report)
+    print(full_path)
+    if os.path.exists(full_path) and os.path.isdir(full_path):
+        shutil.rmtree(full_path, ignore_errors=True)
+    build_path = os.path.join(app_dir, 'templates', 'reports', build)
+    if os.path.exists(build_path) and os.path.isdir(build_path):
+        if not os.listdir(build_path):
+            os.rmdir(build_path)

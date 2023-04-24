@@ -1,0 +1,37 @@
+{% extends "layouts/base-fullscreen.html" %}
+{% block title %} Home {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
+{% endblock stylesheets %}
+{% block content %}
+    <main>
+        <div class="main-background">
+            {% include 'includes/sidebar.html' %}
+            <div class="main-body" style="padding: 40px;">
+               <table class="table-fill">
+                  <thead>
+                     <tr>
+                        <th class="text-left">Date</th>
+                        <th class="text-left">Build</th>
+                        <th class="text-left">URL</th>
+                        <th class="text-left">Actions</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for report in reports %}
+                        <tr>
+                           <td class="text-left">{{ report.date }}</td>
+                           <td class="text-left">{{ report.build }}</td>
+                           <td class="text-left"><a href="{{ report.url }}">{{ report.url }}</a></td>
+                           <td class="text-left">
+                              <a href="/delete/report?build={{ report.build }}&report={{ report.folder }}" class="btn-secondary" style="width: 70px;">Delete</a>
+                           </td>
+                        </tr>
+                     {% endfor %}
+                  </tbody>
+               </table>
+            </div>
+        </div>
+    </main>
+{% endblock content %}

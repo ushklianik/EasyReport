@@ -235,12 +235,3 @@ class nfr:
             apdex = 0
             
         return int(apdex)
-
-
-
-            
-            
-            
-
-
-    

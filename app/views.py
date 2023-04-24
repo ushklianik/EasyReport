@@ -1,7 +1,7 @@
 # Python modules
 from app.backend import pkg
 # Flask modules
-from flask       import render_template, request, url_for, redirect, make_response
+from flask       import render_template, request, url_for, redirect, make_response, send_from_directory, Response
 # App modules
 from app         import app
 from app.forms   import flowConfigForm, graphForm, InfluxDBForm, grafanaForm, azureForm
@@ -9,8 +9,9 @@ from app.backend.validation.validation import nfr
 from app.backend.reporting.azurewiki.azureport import azureport
 from app.backend.influxdb.influxdb import influxdb
 from app.backend.grafana.grafana import grafana
+import os
 
-
+app_dir = os.path.dirname(os.path.abspath(__file__))
 
 @app.route('/flow', methods=['GET', 'POST'])
 def flow():
@@ -54,11 +55,9 @@ def allFlows():
     flows = pkg.getFlowConfigs(project)
     return render_template('home/all-flows.html', flows = flows)
 
-
-@app.route('/', methods=['GET'])
-def index():
-    return render_template( 'home/index.html')
-
+@app.route('/', defaults={'path': 'index.html'})
+def index(path):
+    return render_template( 'home/' + path)
 
 @app.route('/new-graph', methods=['POST'])
 def newGraph():
@@ -68,7 +67,6 @@ def newGraph():
         msg = pkg.saveGraph(project, request.get_json())
         print(request.get_json())
     return msg
-
 
 @app.route('/integrations')
 def integrations():
@@ -200,6 +198,7 @@ def deleteNFR():
 
 @app.route('/generate-az-report', methods=['GET'])
 def generateAzReport():
+    grafanaObj = grafana("default")
     # Get current project
     project        = "default"
     runId          = request.args.get('runId')
@@ -207,7 +206,11 @@ def generateAzReport():
     reportName     = request.args.get('reportName')
     azreport = azureport(project, reportName)
     azreport.generateReport(runId, baseline_runId)
-    return redirect(url_for('index'))
+    resp = make_response("Done")
+    resp.headers['Access-Control-Allow-Origin'] = grafanaObj.grafanaServer
+    resp.headers['access-control-allow-methods'] = '*'
+    resp.headers['access-control-allow-credentials'] = 'true'
+    return resp
 
 
 @app.route('/set-baseline', methods=['GET'])
@@ -235,18 +238,38 @@ def influxDataDelete():
     status = request.args.get('status')
     if request.args.get('user') == "admin":
         if status == "delete_test_status":
-            infludxObj.deleteTestData("tests", runId)
+            infludxObj.deleteTestData(measurement = "tests", runId = runId)
         elif status == "delete_test":
-            infludxObj.deleteTestData(infludxObj.influxdbMeasurement, runId)
-            infludxObj.deleteTestData("tests", runId)
-            infludxObj.deleteTestData("virtualUsers", runId)
-            infludxObj.deleteTestData("testStartEnd", runId)
+            infludxObj.deleteTestData(measurement = infludxObj.influxdbMeasurement, runId = runId)
+            infludxObj.deleteTestData(measurement = "tests", runId = runId)
+            infludxObj.deleteTestData(measurement = "virtualUsers", runId = runId)
+            infludxObj.deleteTestData(measurement = "testStartEnd", runId = runId)
         elif status == "delete_timerange":
-            infludxObj.deleteTestData(infludxObj.influxdbMeasurement, runId, start, end)
-            infludxObj.deleteTestData("virtualUsers", runId, start, end)
-            infludxObj.deleteTestData("testStartEnd", runId, start, end)
+            infludxObj.deleteTestData(measurement = infludxObj.influxdbMeasurement, runId = runId, start = start, end = end)
+            infludxObj.deleteTestData(measurement = "virtualUsers", runId = runId, start = start, end = end)
+            infludxObj.deleteTestData(measurement = "testStartEnd", runId = runId, start = start, end = end)
+            infludxObj.deleteTestData(measurement = "lighthouse", start = start, end = end)
+            infludxObj.deleteTestData(measurement = "timingapi", start = start, end = end)
     resp = make_response("Done")
     resp.headers['Access-Control-Allow-Origin'] = grafanaObj.grafanaServer
     resp.headers['access-control-allow-methods'] = '*'
     resp.headers['access-control-allow-credentials'] = 'true'
     return resp
+
+@app.route('/client-side', methods=['GET'])
+def clientSide():
+    reports = pkg.getHTMLReports(app_dir)
+    return render_template('home/client-side.html', reports=reports)
+
+
+@app.route('/reports/<path:path>')
+def serve_report(path):
+    full_path = os.path.join(app_dir, 'templates', 'reports', path)
+    return send_from_directory(os.path.dirname(full_path), os.path.basename(full_path))
+
+@app.route('/delete/report', methods=['GET'])
+def deleteReport():
+    report  = request.args.get('report')
+    build  = request.args.get('build')
+    pkg.deleteHTMLReport(app_dir, build, report)
+    return redirect(url_for('clientSide'))

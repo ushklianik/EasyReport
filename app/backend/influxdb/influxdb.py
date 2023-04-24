@@ -43,7 +43,7 @@ class influxdb:
 
     def connectToInfluxDB(self):
         try:
-            influxdbClient = InfluxDBClient(url=self.influxdbUrl, org=self.influxdbOrg, token=self.influxdbToken)
+            influxdbClient = InfluxDBClient(url=self.influxdbUrl, org=self.influxdbOrg, token=self.influxdbToken, timeout=int(self.influxdbTimeout))
             self.influxdbConnection = influxdbClient
             msg = {"status":"created", "message":""}
         except Exception as er:
@@ -74,7 +74,7 @@ class influxdb:
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         for fluxTable in fluxTables:
             for fluxRecord in fluxTable:               
-                tmp = datetime.strftime(fluxRecord['_time'].astimezone(self.tmz), "%Y-%m-%d %I:%M:%S %p") 
+                tmp = datetime.strftime(fluxRecord['_time'].astimezone(self.tmz), "%d-%m-%Y %I:%M %p") 
         return tmp
 
     def getStartTime(self, runId):
@@ -106,7 +106,7 @@ class influxdb:
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         for fluxTable in fluxTables:
             for fluxRecord in fluxTable:
-                tmp = datetime.strftime(fluxRecord['_time'].astimezone(self.tmz), "%Y-%m-%d %I:%M:%S %p")
+                tmp = datetime.strftime(fluxRecord['_time'].astimezone(self.tmz), "%d-%m-%Y %I:%M %p")
         return tmp
 
     def getEndTime(self, runId):
@@ -145,7 +145,7 @@ class influxdb:
         else:
             self.addBaseline(runId, status, build, testName)
 
-    def deleteTestData(self, measurement, runId, start = None, end = None):
+    def deleteTestData(self, measurement, runId = None, start = None, end = None):
         if start == None: start = "2000-01-01T00:00:00Z"
         else: 
             start = datetime.strftime(datetime.fromtimestamp(int(start)/1000).astimezone(self.tmz),"%Y-%m-%dT%H:%M:%SZ")
@@ -153,9 +153,10 @@ class influxdb:
         else: 
             end = datetime.strftime(datetime.fromtimestamp(int(end)/1000).astimezone(self.tmz),"%Y-%m-%dT%H:%M:%SZ")
         try:
-            print(start)
-            print(end)
-            self.influxdbConnection.delete_api().delete(start, end, '_measurement="'+measurement+'" AND runId="'+runId+'"',bucket=self.influxdbBucket, org=self.influxdbOrg)
+            if runId == None:
+                self.influxdbConnection.delete_api().delete(start, end, '_measurement="'+measurement+'"', bucket='client-side', org=self.influxdbOrg)
+            else: 
+                self.influxdbConnection.delete_api().delete(start, end, '_measurement="'+measurement+'" AND runId="'+runId+'"',bucket=self.influxdbBucket, org=self.influxdbOrg)
         except Exception as er:
             logging.warning('ERROR: deleteTestPoint method failed')
             logging.warning(er)
@@ -216,8 +217,8 @@ class influxdb:
 
     def addBaseline(self, runId, status, build, testName):
         self.connectToInfluxDB()
-        start_time         = self.getHumanStartTime(runId)
-        end_time           = self.getHumanEndTime(runId)
+        start_time         = self.getStartTmp(runId)
+        end_time           = self.getEndTmp(runId)
         start_time_infl    = self.getStartTime(runId)
         end_time_infl      = self.getEndTime(runId)
         avg_tr             = self.getAvgResponseTime_stats(runId, start_time_infl, end_time_infl)
@@ -235,6 +236,3 @@ class influxdb:
         except Exception as er:
             logging.warning('ERROR: baseline stats uploading failed')
             logging.warning(er)
-
-
-
