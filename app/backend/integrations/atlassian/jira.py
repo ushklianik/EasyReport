@@ -1,21 +1,18 @@
 from os import path
 from app.backend import pkg
-import os
-import json
-import requests
-import base64
-import logging
-import random
+from app.backend.integrations.integration import integration
 from jira import JIRA
+import os
+import logging
 
-class jira:
+
+class jira(integration):
     def __init__(self, project, name = None):
-        self.project                    = project
-        self.path                       = "./app/projects/" + project + "/config.json"
+        super().__init__(project)
         self.setConfig(name)
     
     def setConfig(self, name):
-        if path.isfile(self.path) is False or os.path.getsize(self.path) == 0:
+        if path.isfile(self.config_path) is False or os.path.getsize(self.config_path) == 0:
             return {"status ":"error", "message":"No config.json"}
         else:   
             if name == None:

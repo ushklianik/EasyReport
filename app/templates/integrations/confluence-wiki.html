@@ -36,6 +36,8 @@
                             {{ form.wikiParentId(class="form-control") }}
                             <label for="wikiSpaceKey">Wiki space key</label>
                             {{ form.wikiSpaceKey(class="form-control") }}
+                            <label for="isDefault">Default</label>
+                            {{ form.isDefault }}
                             <button class="btn-primary" type="submit">Save</button>
                             {% if conflWikiConfig %}
                                 <a href="/delete/confluence-wiki?conflWikiConfig={{ conflWikiConfig }}" class="btn-secondary">Delete</a>

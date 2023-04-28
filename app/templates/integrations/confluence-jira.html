@@ -36,6 +36,8 @@
                             {{ form.project(class="form-control") }}
                             <label for="epic">Epic</label>
                             {{ form.epic(class="form-control") }}
+                            <label for="isDefault">Default</label>
+                            {{ form.isDefault }}
                             <button class="btn-primary" type="submit">Save</button>
                             {% if conflJiraConfig %}
                                 <a href="/delete/confluence-jira?conflJiraConfig={{ conflJiraConfig }}" class="btn-secondary">Delete</a>

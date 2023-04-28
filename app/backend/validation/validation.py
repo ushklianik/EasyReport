@@ -1,8 +1,8 @@
 import json
 from os import path
 import os
-from app.backend.influxdb.influxdb import influxdb
-from app.backend.influxdb import custom
+from app.backend.integrations.influxdb.influxdb import influxdb
+from app.backend.integrations.influxdb.backend_listener import custom
 
 class nfr:
     def __init__(self, project):
@@ -146,9 +146,9 @@ class nfr:
         return name     
     
     # Method generates flux query to get test data based on NFR definition
-    def generateFluxQuery(self, appName, runId, start, end, nfr):
+    def generateFluxQuery(self, appName, runId, start, end, bucket, nfr):
         # Flux constructor allows to create flux query to get test data based on NFR definition
-        constr = custom.fluxConstructor(appName, runId, start, end, requestName=nfr["scope"])
+        constr = custom.fluxConstructor(appName, runId, start, end, bucket, requestName=nfr["scope"])
         # Creates query
         query = constr['source'] + \
                 constr["range"]  + \
@@ -182,7 +182,7 @@ class nfr:
             # Iterates through NFRs
             for nfr in nfrs["rows"]:
                 # Generate flux query to get test data based on NFR definition
-                query = self.generateFluxQuery(appName, runId, start, end, nfr)
+                query = self.generateFluxQuery(appName, runId, start, end, influxdbObj.influxdbBucket, nfr)
                 
                 # Get test data to compare with NFR
                 results = influxdbObj.sendQuery(query)

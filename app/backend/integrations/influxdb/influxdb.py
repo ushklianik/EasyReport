@@ -1,7 +1,8 @@
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 from app.backend import pkg
-from app.backend.influxdb import custom
+from app.backend.integrations.influxdb.backend_listener import custom
+from app.backend.integrations.integration import integration
 import logging
 import json
 from os import path
@@ -10,15 +11,14 @@ from datetime import datetime
 from dateutil import tz
 
 
-class influxdb:
+class influxdb(integration):
     def __init__(self, project, name = None):
-        self.project              = project
-        self.path                 = "./app/projects/" + project + "/config.json"
+        super().__init__(project)
         self.setConfig(name)
         self.tmz = tz.tzutc()
         
     def setConfig(self, name):
-        if path.isfile(self.path) is False or os.path.getsize(self.path) == 0:
+        if path.isfile(self.config_path) is False or os.path.getsize(self.config_path) == 0:
             return {"status":"error", "message":"No config.json"}
         else:
             if name == None:
@@ -60,18 +60,18 @@ class influxdb:
     def getTestLog(self):
         result = []
         try:
+            startM = datetime.now().timestamp()
             tables = self.influxdbConnection.query_api().query(custom.getTestLogQuery(self.influxdbBucket))
+            endM = datetime.now().timestamp()
             for table in tables:
                 for row in table.records:
                     del row.values["result"]
                     del row.values["table"]
                     result.append(row.values)
             msg = {"status":"good", "message":result}
-            print(msg)
         except Exception as er:
             logging.warning(er)
             msg = {"status":"error", "message":er}
-            print(msg)
         return msg
 
     def sendQuery(self, query):

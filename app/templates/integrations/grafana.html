@@ -38,6 +38,8 @@
                             {{ form.grafanaDashRenderPath(class="form-control") }}
                             <label for="grafanaDashRenderCompPath">grafanaDashRenderCompPath</label>
                             {{ form.grafanaDashRenderCompPath(class="form-control") }}
+                            <label for="isDefault">Default</label>
+                            {{ form.isDefault }}
                             <button class="btn-primary" type="submit">Save</button>
                             {% if grafanaConfig %}
                                 <a href="/delete/grafana?grafanaConfig={{ grafanaConfig }}" class="btn-secondary">Delete</a>

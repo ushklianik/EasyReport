@@ -1,10 +1,11 @@
 # Python modules
 from app.backend import pkg
-from app.backend.influxdb.influxdb import influxdb
-from app.backend.reporting.html.htmlreport import htmlReport
-from app.backend.reporting.azurewiki.azureport import azureport
-from app.backend.reporting.confwiki.confwiki import confreport
-from app.backend.reporting.jira.jiraissue import jirareport
+from app.backend.integrations.influxdb.influxdb import influxdb
+from app.backend.reporting.perforge_html import htmlReport
+from app.backend.reporting.azure_wiki import azureport
+from app.backend.reporting.atlassian_wiki import confreport
+from app.backend.reporting.atlassian_jira import jirareport
+from datetime import datetime
 
 # Flask modules
 from flask                   import render_template, request, url_for, redirect
@@ -113,11 +114,9 @@ def getTests():
 
 @app.route('/report', methods=['GET'])
 def getReport():
-
     # Check if user is logged in
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-
     # Get current project
     project = request.cookies.get('project')  
     runId = request.args.get('runId')
@@ -128,38 +127,30 @@ def getReport():
 
 @app.route('/generate-az-report', methods=['GET'])
 def generateAzReport():
-
     # Check if user is logged in
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-
     # Get current project
     project        = request.cookies.get('project')  
     runId          = request.args.get('runId')
     baseline_runId = request.args.get('baseline_runId')
     reportName     = request.args.get('reportName')
-
     azreport = azureport(project, reportName)
     azreport.generateReport(runId, baseline_runId)
-    
     return redirect(url_for('getTests'))
 
 @app.route('/generate-confl-report', methods=['GET'])
 def generateConflReport():
-
     # Check if user is logged in
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-
     # Get current project
     project        = request.cookies.get('project')  
     runId          = request.args.get('runId')
     baseline_runId = request.args.get('baseline_runId')
     reportName     = request.args.get('reportName')
-
     confl = confreport(project, reportName)
     confl.generateReport(runId, baseline_runId)
-
     return redirect(url_for('getTests'))
 
 @app.route('/generate-jira-report', methods=['GET'])

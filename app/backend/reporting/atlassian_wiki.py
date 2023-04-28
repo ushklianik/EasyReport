@@ -1,12 +1,12 @@
 from app.backend import pkg
-from app.backend.grafana.grafana import grafana
-from app.backend.influxdb.influxdb import influxdb
-from app.backend.jira.jira import jira
+from app.backend.integrations.grafana.grafana import grafana
+from app.backend.integrations.influxdb.influxdb import influxdb
+from app.backend.integrations.atlassian.wiki import confluence
 from datetime import datetime
 import threading
 import re
 
-class jirareport:
+class confreport:
 
     def __init__(self, project, reportName):
         self.project        = project
@@ -14,7 +14,7 @@ class jirareport:
         self.setConfig()
         self.grafanaObj     = grafana(project=self.project, name=self.grafanaName)
         self.influxdbObj    = influxdb(project=self.project, name=self.influxdbName)
-        self.jiraObj       = jira(project=self.project, name=self.outputName)
+        self.conflObj       = confluence(project=self.project, name=self.outputName)
         self.progress       = 0
         self.status         = "Not started"
 
@@ -60,47 +60,48 @@ class jirareport:
             self.status = "Collected data from InfluxDB"
             self.progress = 25
 
-            jiraPageName = str(self.parameters["current_vusers"]) + " users | " + self.parameters["current_startTime"]
+            wikiPageName = str(self.parameters["current_vusers"]) + " users | " + self.parameters["current_startTime"]
 
-            # screenshots = self.grafanaObj.renderImage(self.graphs, self.current_startTimestamp, self.current_endTimestamp, self.testName, current_runId)
+            screenshots = self.grafanaObj.renderImage(self.graphs, self.current_startTimestamp, self.current_endTimestamp, self.testName, current_runId, baseline_runId)
             self.status = "Rendered images in Grafana"
             self.progress = 50
 
-            response = self.jiraObj.putPageToJira(title=jiraPageName)
+            response = self.conflObj.putPage(title=wikiPageName, content="")
 
-            # for screenshot in screenshots:
-            #     fileName = self.jiraObj.putImageToJira(issue=response, image=screenshot["image"], filename=screenshot["name"])
-            #     screenshot["filename"] = fileName
+            if "id" in response:
+                for screenshot in screenshots:
+                    fileName = self.conflObj.putImageToConfl(screenshot["image"], screenshot["name"], pageId=response["id"])
+                    screenshot["filename"] = fileName
 
-            # self.status = "Uploaded images to Confluence"
-            # self.progress = 75
+            self.status = "Uploaded images to Confluence"
+            self.progress = 75
 
             # wikiPagePath = self.conflObj.getPath() + "/" + self.testName + "/" + wikiPageName
             
-            # variables = re.findall(r"\$\{(.*?)\}", self.header)
-            # for var in variables:
-            #     if "Link" in var:
-            #         self.parameters[var] = self.parameters[var].replace("&","&amp;")    
-            #     self.header = self.header.replace("${"+var+"}", str(self.parameters[var])) 
+            variables = re.findall(r"\$\{(.*?)\}", self.header)
+            for var in variables:
+                if "Link" in var:
+                    self.parameters[var] = self.parameters[var].replace("&","&amp;")    
+                self.header = self.header.replace("${"+var+"}", str(self.parameters[var])) 
                         
-            # variables = re.findall(r"\$\{(.*?)\}", self.footer)
-            # for var in variables:
-            #     if "Link" in var:
-            #         self.parameters[var] = self.parameters[var].replace("&","&amp;")   
-            #     self.footer = self.footer.replace("${"+var+"}", str(self.parameters[var]))
+            variables = re.findall(r"\$\{(.*?)\}", self.footer)
+            for var in variables:
+                if "Link" in var:
+                    self.parameters[var] = self.parameters[var].replace("&","&amp;")   
+                self.footer = self.footer.replace("${"+var+"}", str(self.parameters[var]))
         
-            # body = self.header
+            body = self.header
 
-            # for idx in range(len(screenshots)):
-            #     for screenshot in screenshots:
-            #         if idx == screenshot["position"]:
-            #             body = body + '''\n'''
-            #             body = body + '''<h2>''' + str(screenshot["name"]) + '''</h2>'''
-            #             body = body + '''<ac:image ac:align="center" ac:layout="center" ac:original-width="1000"><ri:attachment ri:filename="''' + str(screenshot["filename"]) + '''" /></ac:image>'''
+            for idx in range(len(screenshots)):
+                for screenshot in screenshots:
+                    if idx == screenshot["position"]:
+                        body = body + '''\n'''
+                        body = body + '''<h2>''' + str(screenshot["name"]) + '''</h2>'''
+                        body = body + '''<ac:image ac:align="center" ac:layout="center" ac:original-width="1000"><ri:attachment ri:filename="''' + str(screenshot["filename"]) + '''" /></ac:image>'''
 
-            # body += self.footer
+            body += self.footer
 
-            # self.jiraObj.updateJiraPage(jiraissue=response,description=body)
+            self.conflObj.createOrUpdatePage(title=wikiPageName,content=body)
 
-            # self.status = "Created Confluence wiki page"
-            # self.progress = 100
+            self.status = "Created Confluence wiki page"
+            self.progress = 100

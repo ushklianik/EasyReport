@@ -2,9 +2,9 @@
 from flask       import request, make_response
 # App modules
 from app         import app
-from app.backend.reporting.azurewiki.azureport import azureport
-from app.backend.influxdb.influxdb import influxdb
-from app.backend.grafana.grafana import grafana
+from app.backend.reporting.azure_wiki import azureport
+from app.backend.integrations.influxdb.influxdb import influxdb
+from app.backend.integrations.grafana.grafana import grafana
 
 
 @app.route('/gen-az-report', methods=['GET'])

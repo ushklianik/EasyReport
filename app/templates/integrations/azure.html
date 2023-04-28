@@ -42,6 +42,8 @@
                         {{ form.appInsighsAppId(class="form-control") }}
                         <label for="appInsighsApiKey">App Insighs Api Key</label>
                         {{ form.appInsighsApiKey(class="form-control") }}
+                        <label for="isDefault">Default</label>
+                            {{ form.isDefault }}
                         <button class="btn-primary" type="submit">Save</button>
                         {% if azureConfig %}
                             <a href="/delete/azure?azureConfig={{ azureConfig }}" class="btn-secondary">Delete</a>

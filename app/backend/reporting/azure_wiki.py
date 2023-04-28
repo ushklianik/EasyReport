@@ -1,7 +1,7 @@
 from app.backend import pkg
-from app.backend.grafana.grafana import grafana
-from app.backend.influxdb.influxdb import influxdb
-from app.backend.azure.azure import azure
+from app.backend.integrations.grafana.grafana import grafana
+from app.backend.integrations.influxdb.influxdb import influxdb
+from app.backend.integrations.azure.azure import azure
 import re
 
 class azureport:
