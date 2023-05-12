@@ -10,47 +10,44 @@ import random
 class azure(integration):
     def __init__(self, project, name = None):
         super().__init__(project)
-        self.setConfig(name)
+        self.set_config(name)
     
-    def setConfig(self, name):
+    def set_config(self, name):
         if path.isfile(self.config_path) is False or os.path.getsize(self.config_path) == 0:
             return {"status":"error", "message":"No config.json"}
         else:   
             if name == None:
-                name = pkg.getDefaultAzure(self.project)
-            config = pkg.getAzureConfigValues(self.project, name)
+                name = pkg.get_default_azure(self.project)
+            config = pkg.get_azure_config_values(self.project, name)
             if "name" in config:
                 if config['name'] == name:
-                    self.name                 = config["name"]
-                    self.personalAccessToken  = config["personalAccessToken"]
-                    self.wikiOrganizationUrl  = config["wikiOrganizationUrl"]
-                    self.wikiProject          = config["wikiProject"]
-                    self.wikiIdentifier       = config["wikiIdentifier"]
-                    self.wikiPathToReport     = config["wikiPathToReport"]
-                    self.appInsighsLogsServer = config["appInsighsLogsServer"]
-                    self.appInsighsAppId      = config["appInsighsAppId"]
-                    self.appInsighsApiKey     = config["appInsighsApiKey"]
-                    self.azureHeadersAttachments = {
+                    self.name                    = config["name"]
+                    self.token                   = config["token"]
+                    self.org_url                 = config["org_url"]
+                    self.project_id              = config["project_id"]
+                    self.identifier              = config["identifier"]
+                    self.path_to_report          = config["path_to_report"]
+                    self.azure_headers_attachments = {
                             'Accept': 'application/json',
-                            'Authorization': 'Basic ' + str(base64.b64encode(bytes(':'+ self.personalAccessToken, 'ascii')), 'ascii'),
+                            'Authorization': 'Basic ' + str(base64.b64encode(bytes(':'+ self.token, 'ascii')), 'ascii'),
                             'Content-Type': 'application/octet-stream'
                         }
-                    self.azureAuthorizationHeaders = {
+                    self.azure_authorization_headers = {
                             'Accept': 'application/json',
-                            'Authorization': 'Basic ' + str(base64.b64encode(bytes(':'+ self.personalAccessToken, 'ascii')), 'ascii')
+                            'Authorization': 'Basic ' + str(base64.b64encode(bytes(':'+ self.token, 'ascii')), 'ascii')
                         }
                 else:
                     return {"status":"error", "message":"No such config name"}
-
-    def getPath(self):
-        return self.wikiPathToReport
+    
+    def get_path(self):
+        return self.path_to_report
         
-    def putImageToAzure(self, image, name):
+    def put_image_to_azure(self, image, name):
         name = name.replace(" ", "-") + ".png"
         for i in range(3):
             try:
                 response = requests.put(
-                url=self.wikiOrganizationUrl + "/" + self.wikiProject +"/_apis/wiki/wikis/"+self.wikiIdentifier+"/attachments?name="+name+"&api-version=6.0", headers=self.azureHeadersAttachments, data=image) 
+                url=self.org_url + "/" + self.project +"/_apis/wiki/wikis/"+self.identifier+"/attachments?name="+name+"&api-version=6.0", headers=self.azure_headers_attachments, data=image) 
                 if response.status_code != 201:
                     name = str(random.randint(1,100)) + name
                 elif response.status_code == 201:
@@ -59,45 +56,43 @@ class azure(integration):
                 logging.warning('ERROR: uploading image to azure failed')
                 logging.warning(er)   
     
-    def putPage(self, path, pageContent):
-        wiki_api_url = self.wikiOrganizationUrl + "/"+self.wikiProject+"/_apis/wiki/wikis/"+self.wikiIdentifier+"/pages?path="+path+"&api-version=6.0"
+    def put_page(self, path, page_content):
+        wiki_api_url = self.org_url + "/"+self.project_id+"/_apis/wiki/wikis/"+self.identifier+"/pages?path="+path+"&api-version=6.0"
         try:
             response = requests.put(
-                url=wiki_api_url, headers=self.azureAuthorizationHeaders, json={ "content": pageContent })
+                url=wiki_api_url, headers=self.azure_authorization_headers, json={ "content": page_content })
             return response
         except Exception as er:
             logging.warning('ERROR: failed to upload the page to wiki')
             logging.warning(er)
-    
-    def getPage(self, path):
-        wiki_api_url = self.wikiOrganizationUrl + "/"+self.wikiProject+"/_apis/wiki/wikis/"+self.wikiIdentifier+"/pages?path="+path+"&api-version=6.0"
+
+    def get_page(self, path):
+        wiki_api_url = self.org_url + "/"+self.project_id+"/_apis/wiki/wikis/"+self.identifier+"/pages?path="+path+"&api-version=6.0"
         try:
-            response = requests.get(url=wiki_api_url, headers=self.azureAuthorizationHeaders)
+            response = requests.get(url=wiki_api_url, headers=self.azure_authorization_headers)
             return response
         except Exception as er:
             logging.warning('ERROR: getting ETag failed')
             logging.warning(er)      
-    
-    def createOrUpdatePage(self, path, pageContent):
 
-        response = self.putPage(path, pageContent)
+    def create_or_update_page(self, path, page_content):
+        response = self.put_page(path, page_content)
         for x in range(1,5):
             if "WikiAncestorPageNotFoundException" in str(response.content):
                 newPage = '/'.join(path.split('/')[:-x])
-                response = self.putPage(newPage, '')
+                response = self.put_page(newPage, '')
             else:
-                response = self.putPage(path, pageContent)
+                response = self.put_page(path, page_content)
                 break
-
         if "specified in the add operation already exists in the wiki" in str(response.content):
             try:
-                response = self.getPage(path)
+                response = self.get_page(path)
             except Exception as er:
                 logging.warning('ERROR: getting ETag failed')
                 logging.warning(er)       
-            self.azureAuthorizationHeaders["If-Match"]=str(response.headers["ETag"])
+            self.azure_authorization_headers["If-Match"]=str(response.headers["ETag"])
             try:
-                response = self.putPage(path, pageContent)
+                response = self.put_page(path, page_content)
             except Exception as er:
                 logging.warning('ERROR: failed to update the page in wiki')
                 logging.warning(er)  

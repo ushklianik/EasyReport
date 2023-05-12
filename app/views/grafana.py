@@ -8,59 +8,59 @@ from app.backend.integrations.grafana.grafana import grafana
 
 
 @app.route('/gen-az-report', methods=['GET'])
-def genAzReport():
-    grafanaObj = grafana("default")
+def gen_az_report():
+    grafana_obj = grafana("default")
     # Get current project
     project        = "default"
-    runId          = request.args.get('runId')
-    baseline_runId = request.args.get('baseline_runId')
-    reportName     = request.args.get('reportName')
-    azreport = azureport(project, reportName)
-    azreport.generateReport(runId, baseline_runId)
+    run_id          = request.args.get('run_id')
+    baseline_run_id = request.args.get('baseline_run_id')
+    report_name     = request.args.get('reportName')
+    azreport = azureport(project, report_name)
+    azreport.generate_report(run_id, baseline_run_id)
     resp = make_response("Done")
-    resp.headers['Access-Control-Allow-Origin'] = grafanaObj.grafanaServer
+    resp.headers['Access-Control-Allow-Origin'] = grafana_obj.server
     resp.headers['access-control-allow-methods'] = '*'
     resp.headers['access-control-allow-credentials'] = 'true'
     return resp
 
 
 @app.route('/set-baseline', methods=['GET'])
-def setBaseline():
-    infludxObj = influxdb("default")
-    grafanaObj = grafana("default")
-    infludxObj.connectToInfluxDB()
+def set_baseline():
+    infludx_obj = influxdb("default")
+    grafana_obj = grafana("default")
+    infludx_obj.connect_to_influxdb()
     if request.args.get('user') == "admin":
-        infludxObj.addOrUpdateTest(runId = request.args.get('runId'),status = request.args.get('status'), build = request.args.get('build'), testName = request.args.get('testName'))
+        infludx_obj.add_or_update_test(run_id = request.args.get('run_id'),status = request.args.get('status'), build = request.args.get('build'), testName = request.args.get('testName'))
     resp = make_response("Done")
-    resp.headers['Access-Control-Allow-Origin'] = grafanaObj.grafanaServer
+    resp.headers['Access-Control-Allow-Origin'] = grafana_obj.server
     resp.headers['access-control-allow-methods'] = '*'
     resp.headers['access-control-allow-credentials'] = 'true'
-    infludxObj.closeInfluxdbConnection()
+    infludx_obj.close_influxdb_connection()
     return resp
 
 @app.route('/delete-influxdata', methods=['GET'])
-def influxDataDelete():
-    infludxObj = influxdb("default")
-    grafanaObj = grafana("default")
-    infludxObj.connectToInfluxDB()
-    runId  = request.args.get('runId')
+def influx_data_delete():
+    influxdb_obj = influxdb("default")
+    grafana_obj = grafana("default")
+    influxdb_obj.connect_to_influxdb()
+    run_id  = request.args.get('run_id')
     start  = request.args.get('start')
     end    = request.args.get('end')
     status = request.args.get('status')
     if request.args.get('user') == "admin":
         if status == "delete_test_status":
-            infludxObj.deleteTestData("tests", runId)
+            influxdb_obj.delete_test_data("tests", run_id)
         elif status == "delete_test":
-            infludxObj.deleteTestData(infludxObj.influxdbMeasurement, runId)
-            infludxObj.deleteTestData("tests", runId)
-            infludxObj.deleteTestData("virtualUsers", runId)
-            infludxObj.deleteTestData("testStartEnd", runId)
+            influxdb_obj.delete_test_data(influxdb_obj.measurement, run_id)
+            influxdb_obj.delete_test_data("tests", run_id)
+            influxdb_obj.delete_test_data("virtualUsers", run_id)
+            influxdb_obj.delete_test_data("testStartEnd", run_id)
         elif status == "delete_timerange":
-            infludxObj.deleteTestData(infludxObj.influxdbMeasurement, runId, start, end)
-            infludxObj.deleteTestData("virtualUsers", runId, start, end)
-            infludxObj.deleteTestData("testStartEnd", runId, start, end)
+            influxdb_obj.delete_test_data(influxdb_obj.measurement, run_id, start, end)
+            influxdb_obj.delete_test_data("virtualUsers", run_id, start, end)
+            influxdb_obj.delete_test_data("testStartEnd", run_id, start, end)
     resp = make_response("Done")
-    resp.headers['Access-Control-Allow-Origin'] = grafanaObj.grafanaServer
+    resp.headers['Access-Control-Allow-Origin'] = grafana_obj.server
     resp.headers['access-control-allow-methods'] = '*'
     resp.headers['access-control-allow-credentials'] = 'true'
     return resp

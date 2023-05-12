@@ -1,275 +1,246 @@
 
 
 # Flask modules
-from flask                   import render_template, request, url_for, redirect
+from flask                   import render_template, request, url_for, redirect, flash
 from flask_login             import current_user
 
 # App modules
 from app         import app
-from app.forms   import InfluxDBForm, grafanaForm, azureForm, confluenceWikiForm, confluenceJiraForm
+from app.forms   import influxdb_form, grafana_form, azure_form, atlassian_wiki_form, atlassian_jira_form
 from app.backend import pkg
+import traceback
 
 
 @app.route('/integrations')
 def integrations():
-
-    # Check if user is logged in
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    # Get current project
-    project = request.cookies.get('project')  
-
-    # Get integrations configs
-    influxdbConfigs  = pkg.getInfluxdbConfigs(project)
-    grafanaConfigs   = pkg.getGrafanaConfigs(project)
-    azureConfigs     = pkg.getAzureConfigs(project)
-    conflWikiConfigs = pkg.getConflWikiConfigs(project)
-    conflJiraConfigs = pkg.getConflJiraConfigs(project)
-
-    return render_template('integrations/integrations.html', 
-                           influxdbConfigs  = influxdbConfigs, 
-                           grafanaConfigs   = grafanaConfigs, 
-                           azureConfigs     = azureConfigs, 
-                           conflWikiConfigs = conflWikiConfigs,
-                           conflJiraConfigs = conflJiraConfigs
+    try:
+        # Check if user is logged in
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        # Get current project
+        project = request.cookies.get('project')  
+        # Get integrations configs
+        influxdb_configs  = pkg.get_integration_config_names(project, "influxdb")
+        grafana_configs   = pkg.get_integration_config_names(project, "grafana")
+        azure_configs     = pkg.get_integration_config_names(project, "azure")
+        atlassian_wiki_configs = pkg.get_integration_config_names(project, "atlassian_wiki")
+        atlassian_jira_configs = pkg.get_integration_config_names(project, "atlassian_jira")
+        return render_template('home/integrations.html', 
+                           influxdb_configs       = influxdb_configs, 
+                           grafana_configs        = grafana_configs, 
+                           azure_configs          = azure_configs, 
+                           atlassian_wiki_configs = atlassian_wiki_configs,
+                           atlassian_jira_configs = atlassian_jira_configs
                            )
+    except Exception as er:
+        flash("ERROR: " + str(er))
+        return render_template('home/integrations.html')
     
 @app.route('/influxdb', methods=['GET', 'POST'])
-def addInfluxdb():
-
-    # Check if user is logged in
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    # Declare the Influxdb form
-    form = InfluxDBForm(request.form)
-
-    # Flask message injected into the page, in case of any errors
-    msg = None
-
-    # get influxdb parameter if provided
-    influxdbConfig = None
-    influxdbConfig = request.args.get('influxdbConfig')
-
-    # Get current project
-    project = request.cookies.get('project')  
-
-    if influxdbConfig != None:
-        output = pkg.getInfluxdbConfigValues(project, influxdbConfig)
-        form = InfluxDBForm(output)
-                    
-    if form.validate_on_submit():
-        # 
-        msg = pkg.saveInfluxDB(project, request.form.to_dict())
-
-    return render_template('integrations/influxdb.html', form = form, msg = msg, influxdbConfig = influxdbConfig)
+def add_influxdb():
+    try:
+        # Check if user is logged in
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        # Declare the Influxdb form
+        form = influxdb_form(request.form)
+        # get influxdb parameter if provided
+        influxdb_config = request.args.get('influxdb_config')
+        # Get current project
+        project = request.cookies.get('project')  
+        if influxdb_config != None:
+            output = pkg.get_influxdb_config_values(project, influxdb_config)
+            form = influxdb_form(output)               
+        if form.validate_on_submit():
+            pkg.save_influxdb(project, request.form.to_dict())
+            influxdb_config = request.form.to_dict()["name"]
+            flash("Integration added.")
+        return render_template('integrations/influxdb.html', form = form, influxdb_config = influxdb_config)
+    except Exception as er:
+        flash("ERROR: " + str(er))
+        return redirect(url_for('integrations'))
 
 @app.route('/delete/influxdb', methods=['GET'])
-def deleteInfluxdb():
-    # # Check if user is logged in
-    # if not current_user.is_authenticated:
-    #     return redirect(url_for('login'))
-
-    # get influxdb parameter if provided
-    influxdbConfig = None
-    influxdbConfig = request.args.get('influxdbConfig')
-
-    # Get current project
-    project = request.cookies.get('project')  
-
-    if influxdbConfig != None:
-        pkg.deleteConfig(project, influxdbConfig)
-
+def delete_influxdb():
+    try:
+        # Check if user is logged in
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        # get influxdb parameter if provided
+        influxdb_config = request.args.get('influxdb_config')
+        # Get current project
+        project = request.cookies.get('project')  
+        if influxdb_config != None:
+            pkg.delete_config(project, influxdb_config)
+            flash("Integration deleted.")
+    except Exception:
+        flash("ERROR: " + str(traceback.format_exc()))
     return redirect(url_for('integrations'))
 
 
 @app.route('/grafana', methods=['GET', 'POST'])
-def addGrafana():
-
-    # Check if user is logged in
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    # Declare the grafana form
-    form = grafanaForm(request.form)
-
-    # Flask message injected into the page, in case of any errors
-    msg = None
-
-    # Get current project
-    project = request.cookies.get('project')  
-
-    # get grafana parameter if provided
-    grafanaConfig = None
-    grafanaConfig = request.args.get('grafanaConfig')
-
-    if grafanaConfig != None:
-        output = pkg.getGrafnaConfigValues(project, grafanaConfig)
-        form = grafanaForm(output)
-                    
-    if form.validate_on_submit():
-        # assign form data to variables
-        msg = pkg.saveGrafana( project, request.form.to_dict() )
-
-    return render_template('integrations/grafana.html', form = form, msg = msg, grafanaConfig = grafanaConfig)
+def add_grafana():
+    try:
+        # Check if user is logged in
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        # Declare the grafana form
+        form = grafana_form(request.form)
+        # Get current project
+        project = request.cookies.get('project')  
+        # get grafana parameter if provided
+        grafana_config = request.args.get('grafana_config')
+        if grafana_config != None:
+            output = pkg.get_grafana_config_values(project, grafana_config)
+            form = grafana_form(output)             
+        if form.validate_on_submit():
+            pkg.save_grafana( project, request.form.to_dict())
+            grafana_config = request.form.to_dict()["name"]
+            flash("Integration added.")
+        return render_template('integrations/grafana.html', form = form, grafana_config = grafana_config)
+    except Exception as er:
+        flash("ERROR: " + str(er))
+        return redirect(url_for('integrations'))
 
 
 @app.route('/delete/grafana', methods=['GET'])
-def deleteGrafanaConfig():
-
-    # Check if user is logged in
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    # get grafana parameter if provided
-    grafanaConfig = None
-    grafanaConfig = request.args.get('grafanaConfig')
-
-    # Get current project
-    project = request.cookies.get('project')  
-
-    if grafanaConfig != None:
-        pkg.deleteConfig(project, grafanaConfig)
-
+def delete_grafana_config():
+    try:
+        # Check if user is logged in
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        # get grafana parameter if provided
+        grafana_config = request.args.get('grafana_config')
+        # Get current project
+        project = request.cookies.get('project')  
+        if grafana_config != None:
+            pkg.delete_config(project, grafana_config)
+            flash("Integration deleted.")
+    except Exception as er:
+        flash("ERROR: " + str(er))
     return redirect(url_for('integrations'))
 
 
 @app.route('/azure', methods=['GET', 'POST'])
-def addAzure():
-
-    # Check if user is logged in
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    # Declare the azure form
-    form = azureForm(request.form)
-
-    # Flask message injected into the page, in case of any errors
-    msg = None
-
-    # Get current project
-    project = request.cookies.get('project')  
-
-    # get azure parameter if provided
-    azureConfig = None
-    azureConfig = request.args.get('azureConfig')
-
-    if azureConfig != None:
-        output = pkg.getAzureConfigValues(project, azureConfig)
-        form = azureForm(output)
-                    
-    if form.validate_on_submit():
-        # assign form data to variables
-        msg = pkg.saveAzure( project, request.form.to_dict() )
-
-    return render_template('integrations/azure.html', form = form, msg = msg, azureConfig = azureConfig)
+def add_azure():
+    try:
+        # Check if user is logged in
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        # Declare the azure form
+        form = azure_form(request.form)
+        # Get current project
+        project = request.cookies.get('project')  
+        # get azure parameter if provided
+        azure_config = request.args.get('azure_config')
+        if azure_config != None:
+            output = pkg.get_azure_config_values(project, azure_config)
+            form = azure_form(output)             
+        if form.validate_on_submit():
+            # assign form data to variables
+            pkg.save_azure( project, request.form.to_dict())
+            azure_config = request.form.to_dict()["name"]
+            flash("Integration added.")
+        return render_template('integrations/azure.html', form = form, azure_config = azure_config)
+    except Exception as er:
+        flash("ERROR: " + str(er))
+        return redirect(url_for('integrations'))
 
 
 @app.route('/delete/azure', methods=['GET'])
-def deleteAzureConfig():
-
-    # get azure parameter if provided
-    azureConfig = None
-    azureConfig = request.args.get('azureConfig')
-
-    # Get current project
-    project = request.cookies.get('project')  
-
-    if azureConfig != None:
-        pkg.deleteConfig(project, azureConfig)
-
+def delete_azure_config():
+    try:
+        # get azure parameter if provided
+        azure_config = None
+        azure_config = request.args.get('azure_config')
+        # Get current project
+        project = request.cookies.get('project')  
+        if azure_config != None:
+            pkg.delete_config(project, azure_config)
+            flash("Integration deleted.")
+    except Exception as er:
+        flash("ERROR: " + str(er))
     return redirect(url_for('integrations'))
 
-@app.route('/confluence-wiki', methods=['GET', 'POST'])
-def addConfluenceWiki():
-
-    # Check if user is logged in
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    # Declare the confluence wiki form
-    form = confluenceWikiForm(request.form)
-
-    # Flask message injected into the page, in case of any errors
-    msg = None
-
-    # Get current project
-    project = request.cookies.get('project')  
-
-    # get confluence wiki parameter if provided
-    conflWikiConfig = None
-    conflWikiConfig = request.args.get('conflWikiConfig')
-
-    if conflWikiConfig != None:
-        output = pkg.getConflWikiConfigValues(project, conflWikiConfig)
-        form   = confluenceWikiForm(output)
-                    
-    if form.validate_on_submit():
-        # assign form data to variables
-        msg = pkg.saveConfluenceWiki( project, request.form.to_dict() )
-
-    return render_template('integrations/confluence-wiki.html', form = form, msg = msg, conflWikiConfig = conflWikiConfig)
+@app.route('/atlassian-wiki', methods=['GET', 'POST'])
+def add_atlassian_wiki():
+    try:
+        # Check if user is logged in
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        # Declare the atlassian wiki form
+        form = atlassian_wiki_form(request.form)
+        # Get current project
+        project = request.cookies.get('project')  
+        # get atlassian wiki parameter if provided
+        atlassian_wiki_config = request.args.get('atlassian_wiki_config')
+        if atlassian_wiki_config != None:
+            output = pkg.get_atlassian_wiki_config_values(project, atlassian_wiki_config)
+            form   = atlassian_wiki_form(output)               
+        if form.validate_on_submit():
+            # assign form data to variables
+            pkg.save_atlassian_wiki( project, request.form.to_dict())
+            atlassian_wiki_config = request.form.to_dict()["name"]
+            flash("Integration added.")
+        return render_template('integrations/atlassian-wiki.html', form = form, atlassian_wiki_config = atlassian_wiki_config)
+    except Exception as er:
+        flash("ERROR: " + str(er))
+        return redirect(url_for('integrations'))
 
 
-@app.route('/delete/confluence-wiki', methods=['GET'])
-def deleteConfluenceWiki():
-
-    # get confluence wiki parameter if provided
-    conflWikiConfig = None
-    conflWikiConfig = request.args.get('conflWikiConfig')
-
-    # Get current project
-    project = request.cookies.get('project')  
-
-    if conflWikiConfig != None:
-        pkg.deleteConfig(project, conflWikiConfig)
-
+@app.route('/delete/atlassian-wiki', methods=['GET'])
+def delete_atlassian_wiki():
+    try:
+        # get atlassian wiki parameter if provided
+        atlassian_wiki_config = None
+        atlassian_wiki_config = request.args.get('atlassian_wiki_config')
+        # Get current project
+        project = request.cookies.get('project')  
+        if atlassian_wiki_config != None:
+            pkg.delete_config(project, atlassian_wiki_config)
+            flash("Integration deleted.")
+    except Exception as er:
+        flash("ERROR: " + str(er))
     return redirect(url_for('integrations'))
 
-@app.route('/confluence-jira', methods=['GET', 'POST'])
-def addConfluenceJira():
-
-    # Check if user is logged in
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
-
-    # Declare the confluence jira form
-    # Sema: should be created in forms.py
-    form = confluenceJiraForm(request.form)
-
-    # Flask message injected into the page, in case of any errors
-    msg = None
-
-    # Get current project
-    project = request.cookies.get('project')  
-
-    # get confluence jira  parameter if provided
-    conflJiraConfig = None
-    conflJiraConfig = request.args.get('conflJiraConfig')
-
-    if conflJiraConfig != None:
-        output = pkg.getConflJiraConfigValues(project, conflJiraConfig)
-        form   = confluenceJiraForm(output)
-                    
-    if form.validate_on_submit():
-        # assign form data to variables
-        msg = pkg.saveConfluenceJira( project, request.form.to_dict() )
-
-    return render_template('integrations/confluence-jira.html', form = form, msg = msg, conflJiraConfig = conflJiraConfig)
+@app.route('/atlassian-jira', methods=['GET', 'POST'])
+def add_atlassian_jira():
+    try:
+        # Check if user is logged in
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        # Declare the atlassian jira form
+        # Sema: should be created in forms.py
+        form = atlassian_jira_form(request.form)
+        # Get current project
+        project = request.cookies.get('project')  
+        # get atlassian jira  parameter if provided
+        atlassian_jira_config = request.args.get('atlassian_jira_config')
+        if atlassian_jira_config != None:
+            output = pkg.get_atlassian_jira_config_values(project, atlassian_jira_config)
+            form   = atlassian_jira_form(output)        
+        if form.validate_on_submit():
+            # assign form data to variables
+            pkg.save_atlassian_jira( project, request.form.to_dict())
+            atlassian_jira_config = request.form.to_dict()["name"]
+            flash("Integration added.")
+        return render_template('integrations/atlassian-jira.html', form = form, atlassian_jira_config = atlassian_jira_config)
+    except Exception as er:
+        flash("ERROR: " + str(er))
+        return redirect(url_for('integrations'))
 
 
-@app.route('/delete/confluence-jira', methods=['GET'])
-def deleteConfluenceJira():
-
-    # get confluence jira parameter if provided
-    conflJiraConfig = None
-    conflJiraConfig = request.args.get('conflJiraConfig')
-
-    # Get current project
-    project = request.cookies.get('project')  
-
-    if conflJiraConfig != None:
-        pkg.deleteConfig(project, conflJiraConfig)
-
+@app.route('/delete/atlassian-jira', methods=['GET'])
+def delete_atlassian_jira():
+    try:
+        # get atlassian jira parameter if provided
+        atlassian_jira_config = None
+        atlassian_jira_config = request.args.get('atlassian_jira_config')
+        # Get current project
+        project = request.cookies.get('project')  
+        if atlassian_jira_config != None:
+            pkg.delete_config(project, atlassian_jira_config)
+            flash("Integration deleted.")
+    except Exception as er:
+        flash("ERROR: " + str(er))
     return redirect(url_for('integrations'))

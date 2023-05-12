@@ -23,30 +23,45 @@
                         <div class="center-section width-500">
                             <label for="name">Name</label>
                             {{ form.name(class="form-control") }}
-                            <label for="grafanaServer">Grafana server</label>
-                            {{ form.grafanaServer(class="form-control") }}
-                            <label for="grafanaOrgId">Grafana org ID</label>
-                            {{ form.grafanaOrgId(class="form-control") }}
-                            <label for="grafanaToken">Token</label>
+                            <label for="server">Grafana server</label>
+                            {{ form.server(class="form-control") }}
+                            <label for="org_id">Grafana org ID</label>
+                            {{ form.org_id(class="form-control") }}
+                            <label for="token">Token</label>
                             <div class="input-group">
-                                {{ form.grafanaToken(class="form-control", type="password") }}
+                                {{ form.token(class="form-control", type="password") }}
                                 <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
                             </div>
-                            <label for="grafanaDashboard">Grafana dashboard</label>
-                            {{ form.grafanaDashboard(class="form-control") }}
-                            <label for="grafanaDashRenderPath">grafanaDashRenderPath</label>
-                            {{ form.grafanaDashRenderPath(class="form-control") }}
-                            <label for="grafanaDashRenderCompPath">grafanaDashRenderCompPath</label>
-                            {{ form.grafanaDashRenderCompPath(class="form-control") }}
-                            <label for="isDefault">Default</label>
-                            {{ form.isDefault }}
+                            <label for="dashboard_id">Grafana dashboard</label>
+                            {{ form.dashboard_id(class="form-control") }}
+                            <label for="dash_render_path">grafanaDashRenderPath</label>
+                            {{ form.dash_render_path(class="form-control") }}
+                            <label for="dash_render_comp_path">grafanaDashRenderCompPath</label>
+                            {{ form.dash_render_comp_path(class="form-control") }}
+                            <label for="is_default">Default</label>
+                            {{ form.is_default(class="form-control") }}
                             <button class="btn-primary" type="submit">Save</button>
-                            {% if grafanaConfig %}
-                                <a href="/delete/grafana?grafanaConfig={{ grafanaConfig }}" class="btn-secondary">Delete</a>
+                            {% if grafana_config %}
+                                <a href="/delete/grafana?grafana_config={{ grafana_config }}" class="btn-secondary">Delete</a>
                             {% endif %}
                         </div>
                     </form>
                 </div>
+                {% with msgs = get_flashed_messages() %}
+                    {% if msgs %}
+                        {% for msg in msgs %}
+                            {% if "ERROR" in msg %}
+                                <div class="center-section flash-bad-alert">
+                                    <p>{{ msg }}</p>
+                                </div>  
+                            {% else %}
+                                <div class="center-section flash-good-alert">
+                                    <p>{{ msg }}</p>
+                                </div>  
+                            {% endif %}                          
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
             </div>
         </div>
     </main>

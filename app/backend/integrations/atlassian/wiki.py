@@ -5,55 +5,53 @@ import logging
 from atlassian import Confluence
 from app.backend.integrations.integration import integration
 
-class confluence(integration):
+class wiki(integration):
     def __init__(self, project, name = None):
         super().__init__(project)
-        self.setConfig(name)
+        self.set_config(name)
     
-    def setConfig(self, name):
+    def set_config(self, name):
         if path.isfile(self.config_path) is False or os.path.getsize(self.config_path) == 0:
             return {"status ":"error", "message":"No config.json"}
         else:   
             if name == None:
-                name = pkg.getDefaultConfl(self.project)
-            config = pkg.getConflWikiConfigValues(self.project, name)
+                name = pkg.get_default_atlassian_wiki(self.project)
+            config = pkg.get_atlassian_wiki_config_values(self.project, name)
             if "name" in config:
                 if config['name'] == name:
                     self.name                 = config["name"]
-                    self.personalAccessToken  = config["personalAccessToken"]
-                    self.wikiOrganizationUrl  = config["wikiOrganizationUrl"]
-                    self.wikiParentId         = config["wikiParentId"]
-                    self.wikiSpaceKey         = config["wikiSpaceKey"]
+                    self.token                = config["token"]
+                    self.org_url              = config["org_url"]
+                    self.parent_id            = config["parent_id"]
+                    self.space_key            = config["space_key"]
                     self.username             = config["username"]
                     self.confl                = Confluence(
-                        url=self.wikiOrganizationUrl,
+                        url=self.org_url,
                         username=self.username,
-                        password=self.personalAccessToken
+                        password=self.token
                     )
                 else:
                     return {"status":"error", "message":"No such config name"}
 
-    def putImageToConfl(self, image, name, pageId):
+    def put_image_to_confl(self, image, name, page_id):
         name = name.replace(" ", "-") + ".png"
         for i in range(3):
             try:
                 # response = self.confl.attach_file(filename=image, page_id=pageId, name=name)
-                self.confl.attach_content(content=image, page_id=pageId, name=name, content_type="image/png")
+                self.confl.attach_content(content=image, page_id=page_id, name=name, content_type="image/png")
                 return name
             except Exception as er:
                 print(er)
                 logging.warning('ERROR: uploading image to confluence failed')
                 logging.warning(er)  
-
-
-    def putPage(self, title, content):
+        
+    def put_page(self, title, content):
         try:
-            response = self.confl.update_or_create(title=title, body=content, parent_id=self.wikiParentId, representation='storage')
+            response = self.confl.update_or_create(title=title, body=content, parent_id=self.parent_id, representation='storage')
             return response
         except Exception as er:
             logging.warning(er) 
             return {"status":"error", "message":er}
 
-    def createOrUpdatePage(self, title, content):
-        response = self.putPage(title, content)
-        # print(response)
+    def create_or_update_page(self, title, content):
+        self.put_page(title, content)

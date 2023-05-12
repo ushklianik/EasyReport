@@ -6,7 +6,7 @@ class integration(ABC):
         self.config_path = "./app/projects/" + project + "/config.json"
 
     @abstractmethod
-    def setConfig(self):
+    def set_config(self):
         pass
 
     @abstractmethod

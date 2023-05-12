@@ -17,17 +17,17 @@
                 </div> 
                 <div class="full-screen-section flex-direction-column" id="nfrs-accordion">
                     <div class="marging-10">
-                        {% for nfrsItem in nfrsList %}
+                        {% for nfrs_item in nfrs_list %}
                         <div class="nfrs-item">
                             <button class="nfrs-button">
-                                <div class="grey-text-color" style="font-size: 1rem;padding-right: 8px;">App name:</div>{{ nfrsItem.appName }}
+                                <div class="grey-text-color" style="font-size: 1rem;padding-right: 8px;">App name:</div>{{ nfrs_item.app_name }}
                                 <div class="grey-text-color" style="font-size: 1rem;padding-left: 32px;">Number of NFRs:</div>
-                                <div class="nfr-circle" id="{{ nfrsItem.appName }}"></div>
+                                <div class="nfr-circle" id="{{ nfrs_item.app_name }}"></div>
                             </button>
                             <div class="nfr-panel">
                                 <div class="nfrs-body">
                                     <div>
-                                        <a class="btn-primary" style="width: 80px;" href="/nfr?appName={{ nfrsItem.appName }}" role="button">Edit</a>
+                                        <a class="btn-primary" style="width: 80px;" href="/nfr?app_name={{ nfrs_item.app_name }}" role="button">Edit</a>
                                         <a class="btn-secondary" style="width: 80px;" href="#" role="button">Delete</a>
                                     </div>
                                     <div class="nfr-table-wraper">
@@ -40,7 +40,7 @@
                                             <div class="nfr-table-header grey-text-color">Weight</div>
                                         </div>
                                         <div class="nfr-table">
-                                            {% for nfr in nfrsItem.rows %}
+                                            {% for nfr in nfrs_item.rows %}
                                                 <div class="nfr-table-column">{{ nfr.scope }}</div>
                                                 <div class="nfr-table-column">
                                                     <div>
@@ -61,10 +61,25 @@
                     </div>
                     <a class="btn-primary" href="/nfr" style="width: 150px;" role="button">Create new</a>
                 </div>
+                {% with msgs = get_flashed_messages() %}
+                    {% if msgs %}
+                        {% for msg in msgs %}
+                            {% if "ERROR" in msg %}
+                                <div class="center-section flash-bad-alert">
+                                    <p>{{ msg }}</p>
+                                </div>  
+                            {% else %}
+                                <div class="center-section flash-good-alert">
+                                    <p>{{ msg }}</p>
+                                </div>  
+                            {% endif %}                          
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
             </div>
         </div>
         <script>
-            var nfrsJson = JSON.parse('{{ nfrsList | tojson }}');
+            var nfrsJson = JSON.parse('{{ nfrs_list | tojson }}');
             var nfrsPanel = document.getElementById("nfrs-panel");
             if(nfrsJson["status"] != null){
                 if(nfrsJson["status"] == "error"){
@@ -76,8 +91,8 @@
                 }
             }
             for(var i = 0; i < nfrsJson.length; i++) {
-                if(nfrsJson[i]["appName"] != null){
-                    var elem = document.getElementById(nfrsJson[i]["appName"]);
+                if(nfrsJson[i]["app_name"] != null){
+                    var elem = document.getElementById(nfrsJson[i]["app_name"]);
                     elem.textContent = nfrsJson[i]["rows"].length;
                 }
             }

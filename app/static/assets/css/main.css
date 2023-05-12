@@ -382,3 +382,23 @@ img {
         color: var(--bs-gray-300);
         pointer-events: none;
         background-color: transparent; }
+
+.flash-bad-alert {
+    color: #b6bbc0;
+    background-color: #482626;
+    border-color: #482626;
+    padding: 15px;
+    margin: 40px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+}
+
+.flash-good-alert {
+    color: #b6bbc0;
+    background-color: #0f3541;
+    border-color: #0f3541;
+    padding: 15px;
+    margin: 40px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+}

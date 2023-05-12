@@ -23,34 +23,43 @@
                     <div class="center-section width-500">
                         <label for="name">Name</label>
                         {{ form.name(class="form-control") }}
-                        <label for="personalAccessToken">Personal Access Token</label>
+                        <label for="token">Personal Access Token</label>
                         <div class="input-group">
-                            {{ form.personalAccessToken(class="form-control", type="password") }}
+                            {{ form.token(class="form-control", type="password") }}
                             <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
                         </div>
-                        <label for="wikiOrganizationUrl">Wiki Organization Url</label>
-                        {{ form.wikiOrganizationUrl(class="form-control") }}
-                        <label for="wikiProject">Wiki Project</label>
-                        {{ form.wikiProject(class="form-control") }}
-                        <label for="wikiIdentifier">Wiki Identifier</label>
-                        {{ form.wikiIdentifier(class="form-control") }}
-                        <label for="wikiPathToReport">Wiki Path To Report</label>
-                        {{ form.wikiPathToReport(class="form-control") }}
-                        <label for="appInsighsLogsServer">App Insighs Logs Server</label>
-                        {{ form.appInsighsLogsServer(class="form-control") }}
-                        <label for="appInsighsAppId">App Insighs App Id</label>
-                        {{ form.appInsighsAppId(class="form-control") }}
-                        <label for="appInsighsApiKey">App Insighs Api Key</label>
-                        {{ form.appInsighsApiKey(class="form-control") }}
-                        <label for="isDefault">Default</label>
-                            {{ form.isDefault }}
+                        <label for="org_url">Wiki Organization Url</label>
+                        {{ form.org_url(class="form-control") }}
+                        <label for="project_id">Wiki Project</label>
+                        {{ form.project_id(class="form-control") }}
+                        <label for="identifier">Wiki Identifier</label>
+                        {{ form.identifier(class="form-control") }}
+                        <label for="path_to_report">Wiki Path To Report</label>
+                        {{ form.path_to_report(class="form-control") }}
+                        <label for="is_default">Default</label>
+                        {{ form.is_default(class="form-control") }}
                         <button class="btn-primary" type="submit">Save</button>
-                        {% if azureConfig %}
-                            <a href="/delete/azure?azureConfig={{ azureConfig }}" class="btn-secondary">Delete</a>
+                        {% if azure_config %}
+                            <a href="/delete/azure?azure_config={{ azure_config }}" class="btn-secondary">Delete</a>
                         {% endif %}
                     </div>
                 </form>
             </div>
+            {% with msgs = get_flashed_messages() %}
+                {% if msgs %}
+                    {% for msg in msgs %}
+                        {% if "ERROR" in msg %}
+                            <div class="center-section flash-bad-alert">
+                                <p>{{ msg }}</p>
+                            </div>  
+                        {% else %}
+                            <div class="center-section flash-good-alert">
+                                <p>{{ msg }}</p>
+                            </div>  
+                        {% endif %}                          
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
         </div>
     </main>
     {% include 'includes/footer.html' %}

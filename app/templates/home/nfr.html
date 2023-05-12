@@ -20,7 +20,7 @@
                             <label class="col-form-nfr-label">App name:</label>
                         </div>
                         <div class="marging-10">
-                            <input name="appName" id="appName" class="form-control-nfr" required>
+                            <input name="app_name" id="app_name" class="form-control-nfr" required>
                         </div>
                     </div>
                     <div class="full-screen-section">
@@ -62,6 +62,21 @@
                         <button onclick="saveNFRs()" class="btn-primary">Save NFRs</button>
                     </div>
                 </div>
+                {% with msgs = get_flashed_messages() %}
+                    {% if msgs %}
+                        {% for msg in msgs %}
+                            {% if "ERROR" in msg %}
+                                <div class="center-section flash-bad-alert">
+                                    <p>{{ msg }}</p>
+                                </div>  
+                            {% else %}
+                                <div class="center-section flash-good-alert">
+                                    <p>{{ msg }}</p>
+                                </div>  
+                            {% endif %}                          
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
             </div>
         </div>
         <script>
@@ -118,11 +133,11 @@
             }
             function saveNFRs(){
                 if (checkValidity()){
-                    var appName = document.getElementById("appName");
+                    var app_name = document.getElementById("app_name");
                     var nfrsPanel = document.getElementById("nfrs-panel");
                     var rows = document.getElementsByClassName("nfr-row");
                     var nfrs = {}
-                    nfrs["appName"]=appName.value
+                    nfrs["app_name"]=app_name.value
                     nfrs["rows"] = []
                     for(var i = 0; i < rows.length; i++) {
                         let dict = {}
@@ -158,7 +173,7 @@
             }
 
             var nfrsPanel = document.getElementById("nfrs-panel");
-            var appName = document.getElementById("appName");
+            var app_name = document.getElementById("app_name");
             var nfrsJson = JSON.parse('{{ nfrs | tojson }}');
                 if(nfrsJson["status"] != null){
                    if(nfrsJson["status"] == "error"){
@@ -169,8 +184,8 @@
                         nfrsPanel.insertAdjacentHTML("beforeend", elem);
                    }
                 }
-                if(nfrsJson["appName"] != null){
-                    appName.value = nfrsJson["appName"]
+                if(nfrsJson["app_name"] != null){
+                    app_name.value = nfrsJson["app_name"]
                     for(var i = 0; i < nfrsJson["rows"].length; i++) {
                         var container = document.getElementById("nfrs-container");
                         var newRow = '<div class="full-screen-section nfr-row">'+
@@ -246,7 +261,7 @@
                     for(var i = 0; i < inputElements.length; i++) {
                         var isValid = inputElements[i].reportValidity();
                         // other code from before
-                        if (!isValid && inputElements[i].getAttribute('name') == "appName" ){
+                        if (!isValid && inputElements[i].getAttribute('name') == "app_name" ){
                             if(nfrsPanel.querySelector('.status-message') != null){
                                 nfrsPanel.querySelector('.status-message').remove();
                             }

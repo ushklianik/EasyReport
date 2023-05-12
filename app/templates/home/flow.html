@@ -35,8 +35,8 @@
                                     <span class="circle-with-number">2</span>
                                 </div>
                                 <div>
-                                    <label for="influxdbName">Influxdb name</label>
-                                    {{ form.influxdbName(class="form-select-nfr", style="width:250px") }}
+                                    <label for="influxdb">Influxdb name</label>
+                                    {{ form.influxdb(class="form-select-nfr", style="width:250px") }}
                                 </div>
                             </div>
                             <div class="col-4">
@@ -44,8 +44,8 @@
                                     <span class="circle-with-number">3</span>
                                 </div>
                                 <div class>
-                                    <label for="grafanaName">Grafana name</label>
-                                    {{ form.grafanaName(class="form-select-nfr", style="width:250px") }}
+                                    <label for="grafana">Grafana name</label>
+                                    {{ form.grafana(class="form-select-nfr", style="width:250px") }}
                                 </div>
                             </div>
                             <div class="col-4">
@@ -53,8 +53,8 @@
                                     <span class="circle-with-number">4</span>
                                 </div>
                                 <div>
-                                    <label for="outputName">Output name</label>
-                                    {{ form.outputName(class="form-select-nfr", style="width:250px") }}
+                                    <label for="output">Output name</label>
+                                    {{ form.output(class="form-select-nfr", style="width:250px") }}
                                 </div>
                             </div>
                         </div>
@@ -87,15 +87,15 @@
                                         <label class="var-description">Duration of the test.</label>
                                     </div>
                                     <div>
-                                        <label class="var-name">${current_startTime}:</label>
+                                        <label class="var-name">${current_start_time}:</label>
                                         <label class="var-description">Start datetime for the test.</label>
                                     </div>
                                     <div>
-                                        <label class="var-name">${current_endTime}:</label>
+                                        <label class="var-name">${current_end_time}:</label>
                                         <label class="var-description">End datetime for the test.</label>
                                     </div>
                                     <div>
-                                        <label class="var-name">${current_grafanaLink}:</label>
+                                        <label class="var-name">${current_grafana_link}:</label>
                                         <label class="var-description">Link to Grafana dashboard with test results.</label>
                                     </div>
                                     <div>
@@ -107,22 +107,22 @@
                                         <label class="var-description">Duration of the baseline test (If specified).</label>
                                     </div>
                                     <div>
-                                        <label class="var-name">${baseline_startTime}:</label>
+                                        <label class="var-name">${baseline_start_time}:</label>
                                         <label class="var-description">Start datetime for the baseline test (If specified).</label>
                                     </div>
                                     <div>
-                                        <label class="var-name">${baseline_endTime}:</label>
+                                        <label class="var-name">${baseline_end_time}:</label>
                                         <label class="var-description">End datetime for the baseline test (If specified).</label>
                                     </div>
                                     <div>
-                                        <label class="var-name">${baseline_grafanaLink}:</label>
+                                        <label class="var-name">${baseline_grafana_link}:</label>
                                         <label class="var-description">Link to Grafana dashboard with baseline test results (If specified).</label>
                                     </div>
                                 </div>
                                 <div style="margin-top: 30px;">
                                     <button class="btn-primary" type="submit" style="width: 70px;">Save</button>
-                                    {% if flowConfig %}
-                                        <a href="/delete/flow?flowConfig={{ flowConfig }}" class="btn-secondary" style="width: 70px;">Delete</a>
+                                    {% if flow_config %}
+                                        <a href="/delete/flow?flow_config={{ flow_config }}" class="btn-secondary" style="width: 70px;">Delete</a>
                                     {% else %}
                                         <a class="btn-secondary" style="width: 70px;">Delete</a>
                                     {% endif %}   
@@ -147,6 +147,21 @@
                             </div>
                         </div>
                     </form>
+                    {% with msgs = get_flashed_messages() %}
+                        {% if msgs %}
+                            {% for msg in msgs %}
+                                {% if "ERROR" in msg %}
+                                    <div class="center-section flash-bad-alert">
+                                        <p>{{ msg }}</p>
+                                    </div>  
+                                {% else %}
+                                    <div class="center-section flash-good-alert">
+                                        <p>{{ msg }}</p>
+                                    </div>  
+                                {% endif %}                          
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
                     <div class="modal" id="addnewgraph">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -154,19 +169,19 @@
                                     <h1 class="modal-title" id="addnewgraphLabel">Add graph</h1>
                                 </div>
                                 <div class="modal-body">
-                                    {{ formForGraphs.hidden_tag() }} 
+                                    {{ form_for_graphs.hidden_tag() }} 
                                         <label>Name</label>
-                                        {{ formForGraphs.name(class="form-select-nfr") }}  
+                                        {{ form_for_graphs.name(class="form-select-nfr") }}  
                                         <label>View panel</label>
-                                        {{ formForGraphs.viewPanel(class="form-select-nfr") }}  
+                                        {{ form_for_graphs.viewPanel(class="form-select-nfr") }}  
                                         <label>Dashboard Id</label>
-                                        {{ formForGraphs.dashId(class="form-select-nfr") }} 
+                                        {{ form_for_graphs.dashId(class="form-select-nfr") }} 
                                         <label>File name</label>
-                                        {{ formForGraphs.fileName(class="form-select-nfr") }} 
+                                        {{ form_for_graphs.fileName(class="form-select-nfr") }} 
                                         <label>Panel width</label>
-                                        {{ formForGraphs.width(class="form-select-nfr") }} 
+                                        {{ form_for_graphs.width(class="form-select-nfr") }} 
                                         <label>Panel height</label>
-                                        {{ formForGraphs.height(class="form-select-nfr") }} 
+                                        {{ form_for_graphs.height(class="form-select-nfr") }} 
                                 </div>
                                 <div>
                                     <div class="status-place" style="float: left;"></div>

@@ -1,5 +1,5 @@
 {% extends "layouts/base-fullscreen.html" %}
-{% block title %} Confluence Jira {% endblock %} 
+{% block title %} Atlassian Jira {% endblock %} 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
@@ -12,39 +12,54 @@
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
                 <div class="main-body-header">
-                    <a>Confluence Jira configuration</a>
+                    <a>Atlassian Jira configuration</a>
                 </div>
                 <div class="center-section">
-                    <a>Add your Confluence Jira configuration</a>
+                    <a>Add your Atlassian Jira configuration</a>
                 </div>
                 <div class="center-section">
-                    <form method="POST" action="/confluence-jira">
+                    <form method="POST" action="/atlassian-jira">
                         {{ form.hidden_tag() }}
                         <div class="center-section width-500">
                             <label for="name">Name</label>
                             {{ form.name(class="form-control") }}
                             <label for="email">Email</label>
                             {{ form.email(class="form-control") }}
-                            <label for="password">Password</label>
+                            <label for="token">Password</label>
                             <div class="input-group">
-                                {{ form.password(class="form-control", type="password") }}
+                                {{ form.token(class="form-control", type="password") }}
                                 <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
                             </div>
-                            <label for="jiraOrganizationUrl">Jira organization url</label>
-                            {{ form.jiraOrganizationUrl(class="form-control") }}
-                            <label for="project">Project</label>
-                            {{ form.project(class="form-control") }}
+                            <label for="org_url">Jira organization url</label>
+                            {{ form.org_url(class="form-control") }}
+                            <label for="project_id">Project</label>
+                            {{ form.project_id(class="form-control") }}
                             <label for="epic">Epic</label>
                             {{ form.epic(class="form-control") }}
-                            <label for="isDefault">Default</label>
-                            {{ form.isDefault }}
+                            <label for="is_default">Default</label>
+                            {{ form.is_default(class="form-control") }}
                             <button class="btn-primary" type="submit">Save</button>
-                            {% if conflJiraConfig %}
-                                <a href="/delete/confluence-jira?conflJiraConfig={{ conflJiraConfig }}" class="btn-secondary">Delete</a>
+                            {% if atlassian_jira_config %}
+                                <a href="/delete/atlassian-jira?atlassian_jira_config={{ atlassian_jira_config }}" class="btn-secondary">Delete</a>
                             {% endif %}
                         </div>
                     </form>
                 </div>
+                {% with msgs = get_flashed_messages() %}
+                    {% if msgs %}
+                        {% for msg in msgs %}
+                            {% if "ERROR" in msg %}
+                                <div class="center-section flash-bad-alert">
+                                    <p>{{ msg }}</p>
+                                </div>  
+                            {% else %}
+                                <div class="center-section flash-good-alert">
+                                    <p>{{ msg }}</p>
+                                </div>  
+                            {% endif %}                          
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
             </div>
         </div>
     </main>

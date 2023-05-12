@@ -9,58 +9,57 @@ import base64
 class grafana(integration):
     def __init__(self, project, name = None):
         super().__init__(project)
-        self.setConfig(name)
+        self.set_config(name)
 
-    def setConfig(self, name):
+    def set_config(self, name):
         if path.isfile(self.config_path) is False or os.path.getsize(self.config_path) == 0:
-            return {"status":"error", "message":"No config.json"}
+            raise Exception('No config.json')
         else:   
             if name == None:
-                name = pkg.getDefaultGrafana(self.project)
-            config = pkg.getGrafnaConfigValues(self.project, name)
+                name = pkg.get_default_grafana(self.project)
+            config = pkg.get_grafana_config_values(self.project, name)
             if "name" in config:
                 if config['name'] == name:
-                    self.name                      = config["name"]
-                    self.grafanaServer             = config["grafanaServer"]
-                    self.grafanaToken              = config["grafanaToken"]
-                    self.grafanaDashboard          = config["grafanaDashboard"]
-                    self.grafanaOrgId              = config["grafanaOrgId"]
-                    self.grafanaDashRenderPath     = config["grafanaDashRenderPath"]
-                    self.grafanaDashRenderCompPath = config["grafanaDashRenderCompPath"]
+                    self.name                  = config["name"]
+                    self.server                = config["server"]
+                    self.token                 = config["token"]
+                    self.dashboard_id          = config["dashboard_id"]
+                    self.org_id                = config["org_id"]
+                    self.dash_render_path      = config["dash_render_path"]
+                    self.dash_render_comp_path = config["dash_render_comp_path"]
                 else:
-                    return {"status":"error", "message":"No such config name"}
+                    raise Exception(f'No such config name: {name}')
 
-    def getGrafanaLink(self, start, end, testName, dashId = None):
-        if dashId != None:
-            url = self.grafanaServer + dashId + '?orgId=' + self.grafanaOrgId + '&from='+str(start)+'&to='+str(end)+'&var-aggregation=60&var-sampleType=transaction&var-testName='+str(testName)
+    def get_grafana_link(self, start, end, test_name, dash_id = None):
+        if dash_id != None:
+            url = self.server + dash_id + '?orgId=' + self.org_id + '&from='+str(start)+'&to='+str(end)+'&var-aggregation=60&var-sampleType=transaction&var-testName='+str(test_name)
         else:
-            url = self.grafanaServer + self.grafanaDashboard + '?orgId=' + self.grafanaOrgId + '&from='+str(start)+'&to='+str(end)+'&var-aggregation=60&var-sampleType=transaction&var-testName='+str(testName)
+            url = self.server + self.dashboard_id + '?orgId=' + self.org_id + '&from='+str(start)+'&to='+str(end)+'&var-aggregation=60&var-sampleType=transaction&var-testName='+str(test_name)
         # if "render" not in dash_id:
         #     url = url + "&var-runId="+str(param.current_runId)
         return url  
     
-    def getGrafanaTestLink(self, start, end, testName, runId, dashId = None):
-        url = self.getGrafanaLink(start, end, testName, dashId)
-        url = url+"&var-runId="+runId
+    def get_grafana_test_link(self, start, end, test_name, run_id, dash_id = None):
+        url = self.get_grafana_link(start, end, test_name, dash_id)
+        url = url+"&var-runId="+run_id
         return url  
     
-    def renderImageEncoded(self, graphNames, start, stop, testName, runId, baseline_runId = None):
+    def render_image_encoded(self, graph_names, start, stop, test_name, run_id, baseline_run_id = None):
         graphs = []
         screenshots = []
-        for graph in graphNames:
-            graphJson = pkg.getGraph(self.project, graph["name"])
-            graphJson["position"] = graph["position"]
-            graphs.append(graphJson)
-
+        for graph in graph_names:
+            graph_json = pkg.get_graph(self.project, graph["name"])
+            graph_json["position"] = graph["position"]
+            graphs.append(graph_json)
         for graph in graphs:
             if "comparison" in graph["dashId"]:
-                url = self.getGrafanaLink(start, stop, testName, graph["dashId"])
-                url = url+"&var-current_runId="+runId+"&var-baseline_runId="+baseline_runId+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
+                url = self.get_grafana_link(start, stop, test_name, graph["dashId"])
+                url = url+"&var-current_runId="+run_id+"&var-baseline_runId="+baseline_run_id+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
             else:
-                url = self.getGrafanaLink(start, stop, testName, graph["dashId"])
-                url = url+"&var-runId="+runId+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
+                url = self.get_grafana_link(start, stop, test_name, graph["dashId"])
+                url = url+"&var-runId="+run_id+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
             try:   
-                response = requests.get(url=url, headers={ 'Authorization': 'Bearer ' + self.grafanaToken}, timeout=180)
+                response = requests.get(url=url, headers={ 'Authorization': 'Bearer ' + self.token}, timeout=180)
                 if response.status_code == 200:
                     image = base64.b64encode(response.content)
                     screenshots.append({"image": image, "position": graph["position"], "name": graph["name"]})
@@ -71,23 +70,22 @@ class grafana(integration):
                 logging.warning(er)
         return screenshots
 
-    def renderImage(self, graphNames, start, stop, testName, runId, baseline_runId = None):
+    def render_image(self, graph_names, start, stop, test_name, run_id, baseline_run_id = None):
         graphs = []
         screenshots = []
-        for graph in graphNames:
-            graphJson = pkg.getGraph(self.project, graph["name"])
-            graphJson["position"] = graph["position"]
-            graphs.append(graphJson)
-
+        for graph in graph_names:
+            graph_json = pkg.get_graph(self.project, graph["name"])
+            graph_json["position"] = graph["position"]
+            graphs.append(graph_json)
         for graph in graphs:
             if "comparison" in graph["dashId"]:
-                url = self.getGrafanaLink(start, stop, testName, graph["dashId"])
-                url = url+"&var-current_runId="+runId+"&var-baseline_runId="+baseline_runId+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
+                url = self.get_grafana_link(start, stop, test_name, graph["dashId"])
+                url = url+"&var-current_runId="+run_id+"&var-baseline_runId="+baseline_run_id+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
             else:
-                url = self.getGrafanaLink(start, stop, testName, graph["dashId"])
-                url = url+"&var-runId="+runId+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
+                url = self.get_grafana_link(start, stop, test_name, graph["dashId"])
+                url = url+"&var-runId="+run_id+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
             try:   
-                response = requests.get(url=url, headers={ 'Authorization': 'Bearer ' + self.grafanaToken}, timeout=180)
+                response = requests.get(url=url, headers={ 'Authorization': 'Bearer ' + self.token}, timeout=180)
                 if response.status_code == 200:
                     screenshots.append({"image": response.content, "position": graph["position"], "name": graph["name"]})
                 else:

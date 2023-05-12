@@ -7,92 +7,92 @@ import plotly
 import plotly.express
 import json
 
-class htmlReport:
-    def __init__(self, project, runId, influxdbName):
+class html_report:
+    def __init__(self, project, run_id, influxdb_name):
         self.project = project
-        self.runId = runId
-        self.influxdbObj = influxdb(project, influxdbName).connectToInfluxDB()
-        self.queryApi = self.influxdbObj.influxdbConnection.query_api()
+        self.runId = run_id
+        self.influxdb_obj = influxdb(project, influxdb_name).connect_to_influxdb()
+        self.query_api = self.influxdb_obj.influxdb_connection.query_api()
         self.report = {}
-        self.report['runId'] = runId
+        self.report['run_id'] = run_id
         self.report['stats'] = {}
         self.report['graph'] = {}
         self.tmz = tz.tzlocal()
-        self.getStartTime()
-        self.getEndTime()
-        self.getAppName()
+        self.get_start_time()
+        self.get_end_time()
+        self.get_app_name()
     
-    def getStartTime(self):
-        fluxTables = self.queryApi.query(custom.getStartTime(self.runId, self.influxdbObj.influxdbBucket))
+    def get_start_time(self):
+        flux_tables = self.query_api.query(custom.get_start_time(self.runId, self.influxdb_obj.bucket))
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
-        for fluxTable in fluxTables:
-            for fluxRecord in fluxTable:
-                self.report["startTimeStamp"] = datetime.strftime(fluxRecord['_time'],"%Y-%m-%dT%H:%M:%SZ")                   
-                self.report["startTime"] = datetime.strftime(fluxRecord['_time'].astimezone(self.tmz), "%Y-%m-%d %I:%M:%S %p")    
+        for flux_table in flux_tables:
+            for flux_record in flux_table:
+                self.report["start_timestamp"] = datetime.strftime(flux_record['_time'],"%Y-%m-%dT%H:%M:%SZ")                   
+                self.report["start_time"] = datetime.strftime(flux_record['_time'].astimezone(self.tmz), "%Y-%m-%d %I:%M:%S %p")    
 
-    def getEndTime(self):
-        fluxTables = self.queryApi.query(custom.getEndTime(self.runId, self.influxdbObj.influxdbBucket))
+    def get_end_time(self):
+        flux_tables = self.query_api.query(custom.get_end_time(self.runId, self.influxdb_obj.bucket))
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
-        for fluxTable in fluxTables:
-            for fluxRecord in fluxTable:
-                self.report["endTimeStamp"] = datetime.strftime(fluxRecord['_time'],"%Y-%m-%dT%H:%M:%SZ")                 
-                self.report["endTime"] = datetime.strftime(fluxRecord['_time'].astimezone(self.tmz), "%Y-%m-%d %I:%M:%S %p")  
+        for flux_table in flux_tables:
+            for flux_record in flux_table:
+                self.report["end_timestamp"] = datetime.strftime(flux_record['_time'],"%Y-%m-%dT%H:%M:%SZ")                 
+                self.report["end_time"] = datetime.strftime(flux_record['_time'].astimezone(self.tmz), "%Y-%m-%d %I:%M:%S %p")  
 
-    def getDuration(self):
-        duration = datetime.strptime(self.report['endTimeStamp'], "%Y-%m-%dT%H:%M:%SZ") - datetime.strptime(self.report['startTimeStamp'], "%Y-%m-%dT%H:%M:%SZ")  
+    def get_duration(self):
+        duration = datetime.strptime(self.report['end_timestamp'], "%Y-%m-%dT%H:%M:%SZ") - datetime.strptime(self.report['start_timestamp'], "%Y-%m-%dT%H:%M:%SZ")  
         self.report["duration"] = str(duration)
     
-    def getMaxActiveUsers_stats(self):
-        fluxTables = self.queryApi.query(custom.getMaxActiveUsers_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp'], self.influxdbObj.influxdbBucket))
+    def get_max_active_users_stats(self):
+        flux_tables = self.query_api.query(custom.get_max_active_users_stats(self.runId, self.report['start_timestamp'], self.report['end_timestamp'], self.influxdb_obj.bucket))
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
-        for fluxTable in fluxTables:
-            for fluxRecord in fluxTable:
-                self.report['stats']['maxActiveThreads'] = fluxRecord['_value']
+        for flux_table in flux_tables:
+            for flux_record in flux_table:
+                self.report['stats']['max_active_threads'] = flux_record['_value']
     
-    def getAverageRPS_stats(self):
-        fluxTables = self.queryApi.query(custom.getAverageRPS_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp'], self.influxdbObj.influxdbBucket))
+    def get_average_RPS_stats(self):
+        flux_tables = self.query_api.query(custom.get_average_rps_stats(self.runId, self.report['start_timestamp'], self.report['end_timestamp'], self.influxdb_obj.bucket))
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
-        for fluxTable in fluxTables:
-            for fluxRecord in fluxTable:
-                self.report['stats']['rps'] = round(fluxRecord['_value'], 2)
+        for flux_table in flux_tables:
+            for flux_record in flux_table:
+                self.report['stats']['rps'] = round(flux_record['_value'], 2)
     
-    def getErrorsPerc_stats(self):
-        fluxTables = self.queryApi.query(custom.getErrorsPerc_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp'], self.influxdbObj.influxdbBucket))
+    def get_errors_perc_stats(self):
+        flux_tables = self.query_api.query(custom.get_errors_perc_stats(self.runId, self.report['start_timestamp'], self.report['end_timestamp'], self.influxdb_obj.bucket))
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
-        for fluxTable in fluxTables:
-            for fluxRecord in fluxTable:
-                self.report['stats']['errors'] = round(fluxRecord['_value'], 2)
+        for flux_table in flux_tables:
+            for flux_record in flux_table:
+                self.report['stats']['errors'] = round(flux_record['_value'], 2)
     
-    def getAvgResponseTime_stats(self):
-        fluxTables = self.queryApi.query(custom.getAvgResponseTime_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp'], self.influxdbObj.influxdbBucket))
+    def get_avg_response_time_stats(self):
+        flux_tables = self.query_api.query(custom.get_avg_response_time_stats(self.runId, self.report['start_timestamp'], self.report['end_timestamp'], self.influxdb_obj.bucket))
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
-        for fluxTable in fluxTables:
-            for fluxRecord in fluxTable:
-                self.report['stats']['avgResponseTime'] = round(fluxRecord['_value'], 2)
+        for flux_table in flux_tables:
+            for flux_record in flux_table:
+                self.report['stats']['avg_response_time'] = round(flux_record['_value'], 2)
     
-    def get90ResponseTime_stats(self):
-        fluxTables = self.queryApi.query(custom.get90ResponseTime_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp'], self.influxdbObj.influxdbBucket))
+    def get_90_response_time_stats(self):
+        flux_tables = self.query_api.query(custom.get_90_response_time_stats(self.runId, self.report['start_timestamp'], self.report['end_timestamp'], self.influxdb_obj.bucket))
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
-        for fluxTable in fluxTables:
-            for fluxRecord in fluxTable:
-                self.report['stats']['percentileResponseTime'] = round(fluxRecord['_value'], 2)
+        for flux_table in flux_tables:
+            for flux_record in flux_table:
+                self.report['stats']['percentile_response_time'] = round(flux_record['_value'], 2)
     
-    def getAvgBandwidth_stats(self):
-        fluxTables = self.queryApi.query(custom.getAvgBandwidth_stats(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp'], self.influxdbObj.influxdbBucket))
+    def get_avg_bandwidth_stats(self):
+        flux_tables = self.query_api.query(custom.get_avg_bandwidth_stats(self.runId, self.report['start_timestamp'], self.report['end_timestamp'], self.influxdb_obj.bucket))
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
-        for fluxTable in fluxTables:
-            for fluxRecord in fluxTable:
-                self.report['stats']['avgBandwidth'] = round(fluxRecord['_value']/1048576, 2)
+        for flux_table in flux_tables:
+            for flux_record in flux_table:
+                self.report['stats']['avgBandwidth'] = round(flux_record['_value']/1048576, 2)
 
-    def getAvgResponseTime_graph(self):
-        fluxTables = self.queryApi.query(custom.getAvgResponseTime_graph(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp'], self.influxdbObj.influxdbBucket))
-        for fluxTable in fluxTables:
+    def getavg_response_time_graph(self):
+        flux_tables = self.query_api.query(custom.get_avg_response_time_graph(self.runId, self.report['start_timestamp'], self.report['end_timestamp'], self.influxdb_obj.bucket))
+        for flux_table in flux_tables:
             x_vals = []
             y_vals = []
             # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
-            for fluxRecord in fluxTable:
-                y_vals.append(fluxRecord["_value"])
-                x_vals.append(fluxRecord["_time"])
+            for flux_record in flux_table:
+                y_vals.append(flux_record["_value"])
+                x_vals.append(flux_record["_time"])
         fig = plotly.express.line(x=x_vals, y=y_vals) 
         fig.update_layout(showlegend=False, 
                     paper_bgcolor = 'rgb(47, 46, 46)', 
@@ -104,16 +104,16 @@ class htmlReport:
         fig.update_yaxes(gridcolor='#444444', color="white", title_text='Milliseconds', ticksuffix="ms")
         fig.update_xaxes(gridcolor='#444444', color="white", title_text='Time')
 
-        self.report['graph']['avgResponseTime'] = json.loads(json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder))
+        self.report['graph']['avg_response_time'] = json.loads(json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder))
     
-    def getRPS_graph(self):
-        fluxTables = self.queryApi.query(custom.getRPS_graph(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp'], self.influxdbObj.influxdbBucket))
-        for fluxTable in fluxTables:
+    def get_rps_graph(self):
+        flux_tables = self.query_api.query(custom.get_rps_graph(self.runId, self.report['start_timestamp'], self.report['end_timestamp'], self.influxdb_obj.bucket))
+        for flux_table in flux_tables:
             x_vals = []
             y_vals = []
-            for fluxRecord in fluxTable:
-                y_vals.append(fluxRecord["_value"])
-                x_vals.append(fluxRecord["_time"])
+            for flux_record in flux_table:
+                y_vals.append(flux_record["_value"])
+                x_vals.append(flux_record["_time"])
         fig = plotly.express.line(x=x_vals, y=y_vals) 
         fig.update_layout(showlegend=False, 
                     paper_bgcolor = 'rgb(47, 46, 46)', 
@@ -127,25 +127,25 @@ class htmlReport:
 
         self.report['graph']['rps'] = json.loads(json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder))
     
-    def getAppName(self):
-        fluxTables = self.queryApi.query(custom.getAppName(self.runId, self.report['startTimeStamp'], self.report['endTimeStamp'], self.influxdbObj.influxdbBucket))
-        for fluxTable in fluxTables:
-            for fluxRecord in fluxTable:
-                self.report['appName'] = fluxRecord['testName']
+    def get_app_name(self):
+        flux_tables = self.query_api.query(custom.get_app_name(self.runId, self.report['start_timestamp'], self.report['end_timestamp'], self.influxdb_obj.bucket))
+        for flux_table in flux_tables:
+            for flux_record in flux_table:
+                self.report['app_name'] = flux_record['test_name']
 
     
-    def createReport(self):
-        self.getDuration()
-        self.getMaxActiveUsers_stats()
-        self.getAverageRPS_stats()
-        self.getErrorsPerc_stats()
-        self.getAvgResponseTime_stats()
-        self.get90ResponseTime_stats()
-        self.getAvgBandwidth_stats()
-        self.getAvgResponseTime_graph()
-        self.getRPS_graph()
-        nfrObj = nfr(self.project)
-        compResult = nfrObj.compareWithNFRs(appName = self.report['appName'], runId = self.report['runId'],start = self.report["startTimeStamp"], end = self.report["endTimeStamp"])
-        self.report['nfrs'] = compResult
-        self.report['apdex'] = nfrObj.calculateApdex(compResult)
-        self.influxdbObj.closeInfluxdbConnection()
+    def create_report(self):
+        self.get_duration()
+        self.get_max_active_users_stats()
+        self.get_average_RPS_stats()
+        self.get_errors_perc_stats()
+        self.get_avg_response_time_stats()
+        self.get_90_response_time_stats()
+        self.get_avg_bandwidth_stats()
+        self.getavg_response_time_graph()
+        self.get_rps_graph()
+        nfr_obj = nfr(self.project)
+        comp_result = nfr_obj.compare_with_nfrs(app_name = self.report['app_name'], runId = self.report['run_id'],start = self.report["start_timestamp"], end = self.report["end_timestamp"])
+        self.report['nfrs'] = comp_result
+        self.report['apdex'] = nfr_obj.calculate_apdex(comp_result)
+        self.influxdb_obj.close_influxdb_connection()

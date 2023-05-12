@@ -61,13 +61,14 @@ class Credentials(db.Model):
         else:
             return "Token not found"
     
-    @classmethod
-    def getAll(cls):
-        result = db.session.query(cls).all()
-        if result:
-            return result
-        else:
-            return "Token not found"
+    # To delete if not used
+    # @classmethod
+    # def get_all(cls):
+    #     result = db.session.query(cls).all()
+    #     if result:
+    #         return result
+    #     else:
+    #         return "Token not found"
 
     @classmethod
     def delete(cls, key):

@@ -38,13 +38,13 @@
                         <li class="card-container-fx">
                             <a class="nav-link" id="tabs-text-4-tab" data-bs-toggle="tab"
                                 href="#tabs-text-4" role="tab" aria-controls="tabs-text-4"
-                                aria-selected="false">Confluence Wiki
+                                aria-selected="false">Atlassian Wiki
                             </a>
                         </li>
                         <li class="card-container-fx">
                             <a class="nav-link" id="tabs-text-5-tab" data-bs-toggle="tab"
                                 href="#tabs-text-5" role="tab" aria-controls="tabs-text-5"
-                                aria-selected="false">Confluence Jira
+                                aria-selected="false">Atlassian Jira
                             </a>
                         </li>
                     </ul>
@@ -53,12 +53,12 @@
                     <div class="tab-pane active" id="tabs-text-1" role="tabpanel"
                         aria-labelledby="tabs-text-1-tab">
                         <div class="center-section">
-                            {% for influxdbConfig in influxdbConfigs %}
+                            {% for influxdb_config in influxdb_configs %}
                             <div class="card">
                                 <img src="/static/assets/img/blog/influxdb.jpg" class="rounded-top"
                                     alt="InfluxDB" height="200">
-                                <p>{{ influxdbConfig }}</p>
-                                <a href="/influxdb?influxdbConfig={{ influxdbConfig }}" class="btn-primary">Configure</a>
+                                <p>{{ influxdb_config }}</p>
+                                <a href="/influxdb?influxdb_config={{ influxdb_config }}" class="btn-primary">Configure</a>
                             </div>
                             {% endfor %}
                             <div class="card">
@@ -71,12 +71,12 @@
                     <div class="tab-pane" id="tabs-text-2" role="tabpanel"
                         aria-labelledby="tabs-text-2-tab">
                         <div class="center-section">
-                            {% for grafanaConfig in grafanaConfigs %}
+                            {% for grafana_config in grafana_configs %}
                             <div class="card">
                                 <img src="/static/assets/img/blog/grafana.jpeg" class="rounded-top"
                                     alt="Grafana" height="200">
-                                <p>{{ grafanaConfig }}</p>
-                                <a href="/grafana?grafanaConfig={{ grafanaConfig }}" class="btn-primary">Configure</a>
+                                <p>{{ grafana_config }}</p>
+                                <a href="/grafana?grafana_config={{ grafana_config }}" class="btn-primary">Configure</a>
                             </div>
                             {% endfor %}
                             <div class="card">
@@ -89,12 +89,12 @@
                     <div class="tab-pane" id="tabs-text-3" role="tabpanel"
                         aria-labelledby="tabs-text-3-tab">
                         <div class="center-section">
-                            {% for azureConfig in azureConfigs %}
+                            {% for azure_config in azure_configs %}
                             <div class="card">
                                 <img src="/static/assets/img/blog/azure.jpg" class="rounded-top"
                                     alt="Azure" height="200">
-                                <p>{{ azureConfig }}</p>
-                                <a href="/azure?azureConfig={{ azureConfig }}" class="btn-primary">Configure</a>
+                                <p>{{ azure_config }}</p>
+                                <a href="/azure?azure_config={{ azure_config }}" class="btn-primary">Configure</a>
                             </div>
                             {% endfor %}
                             <div class="card">
@@ -107,40 +107,55 @@
                     <div class="tab-pane" id="tabs-text-4" role="tabpanel"
                         aria-labelledby="tabs-text-4-tab">
                         <div class="center-section">
-                            {% for conflWikiConfig in conflWikiConfigs %}
+                            {% for atlassian_wiki_config in atlassian_wiki_configs %}
                             <div class="card">
                                 <img src="/static/assets/img/blog/confluence.jpg" class="rounded-top"
                                     alt="conflwiki" height="200">
-                                <p>{{ conflWikiConfig }}</p>
-                                <a href="/confluence-wiki?conflWikiConfig={{ conflWikiConfig }}" class="btn-primary">Configure</a>
+                                <p>{{ atlassian_wiki_config }}</p>
+                                <a href="/atlassian-wiki?atlassian_wiki_config={{ atlassian_wiki_config }}" class="btn-primary">Configure</a>
                             </div>
                             {% endfor %}
                             <div class="card">
                                 <img src="/static/assets/img/blog/influxdb_new.jpg" class="rounded-top"
                                     alt="New" height="245">
-                                <a href="/confluence-wiki" class="btn-primary">Add new config</a>
+                                <a href="/atlassian-wiki" class="btn-primary">Add new config</a>
                             </div>
                         </div>
                     </div>
                     <div class="tab-pane" id="tabs-text-5" role="tabpanel"
                         aria-labelledby="tabs-text-5-tab">
                         <div class="center-section">
-                            {% for conflJiraConfig in conflJiraConfigs %}
+                            {% for atlassian_jira_config in atlassian_jira_configs %}
                             <div class="card">
                                 <img src="/static/assets/img/blog/confluence.jpg" class="rounded-top"
                                     alt="confljira" height="200">
-                                <p>{{ conflJiraConfig }}</p>
-                                <a href="/confluence-jira?conflJiraConfig={{ conflJiraConfig }}" class="btn-primary">Configure</a>
+                                <p>{{ atlassian_jira_config }}</p>
+                                <a href="/atlassian-jira?atlassian_jira_config={{ atlassian_jira_config }}" class="btn-primary">Configure</a>
                             </div>
                             {% endfor %}
                             <div class="card">
                                 <img src="/static/assets/img/blog/influxdb_new.jpg" class="rounded-top"
                                     alt="New" height="245">
-                                <a href="/confluence-jira" class="btn-primary">Add new config</a>
+                                <a href="/atlassian-jira" class="btn-primary">Add new config</a>
                             </div>
                         </div>
                     </div>
                 </div>
+                {% with msgs = get_flashed_messages() %}
+                    {% if msgs %}
+                        {% for msg in msgs %}
+                            {% if "ERROR" in msg %}
+                                <div class="center-section flash-bad-alert">
+                                    <p>{{ msg }}</p>
+                                </div>  
+                            {% else %}
+                                <div class="center-section flash-good-alert">
+                                    <p>{{ msg }}</p>
+                                </div>  
+                            {% endif %}                          
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
             </div>
         </div>
     </main>

@@ -1,82 +1,81 @@
 from app.backend import pkg
 from app.backend.integrations.grafana.grafana import grafana
 from app.backend.integrations.influxdb.influxdb import influxdb
-from app.backend.integrations.atlassian.wiki import confluence
+from app.backend.integrations.atlassian.wiki import wiki
 from datetime import datetime
 import threading
 import re
 
-class confreport:
+class atlassian_wiki_report:
 
-    def __init__(self, project, reportName):
+    def __init__(self, project, report_name):
         self.project        = project
-        self.reportName     = reportName
-        self.setConfig()
-        self.grafanaObj     = grafana(project=self.project, name=self.grafanaName)
-        self.influxdbObj    = influxdb(project=self.project, name=self.influxdbName)
-        self.conflObj       = confluence(project=self.project, name=self.outputName)
+        self.report_name    = report_name
+        self.set_config()
+        self.grafana_obj    = grafana(project=self.project, name=self.grafana_name)
+        self.influxdb_obj   = influxdb(project=self.project, name=self.influxdb_name).connect_to_influxdb()
+        self.output_obj     = wiki(project=self.project, name=self.output_name)
         self.progress       = 0
         self.status         = "Not started"
 
-    def setConfig(self):
-        config = pkg.getFlowConfigValues(self.project, self.reportName)
-        self.influxdbName = config["influxdbName"]
-        self.grafanaName  = config["grafanaName"]
-        self.outputName   = config["outputName"]  
-        self.graphs       = config["graphs"]
-        self.footer       = config["footer"]
-        self.header       = config["header"]
+    def set_config(self):
+        config = pkg.get_flow_config_values_in_dict(self.project, self.report_name)
+        self.influxdb_name = config["influxdb_name"]
+        self.grafana_name  = config["grafana_name"]
+        self.output_name   = config["output_name"]  
+        self.graphs        = config["graphs"]
+        self.footer        = config["footer"]
+        self.header        = config["header"]
     
-    def generateReport(self, current_runId, baseline_runId = None):
-            self.influxdbObj.connectToInfluxDB()
-
-            self.current_startTimeInflux    = self.influxdbObj.getStartTime(current_runId)
-            self.current_endTimeInflux      = self.influxdbObj.getEndTime(current_runId)
-            self.current_startTimestamp     = self.influxdbObj.getStartTmp(current_runId)
-            self.current_endTimestamp       = self.influxdbObj.getEndTmp(current_runId)
-            self.testName                   = self.influxdbObj.getTestName(current_runId, self.current_startTimeInflux, self.current_endTimeInflux)
+    def generate_report(self, current_run_id, baseline_run_id = None):
+            self.current_start_time         = self.influxdb_obj.get_start_time(current_run_id)
+            self.current_end_time           = self.influxdb_obj.get_end_time(current_run_id)
+            self.current_start_timestamp    = self.influxdb_obj.get_start_tmp(current_run_id)
+            self.current_end_timestamp      = self.influxdb_obj.get_end_tmp(current_run_id)
+            self.test_name                  = self.influxdb_obj.get_test_name(current_run_id, self.current_start_time, self.current_end_time)
 
             self.parameters = {}
-            self.parameters["testName"]                 = self.testName
-
-            self.parameters["current_startTime"]        = self.influxdbObj.getHumanStartTime(current_runId)
-            self.parameters["current_endTime"]          = self.influxdbObj.getHumanEndTime(current_runId)
-            self.parameters["current_grafanaLink"]      = self.grafanaObj.getGrafanaTestLink(self.current_startTimestamp, self.current_endTimestamp, self.testName, current_runId)
-            self.parameters["current_duration"]         = str(int((self.current_endTimestamp - self.current_startTimestamp)/1000))
-            self.parameters["current_vusers"]           = self.influxdbObj.getMaxActiveUsers(current_runId, self.current_startTimeInflux, self.current_endTimeInflux)
+            self.parameters["test_name"]                = self.test_name
+            self.parameters["current_start_time"]       = self.influxdb_obj.get_human_start_time(current_run_id)
+            self.parameters["current_end_time"]         = self.influxdb_obj.get_human_end_time(current_run_id)
+            self.parameters["current_grafana_link"]     = self.grafana_obj.get_grafana_test_link(self.current_start_timestamp, self.current_end_timestamp, self.test_name, current_run_id)
+            self.parameters["current_duration"]         = str(int((self.current_end_timestamp - self.current_start_timestamp)/1000))
+            self.parameters["current_vusers"]           = self.influxdb_obj.get_max_active_users(current_run_id, self.current_start_time, self.current_end_time)
             
-            if baseline_runId != None:
-                self.baseline_startTimeInflux           = self.influxdbObj.getStartTime(baseline_runId)
-                self.baseline_endTimeInflux             = self.influxdbObj.getEndTime(baseline_runId)
-                self.baseline_startTimestamp            = self.influxdbObj.getStartTmp(baseline_runId)
-                self.baseline_endTimestamp              = self.influxdbObj.getEndTmp(baseline_runId)
+            if baseline_run_id != None:
+                self.current_start_time                 = self.influxdb_obj.get_start_time(baseline_run_id)
+                self.baseline_end_time                  = self.influxdb_obj.get_end_time(baseline_run_id)
+                self.baseline_end_time                  = self.influxdb_obj.get_start_tmp(baseline_run_id)
+                self.baseline_end_time                  = self.influxdb_obj.get_end_tmp(baseline_run_id)
 
-                self.parameters["baseline_startTime"]   = self.influxdbObj.getHumanStartTime(baseline_runId)
-                self.parameters["baseline_endTime"]     = self.influxdbObj.getHumanEndTime(baseline_runId)
-                self.parameters["baseline_grafanaLink"] = self.grafanaObj.getGrafanaTestLink(self.baseline_startTimestamp, self.baseline_endTimestamp, self.testName, baseline_runId)
-                self.parameters["baseline_duration"]    = str(int((self.baseline_endTimestamp - self.baseline_startTimestamp)/1000))
-                self.parameters["baseline_vusers"]      = self.influxdbObj.getMaxActiveUsers(baseline_runId, self.baseline_startTimeInflux, self.baseline_endTimeInflux)
+                self.parameters["baseline_start_time"]   = self.influxdb_obj.get_human_start_time(baseline_run_id)
+                self.parameters["baseline_end_time"]     = self.influxdb_obj.get_human_end_time(baseline_run_id)
+                self.parameters["baseline_grafana_link"] = self.grafana_obj.get_grafana_test_link(self.baseline_end_time, self.baseline_end_time, self.test_name, baseline_run_id)
+                self.parameters["baseline_duration"]     = str(int((self.baseline_end_time - self.baseline_end_time)/1000))
+                self.parameters["baseline_vusers"]       = self.influxdb_obj.get_max_active_users(baseline_run_id, self.current_start_time, self.baseline_end_time)
+            
+            self.influxdb_obj.close_influxdb_connection()
 
             self.status = "Collected data from InfluxDB"
             self.progress = 25
 
             wikiPageName = str(self.parameters["current_vusers"]) + " users | " + self.parameters["current_startTime"]
 
-            screenshots = self.grafanaObj.renderImage(self.graphs, self.current_startTimestamp, self.current_endTimestamp, self.testName, current_runId, baseline_runId)
+            screenshots = self.grafana_obj.render_image(self.graphs, self.current_start_timestamp, self.current_end_timestamp, self.test_name, current_run_id, baseline_run_id)
             self.status = "Rendered images in Grafana"
             self.progress = 50
 
-            response = self.conflObj.putPage(title=wikiPageName, content="")
+            response = self.output_obj.put_page(title=wikiPageName, content="")
 
             if "id" in response:
                 for screenshot in screenshots:
-                    fileName = self.conflObj.putImageToConfl(screenshot["image"], screenshot["name"], pageId=response["id"])
+                    fileName = self.output_obj.put_image_to_confl(screenshot["image"], screenshot["name"], pageId=response["id"])
                     screenshot["filename"] = fileName
 
             self.status = "Uploaded images to Confluence"
             self.progress = 75
 
-            # wikiPagePath = self.conflObj.getPath() + "/" + self.testName + "/" + wikiPageName
+            # wikiPagePath = self.conflObj.getPath() + "/" + self.test_name + "/" + wikiPageName
             
             variables = re.findall(r"\$\{(.*?)\}", self.header)
             for var in variables:
@@ -101,7 +100,7 @@ class confreport:
 
             body += self.footer
 
-            self.conflObj.createOrUpdatePage(title=wikiPageName,content=body)
+            self.output_obj.create_or_update_page(title=wikiPageName,content=body)
 
             self.status = "Created Confluence wiki page"
             self.progress = 100
