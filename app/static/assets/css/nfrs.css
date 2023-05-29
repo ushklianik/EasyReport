@@ -41,6 +41,7 @@
     transition: max-height 0.2s ease-out;
     border-left: 1px solid #808080;
     border-right: 1px solid #808080;
+    border-bottom: 1px solid #808080;
   }
 
 .nfr-circle {

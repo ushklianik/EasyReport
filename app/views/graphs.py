@@ -27,7 +27,7 @@ def get_graphs():
     return redirect(url_for('index'))
 
 @app.route('/new-graph', methods=['POST'])
-def newGraph():
+def new_graph():
     try:
         project = request.cookies.get('project') 
         # Check if user is logged in
@@ -38,4 +38,33 @@ def newGraph():
         return "Graph saved"
     except Exception as er:
         flash("ERROR: " + str(er))
-        return str(er)
+        return redirect(url_for('index'))
+    
+@app.route('/update-graph', methods=['POST'])
+def update_graph():
+    try:
+        project = request.cookies.get('project') 
+        # Check if user is logged in
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        if request.method == "POST":
+            pkg.save_graph(project, request.form.to_dict())
+        flash("Graph updated")
+    except Exception as er:
+        flash("ERROR: " + str(er))
+    return redirect(url_for('get_graphs'))
+
+@app.route('/delete-graph', methods=['GET'])
+def delete_graph():
+    try:
+        project = request.cookies.get('project') 
+        # Check if user is logged in
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        graph_name = request.args.get('graph_name')
+        if graph_name != None:
+            pkg.delete_graph(project, graph_name)
+            flash("Graph deleted")
+    except Exception as er:
+        flash("ERROR: " + str(er))
+    return "Done"

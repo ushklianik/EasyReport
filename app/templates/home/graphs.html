@@ -31,8 +31,7 @@
                       <div for="width{{ loop.index0 }}" class="nfr-table-header grey-text-color">Panel width</div>
                       <div for="height{{ loop.index0 }}" class="nfr-table-header grey-text-color">Panel height</div>
                   </div>
-                  <form method="POST" action="/update_graph">
-                    <input type="hidden" name="graph_id" value="{{ loop.index0 }}">
+                  <form method="POST" action="/update-graph">
                     <div class="graph-table">
                         <div>
                             <input class="form-select-nfr nfr-table-column" type="text" id="name{{ loop.index0 }}" name="name" value="{{ graph.name }}">
@@ -51,7 +50,7 @@
                         </div>
                     </div>
                     <button class="btn-primary margin-all-10" type="submit">Save</button>
-                    <a class="btn-secondary margin-all-10" href="#" role="button">Delete</a>
+                    <button class="btn-secondary margin-all-10" type="button" onclick="deleteGraph('{{ graph.name }}')">Delete</button>
                   </form>
                 </div>
               </div>
@@ -165,8 +164,22 @@
               let elem = '<div class="bad-msg status-message">Not saved</div>';
               status_place.insertAdjacentHTML("afterbegin", elem);
           },
-      })
-    }
+        })
+      }
+
+      function deleteGraph(name){
+        $.ajax({
+          url:'/delete-graph?graph_name=' + name,
+          type:"GET",
+          contentType:"application/json",
+          success: function(data){
+            window.location.reload();
+          },
+          error: function () {
+            window.location.reload();
+          },
+        })
+      }
     </script>
   </main>
 
