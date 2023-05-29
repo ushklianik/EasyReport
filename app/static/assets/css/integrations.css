@@ -64,6 +64,25 @@ ul {
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
+.input-label {
+    width: 100%;
+    text-align: center;
+}
+
+#dashboardContainer {
+    width: 100%;
+}
+
+.dashboardInput {
+    width: 80%;
+}
+
+.deleteDashboard{
+    width: 16%;
+    margin-left: 4%;
+}
+
+
 .input-group {
     position: relative;
     display: flex;

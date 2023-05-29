@@ -39,4 +39,5 @@ from app.views import integrations
 from app.views import nfrs
 from app.views import other
 from app.views import grafana
+from app.views import graphs
 

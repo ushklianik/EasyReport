@@ -126,9 +126,6 @@
                                     {% else %}
                                         <a class="btn-secondary" style="width: 70px;">Delete</a>
                                     {% endif %}   
-                                    <button class="btn-success toggle-modal" type="button">
-                                        Add graph
-                                    </button>
                                 </div>
                             </div>
                             <div class="flex-direction-column flex-center-center" style="width:70%;margin-left:40px;">
@@ -162,35 +159,6 @@
                             {% endfor %}
                         {% endif %}
                     {% endwith %}
-                    <div class="modal" id="addnewgraph">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title" id="addnewgraphLabel">Add graph</h1>
-                                </div>
-                                <div class="modal-body">
-                                    {{ form_for_graphs.hidden_tag() }} 
-                                        <label>Name</label>
-                                        {{ form_for_graphs.name(class="form-select-nfr") }}  
-                                        <label>View panel</label>
-                                        {{ form_for_graphs.viewPanel(class="form-select-nfr") }}  
-                                        <label>Dashboard Id</label>
-                                        {{ form_for_graphs.dashId(class="form-select-nfr") }} 
-                                        <label>File name</label>
-                                        {{ form_for_graphs.fileName(class="form-select-nfr") }} 
-                                        <label>Panel width</label>
-                                        {{ form_for_graphs.width(class="form-select-nfr") }} 
-                                        <label>Panel height</label>
-                                        {{ form_for_graphs.height(class="form-select-nfr") }} 
-                                </div>
-                                <div>
-                                    <div class="status-place" style="float: left;"></div>
-                                    <button class="btn-secondary toggle-modal" style="float: right; width: 70px;" data-bs-dismiss="modal">Close</button>
-                                    <button class="btn-primary" type="submit" style="float: right; width: 70px;" onclick="saveGraph()">Save</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -252,62 +220,6 @@
                 }
             }
 
-            function saveGraph(){
-                let statusPlace = document.querySelector('.status-place');
-                let modal       = document.querySelector('.modal-body');
-                let result      = {}
-                result["name"]      = modal.querySelector('#name').value;
-                result["viewPanel"] = modal.querySelector('#viewPanel').value;
-                result["dashId"]    = modal.querySelector('#dashId').value;
-                result["fileName"]  = modal.querySelector('#fileName').value;
-                result["width"]     = modal.querySelector('#width').value;
-                result["height"]    = modal.querySelector('#height').value;
-
-                $.ajax({
-                    url:'/new-graph',
-                    type:"POST",
-                    data:JSON.stringify(result),
-                    contentType:"application/json",
-                    success: function(data){
-                        if(statusPlace.querySelector('.status-message') != null){
-                            statusPlace.querySelector('.status-message').remove();
-                        }
-                        let elem = '<div class="good-msg status-message">'+data +'</div>';
-                        statusPlace.insertAdjacentHTML("afterbegin", elem);
-                    },
-                    error: function () {
-                        if(statusPlace.querySelector('.status-message') != null){
-                            statusPlace.querySelector('.status-message').remove();
-                        }
-                        let elem = '<div class="bad-msg status-message">Not saved</div>';
-                        statusPlace.insertAdjacentHTML("afterbegin", elem);
-                    },
-                })
-            }
-            
-            addListeners()
-            function addListeners(){
-                var inputElements = document.getElementsByClassName('toggle-modal');
-                if (inputElements.length != 0){
-                    for(var i = 0; i < inputElements.length; i++) {
-                        inputElements[i].addEventListener('click', (e) => {
-                            toggleModal();
-                        });
-                    }
-                }
-            }
-
-            function toggleModal(){
-                let modal = document.querySelector('#addnewgraph');
-                if (getComputedStyle(modal).display === 'none'){
-                    modal.classList.add("show")
-                    modal.style.display = "block"
-                }else{
-                    modal.classList.remove("show")
-                    modal.style.display = "none"
-                }
-
-            }
 
             var textarea = document.querySelector('textarea');
             textarea.addEventListener('keydown', autosize);            

@@ -15,6 +15,8 @@ from flask_login             import current_user
 from app         import app
 from app.forms   import flow_config_form, graph_form
 
+import traceback
+
 
 @app.route('/flow', methods=['GET', 'POST'])
 def flow():
@@ -102,7 +104,7 @@ def get_tests():
             tests = []
         return render_template('home/tests.html', tests=tests, msg=msg, influxdb_names=influxdb_names)
     except Exception as er:
-        flash("ERROR: " + str(er))
+        flash("ERROR: " + str(traceback.format_exc()))
         return redirect(url_for("index"))
 
 @app.route('/report', methods=['GET'])
