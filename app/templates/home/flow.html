@@ -162,35 +162,6 @@
                             {% endfor %}
                         {% endif %}
                     {% endwith %}
-                    <div class="modal" id="addnewgraph">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title" id="addnewgraphLabel">Add graph</h1>
-                                </div>
-                                <div class="modal-body">
-                                    {{ form_for_graphs.hidden_tag() }} 
-                                        <label>Name</label>
-                                        {{ form_for_graphs.name(class="form-select-nfr") }}  
-                                        <label>View panel</label>
-                                        {{ form_for_graphs.viewPanel(class="form-select-nfr") }}  
-                                        <label>Dashboard Id</label>
-                                        {{ form_for_graphs.dashId(class="form-select-nfr") }} 
-                                        <label>File name</label>
-                                        {{ form_for_graphs.fileName(class="form-select-nfr") }} 
-                                        <label>Panel width</label>
-                                        {{ form_for_graphs.width(class="form-select-nfr") }} 
-                                        <label>Panel height</label>
-                                        {{ form_for_graphs.height(class="form-select-nfr") }} 
-                                </div>
-                                <div>
-                                    <div class="status-place" style="float: left;"></div>
-                                    <button class="btn-secondary toggle-modal" style="float: right; width: 70px;" data-bs-dismiss="modal">Close</button>
-                                    <button class="btn-primary" type="submit" style="float: right; width: 70px;" onclick="saveGraph()">Save</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

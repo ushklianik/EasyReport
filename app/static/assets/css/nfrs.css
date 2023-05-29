@@ -4,7 +4,7 @@
     margin: 10px;
 }
 
-.nfrs-button {
+.dropdown-button {
     position: relative;
     display: flex;
     width: 100%;
@@ -18,9 +18,9 @@
     overflow-anchor: none;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.15s ease; }
     @media (prefers-reduced-motion: reduce) {
-      .nfrs-button {
+      .dropdown-button {
         transition: none; } }
-    .nfrs-button::after {
+    .dropdown-button::after {
       flex-shrink: 0;
       width: 20px;
       height: 20px;
@@ -31,11 +31,11 @@
       background-size: 20px;
       transition: transform 0.2s ease-in-out; }
 
-.nfr-panel-active, .nfrs-button:hover {
+.dropdown-body-active, .dropdown-button:hover {
     background-color: rgb(78, 78, 78);
 }
 
-.nfr-panel {
+.dropdown-body {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;

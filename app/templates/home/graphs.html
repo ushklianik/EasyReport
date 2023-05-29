@@ -1,0 +1,174 @@
+{% extends "layouts/base-fullscreen.html" %}
+{% block title %} PerForge {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/report.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/nfrs.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
+{% endblock stylesheets %}
+{% block content %}
+<main>
+    <div class="main-background">
+      {% include 'includes/sidebar.html' %}
+      <div class="main-body">
+        <div class="main-body-header">
+          <a>Graphs</a>
+        </div> 
+        <div class="full-screen-section flex-direction-column">
+          <div class="margin-all-10">
+            {% for graph in graphs_list %}
+            <div>
+              <button class="dropdown-button">
+                <div class="grey-text-color" style="font-size: 1rem;padding-right: 8px;">Graph name:</div>{{ graph.name }}
+              </button>
+              <div class="dropdown-body">
+                <div class="margin-all-10">
+                  <div class="graph-table">
+                      <div for="name{{ loop.index0 }}" class="nfr-table-header grey-text-color">Name</div>
+                      <div for="view_panel{{ loop.index0 }}" class="nfr-table-header grey-text-color">View panel</div>
+                      <div for="dash_id{{ loop.index0 }}" class="nfr-table-header grey-text-color">Dashboard Id</div>
+                      <div for="width{{ loop.index0 }}" class="nfr-table-header grey-text-color">Panel width</div>
+                      <div for="height{{ loop.index0 }}" class="nfr-table-header grey-text-color">Panel height</div>
+                  </div>
+                  <form method="POST" action="/update_graph">
+                    <input type="hidden" name="graph_id" value="{{ loop.index0 }}">
+                    <div class="graph-table">
+                        <div>
+                            <input class="form-select-nfr nfr-table-column" type="text" id="name{{ loop.index0 }}" name="name" value="{{ graph.name }}">
+                        </div>
+                        <div>
+                            <input class="form-select-nfr nfr-table-column" type="text" id="view_panel{{ loop.index0 }}" name="view_panel" value="{{ graph.view_panel }}">
+                        </div>
+                        <div>
+                            <input class="form-select-nfr nfr-table-column" type="text" id="dash_id{{ loop.index0 }}" name="dash_id" value="{{ graph.dash_id }}">
+                        </div>
+                        <div>
+                            <input class="form-select-nfr nfr-table-column" type="text" id="width{{ loop.index0 }}" name="width" value="{{ graph.width }}">
+                        </div>
+                        <div>
+                            <input class="form-select-nfr nfr-table-column" type="text" id="height{{ loop.index0 }}" name="height" value="{{ graph.height }}">
+                        </div>
+                    </div>
+                    <button class="btn-primary margin-all-10" type="submit">Save</button>
+                    <a class="btn-secondary margin-all-10" href="#" role="button">Delete</a>
+                  </form>
+                </div>
+              </div>
+            </div>
+            {% endfor %} 
+          <button id="addGraphButton" class="btn-primary margin-all-10">Add Graph</button>
+          </div>
+        </div>
+        {% with msgs = get_flashed_messages() %}
+          {% if msgs %}
+            {% for msg in msgs %}
+              {% if "ERROR" in msg %}
+                <div class="center-section flash-bad-alert">
+                  <p>{{ msg }}</p>
+                </div>  
+                {% else %}
+                <div class="center-section flash-good-alert">
+                  <p>{{ msg }}</p>
+                </div>  
+              {% endif %}                          
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+    <div class="modal" id="addnewgraph">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h1 class="modal-title" id="addnewgraphLabel">Add graph</h1>
+              </div>
+              <div class="modal-body">
+                  <label>Name</label>
+                  {{ form_for_graphs.name(class="form-select-nfr") }}  
+                  <label>View panel</label>
+                  {{ form_for_graphs.view_panel(class="form-select-nfr") }}  
+                  <label>Dashboard Id</label>
+                  {{ form_for_graphs.dash_id(class="form-select-nfr") }} 
+                  <label>Panel width</label>
+                  {{ form_for_graphs.width(class="form-select-nfr") }} 
+                  <label>Panel height</label>
+                  {{ form_for_graphs.height(class="form-select-nfr") }} 
+              </div>
+              <div>
+                  <div class="status-place" style="float: left;"></div>
+                  <button id="closeGraphModal" class="btn-secondary graph-modal-button-panel" data-bs-dismiss="modal">Close</button>
+                  <button class="btn-primary graph-modal-button-panel" onclick="saveGraph()">Save</button>
+              </div>
+          </div>
+      </div>
+    <script>
+      var acc = document.getElementsByClassName("dropdown-button");
+      var i;
+  
+      for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+          this.classList.toggle("dropdown-body-active");
+          var panel = this.nextElementSibling;
+          if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+          } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+          } 
+        });
+      }
+
+      $(document).ready(function() {
+        // Handle the "Add graph" button click event
+        $('#addGraphButton').click(function() {
+          // Display the modal and overlay
+          $('#addnewgraph').css('display', 'block');
+          $('.main-body' ).addClass('blur' );
+          $('.sidebar' ).addClass('blur' );
+        });
+
+        // Handle the close button click event to close the modal and overlay
+        $('#closeGraphModal').click(function() {
+          $('#addnewgraph').css('display', 'none');
+          $('.main-body' ).removeClass('blur' );
+          $('.sidebar' ).removeClass('blur' );
+          window.location.reload();
+        });
+      });
+
+      function saveGraph(){
+        let status_place = document.querySelector('.status-place');
+        let modal       = document.querySelector('.modal-body');
+        let result      = {}
+        result["name"]       = modal.querySelector('#name').value;
+        result["view_panel"] = modal.querySelector('#view_panel').value;
+        result["dash_id"]    = modal.querySelector('#dash_id').value;
+        result["width"]      = modal.querySelector('#width').value;
+        result["height"]     = modal.querySelector('#height').value;
+
+        $.ajax({
+          url:'/new-graph',
+          type:"POST",
+          data:JSON.stringify(result),
+          contentType:"application/json",
+          success: function(data){
+              if(status_place.querySelector('.status-message') != null){
+                status_place.querySelector('.status-message').remove();
+              }
+              let elem = '<div class="good-msg status-message">'+data +'</div>';
+              status_place.insertAdjacentHTML("afterbegin", elem);
+          },
+          error: function () {
+              if(status_place.querySelector('.status-message') != null){
+                  status_place.querySelector('.status-message').remove();
+              }
+              let elem = '<div class="bad-msg status-message">Not saved</div>';
+              status_place.insertAdjacentHTML("afterbegin", elem);
+          },
+      })
+    }
+    </script>
+  </main>
+
+{% include 'includes/footer.html' %}
+{% endblock content %}

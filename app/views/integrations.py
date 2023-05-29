@@ -84,23 +84,37 @@ def add_grafana():
         # Check if user is logged in
         if not current_user.is_authenticated:
             return redirect(url_for('login'))
-        # Declare the grafana form
-        form = grafana_form(request.form)
+        # Get current project
+        project = request.cookies.get('project')  
+        # get grafana parameter if provided
+        grafana_config = request.args.get('grafana_config')
+        if request.method == 'POST':
+            pkg.save_grafana( project, request.get_json())
+            grafana_config = request.get_json()["name"]
+            flash("Integration added.")
+            return "grafana_config="+grafana_config
+        return render_template('integrations/grafana.html', grafana_config = grafana_config)
+    except Exception as er:
+        flash("ERROR: " + str(er))
+        return redirect(url_for('integrations'))
+
+@app.route('/grafana-config', methods=['GET'])
+def get_grafana_config():
+    try:
+        output = "no data"
+        # Check if user is logged in
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
         # Get current project
         project = request.cookies.get('project')  
         # get grafana parameter if provided
         grafana_config = request.args.get('grafana_config')
         if grafana_config != None:
             output = pkg.get_grafana_config_values(project, grafana_config)
-            form = grafana_form(output)             
-        if form.validate_on_submit():
-            pkg.save_grafana( project, request.form.to_dict())
-            grafana_config = request.form.to_dict()["name"]
-            flash("Integration added.")
-        return render_template('integrations/grafana.html', form = form, grafana_config = grafana_config)
+            print(output)
+        return output
     except Exception as er:
         flash("ERROR: " + str(er))
-        return redirect(url_for('integrations'))
 
 
 @app.route('/delete/grafana', methods=['GET'])

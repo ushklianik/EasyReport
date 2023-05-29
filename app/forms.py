@@ -29,14 +29,12 @@ class influxdb_form(FlaskForm):
 	is_default   = SelectField  (u'Default', choices=[('true', 'True'), ('false', 'False')], default='false')
 
 class grafana_form(FlaskForm):
-	name                   = StringField  (u'Name'             , validators=[DataRequired()])
-	server                 = StringField  (u'Server'           , validators=[DataRequired()])
-	token                  = StringField  (u'Token'            , validators=[DataRequired()])
-	dashboard_id           = StringField  (u'Dashboard'        , validators=[DataRequired()])
-	org_id                 = StringField  (u'OrgId'            , validators=[DataRequired()])
-	dash_render_path       = StringField  (u'Render path'      , validators=[DataRequired()])
-	dash_render_comp_path  = StringField  (u'Render path comp' , validators=[DataRequired()])
-	is_default             = SelectField  (u'Default', choices=[('true', 'True'), ('false', 'False')], default='false')
+	name              = StringField          (u'Name'             , validators=[DataRequired()])
+	server            = StringField          (u'Server'           , validators=[DataRequired()])
+	token             = StringField          (u'Token'            , validators=[DataRequired()])
+	org_id            = StringField          (u'OrgId'            , validators=[DataRequired()])
+	dashboards        = FieldList(StringField(u'Dashboard')       , min_entries=1)
+	is_default        = SelectField          (u'Default'          , choices=[('true', 'True'), ('false', 'False')], default='false')
 
 class azure_form(FlaskForm):
 	name              = StringField  (u'Name'                    , validators=[DataRequired()])
@@ -59,9 +57,8 @@ class flow_config_form(FlaskForm):
 
 class graph_form(FlaskForm):
 	name                  = StringField         (u'Name'             , validators=[DataRequired()])
-	viewPanel             = StringField         (u'View panel id'    , validators=[DataRequired()])
-	dashId                = StringField         (u'Dashboard Id'     , validators=[DataRequired()])
-	fileName              = StringField         (u'File name'        , validators=[DataRequired()])
+	view_panel            = StringField         (u'View panel id'    , validators=[DataRequired()])
+	dash_id               = SelectField         (u'Dashboard Id'  , validators=[DataRequired()])
 	width                 = StringField         (u'Panel width'      , validators=[DataRequired()])
 	height                = StringField         (u'Panel height'     , validators=[DataRequired()])
 

@@ -159,7 +159,7 @@ def get_default_influxdb(project):
 
 def get_grafana_config_values(project, grafana_config):
     output = md.grafana_model.parse_obj(get_integration_values(project, "grafana", grafana_config))
-    return MultiDict(output.dict())
+    return output.dict()
 
 def save_grafana(project, data):
     data = md.grafana_model.parse_obj(data)
@@ -168,6 +168,16 @@ def save_grafana(project, data):
 def get_default_grafana(project):
     data = md.grafana_model.parse_obj(get_default_integration(project, "grafana"))
     return data.dict()
+
+def get_dashboards(project):
+    validate_config(project, "integrations", "grafana")
+    fl = json.load(get_json_config(project))
+    output = []
+    for item in fl["integrations"]["grafana"]:
+        if (item["dashboards"]):
+            for id in item["dashboards"]:
+                output.append(id)
+    return output
 
 ####################### AZURE:
 
@@ -258,12 +268,18 @@ def get_graph(project, name):
         if graph["name"] == name:
             return graph
 
+def get_graphs(project):
+    validate_config(project, "graphs")
+    fl = json.load(get_json_config(project))
+    return fl["graphs"]
+
 def save_graph(project, form):
     validate_config(project, "graphs")
     fl = json.load(get_json_config(project))
     fl["graphs"] = save_dict(form, fl["graphs"], get_config_names(project, "graphs"))
     save_new_config(project, fl)
 
+####################### OTHER:  
 def sort_tests(tests):
     def start_time(e): return e['startTime']
     if len(tests) != 0:

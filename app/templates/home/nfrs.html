@@ -18,14 +18,14 @@
                 <div class="full-screen-section flex-direction-column" id="nfrs-accordion">
                     <div class="marging-10">
                         {% for nfrs_item in nfrs_list %}
-                        <div class="nfrs-item">
-                            <button class="nfrs-button">
+                        <div>
+                            <button class="dropdown-button">
                                 <div class="grey-text-color" style="font-size: 1rem;padding-right: 8px;">App name:</div>{{ nfrs_item.app_name }}
                                 <div class="grey-text-color" style="font-size: 1rem;padding-left: 32px;">Number of NFRs:</div>
                                 <div class="nfr-circle" id="{{ nfrs_item.app_name }}"></div>
                             </button>
-                            <div class="nfr-panel">
-                                <div class="nfrs-body">
+                            <div class="dropdown-body">
+                                <div class="margin-all-10">
                                     <div>
                                         <a class="btn-primary" style="width: 80px;" href="/nfr?app_name={{ nfrs_item.app_name }}" role="button">Edit</a>
                                         <a class="btn-secondary" style="width: 80px;" href="#" role="button">Delete</a>
@@ -97,12 +97,12 @@
                 }
             }
 
-            var acc = document.getElementsByClassName("nfrs-button");
+            var acc = document.getElementsByClassName("dropdown-button");
             var i;
 
             for (i = 0; i < acc.length; i++) {
             acc[i].addEventListener("click", function() {
-                this.classList.toggle("nfr-panel-active");
+                this.classList.toggle("dropdown-body-active");
                 var panel = this.nextElementSibling;
                 if (panel.style.maxHeight) {
                 panel.style.maxHeight = null;
