@@ -10,6 +10,9 @@ class jira(integration):
     def __init__(self, project, name = None):
         super().__init__(project)
         self.set_config(name)
+
+    def __str__(self):
+        return f'Integration name is {self.name}, url is {self.org_url}'
     
     def set_config(self, name):
         if path.isfile(self.config_path) is False or os.path.getsize(self.config_path) == 0:

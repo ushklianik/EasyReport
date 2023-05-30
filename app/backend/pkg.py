@@ -151,23 +151,31 @@ def save_influxdb(project, data):
     save_integration(project, data.dict(), "influxdb")
 
 def get_default_influxdb(project):
-    data = md.influxdb_model.parse_obj(get_default_integration(project, "influxdb"))
-    return data.dict()
+    return get_default_integration(project, "influxdb")
 
 
 ####################### GRAFANA:
 
 def get_grafana_config_values(project, grafana_config):
     output = md.grafana_model.parse_obj(get_integration_values(project, "grafana", grafana_config))
-    return MultiDict(output.dict())
+    return output.dict()
 
 def save_grafana(project, data):
     data = md.grafana_model.parse_obj(data)
     save_integration(project, data.dict(), "grafana")
 
 def get_default_grafana(project):
-    data = md.grafana_model.parse_obj(get_default_integration(project, "grafana"))
-    return data.dict()
+    return get_default_integration(project, "grafana")
+
+def get_dashboards(project):
+    validate_config(project, "integrations", "grafana")
+    fl = json.load(get_json_config(project))
+    output = []
+    for item in fl["integrations"]["grafana"]:
+        if (item["dashboards"]):
+            for id in item["dashboards"]:
+                output.append(id)
+    return output
 
 ####################### AZURE:
 
@@ -180,8 +188,7 @@ def save_azure(project, data):
     save_integration(project, data.dict(), "azure")
 
 def get_default_azure(project):
-    data = md.azure_model.parse_obj(get_default_integration(project, "azure"))
-    return data.dict()
+    return get_default_integration(project, "azure")
         
 ####################### ATLASSIAN WIKI:
 
@@ -194,8 +201,7 @@ def save_atlassian_wiki(project, data):
     save_integration(project, data.dict(), "atlassian_wiki")
 
 def get_default_atlassian_wiki(project):
-    data = md.atlassian_wiki_model.parse_obj(get_default_integration(project, "atlassian_wiki"))
-    return data.dict()
+    return get_default_integration(project, "atlassian_wiki")
 
 ####################### ATLASSIAN JIRA:
         
@@ -208,8 +214,7 @@ def save_atlassian_jira(project, data):
     save_integration(project, data.dict(), "atlassian_jira")
 
 def get_default_atlassian_jira(project):
-    data = md.atlassian_jira_model.parse_obj(get_default_integration(project, "atlassian_jira"))
-    return data.dict()
+    return get_default_integration(project, "atlassian_jira")
         
 ####################### OUTPUT:
 
@@ -258,12 +263,27 @@ def get_graph(project, name):
         if graph["name"] == name:
             return graph
 
+def get_graphs(project):
+    validate_config(project, "graphs")
+    fl = json.load(get_json_config(project))
+    return fl["graphs"]
+
 def save_graph(project, form):
     validate_config(project, "graphs")
     fl = json.load(get_json_config(project))
     fl["graphs"] = save_dict(form, fl["graphs"], get_config_names(project, "graphs"))
     save_new_config(project, fl)
 
+def delete_graph(project, graph_name):
+    validate_config(project, "graphs")
+    fl = json.load(get_json_config(project))
+    for idx, obj in enumerate(fl["graphs"]):
+        if obj["name"] == graph_name:
+            fl["graphs"].pop(idx)
+            break      
+    save_new_config(project, fl)
+
+####################### OTHER:  
 def sort_tests(tests):
     def start_time(e): return e['startTime']
     if len(tests) != 0:
