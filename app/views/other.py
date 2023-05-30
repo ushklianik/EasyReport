@@ -7,22 +7,6 @@ from flask_login             import current_user
 
 # App modules
 from app         import app
-from app.forms   import grafana_form
-
-@app.route('/new-graph', methods=['POST'])
-def newGraph():
-    try:
-        msg = None
-        project = request.cookies.get('project') 
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
-        if request.method == "POST":
-            msg = pkg.save_graph(project, request.get_json())
-            print(request.get_json())
-    except Exception as er:
-        flash("ERROR: " + str(er))
-    return msg
 
 
 @app.route('/set-project', methods=['GET'])

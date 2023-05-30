@@ -14,9 +14,8 @@ class grafana_model(BaseModel):
     server:                str
     org_id:                str
     token:                 str
-    dashboard_id:          str
-    dash_render_path:      str
-    dash_render_comp_path: str
+    is_default:            str
+    dashboards:            list
 
 class influxdb_model(BaseModel):
     name:             str
