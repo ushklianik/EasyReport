@@ -288,6 +288,8 @@ def sort_tests(tests):
     def start_time(e): return e['startTime']
     if len(tests) != 0:
         for test in tests:
+            test["startTimestamp"] = str(int(test["startTime"].timestamp() * 1000))
+            test["endTimestamp"] = str(int(test["endTime"].timestamp() * 1000))
             test["startTime"] = datetime.strftime(test["startTime"], "%Y-%m-%d %I:%M:%S %p")
             test["endTime"] = datetime.strftime(test["endTime"], "%Y-%m-%d %I:%M:%S %p")
     tests.sort(key=start_time, reverse=True)
