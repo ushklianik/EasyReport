@@ -3,8 +3,6 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
-<link type="text/css" href="/static/assets/css/report.css" rel="stylesheet">
-<link type="text/css" href="/static/assets/css/nfrs.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
@@ -13,173 +11,133 @@
       {% include 'includes/sidebar.html' %}
       <div class="main-body">
         <div class="main-body-header">
-          <a>Graphs</a>
         </div> 
-        <div class="full-screen-section flex-direction-column">
-          <div class="margin-all-10">
-            {% for graph in graphs_list %}
-            <div>
-              <button class="dropdown-button">
-                <div class="grey-text-color" style="font-size: 1rem;padding-right: 8px;">Graph name:</div>{{ graph.name }}
-              </button>
-              <div class="dropdown-body">
-                <div class="margin-all-10">
-                  <div class="graph-table">
-                      <div for="name{{ loop.index0 }}" class="nfr-table-header grey-text-color">Name</div>
-                      <div for="view_panel{{ loop.index0 }}" class="nfr-table-header grey-text-color">View panel</div>
-                      <div for="dash_id{{ loop.index0 }}" class="nfr-table-header grey-text-color">Dashboard Id</div>
-                      <div for="width{{ loop.index0 }}" class="nfr-table-header grey-text-color">Panel width</div>
-                      <div for="height{{ loop.index0 }}" class="nfr-table-header grey-text-color">Panel height</div>
-                  </div>
-                  <form method="POST" action="/update-graph">
-                    <div class="graph-table">
-                        <div>
-                            <input class="form-select-nfr nfr-table-column" type="text" id="name{{ loop.index0 }}" name="name" value="{{ graph.name }}">
-                        </div>
-                        <div>
-                            <input class="form-select-nfr nfr-table-column" type="text" id="view_panel{{ loop.index0 }}" name="view_panel" value="{{ graph.view_panel }}">
-                        </div>
-                        <div>
-                            <input class="form-select-nfr nfr-table-column" type="text" id="dash_id{{ loop.index0 }}" name="dash_id" value="{{ graph.dash_id }}">
-                        </div>
-                        <div>
-                            <input class="form-select-nfr nfr-table-column" type="text" id="width{{ loop.index0 }}" name="width" value="{{ graph.width }}">
-                        </div>
-                        <div>
-                            <input class="form-select-nfr nfr-table-column" type="text" id="height{{ loop.index0 }}" name="height" value="{{ graph.height }}">
-                        </div>
-                    </div>
-                    <button class="btn-primary margin-all-10" type="submit">Save</button>
-                    <button class="btn-secondary margin-all-10" type="button" onclick="deleteGraph('{{ graph.name }}')">Delete</button>
-                  </form>
-                </div>
-              </div>
+        <div class="card mb-3 margin-all-10" data-component-card="data-component-card">
+          <div class="card-header">
+            <div class="justify-content-between align-items-center">
+              <h4 class="mb-0">Graphs</h4>
             </div>
-            {% endfor %} 
-          <button id="addGraphButton" class="btn-primary margin-all-10">Add Graph</button>
+          </div>
+          <div class="card-body">
+              <div id="table-id" data-list='{"valueNames":["name", "view_panel", "dash_id", "width", "height"], "page": 10, "pagination": true}'>
+                  <div class="d-flex align-items-center justify-content-end mb-3">
+                      <div class="d-flex">
+                          <div>
+                              <div class="search-box position-relative" data-bs-toggle="search" data-bs-display="static">
+                                  <input class="form-control search-input search" type="search" placeholder="Search" aria-label="Search" />
+                                  <span class="fas fa-search search-box-icon"></span>
+                              </div>
+                          </div>
+                          <button class="btn btn-primary2 ms-2" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" add-graph="add-graph">Add graph</button>
+                      </div>
+                  </div>
+                  <div class="table-responsive">
+                      <table class="table fs--1 mb-0">
+                          <thead>
+                              <tr>
+                                  <th class="sort" data-sort="name">Name</th>
+                                  <th class="sort" data-sort="view_panel">View Panel</th>
+                                  <th class="sort" data-sort="dash_id">Dashboard Id</th>
+                                  <th class="sort" data-sort="width">Panel width</th>
+                                  <th class="sort" data-sort="height">Panel height</th>
+                                  <th class="sort" data-sort="actions">Actions</th>
+                              </tr>
+                          </thead>
+                          <tbody class="list">
+                              {% for graph in graphs_list %}
+                              <tr>
+                                  <td class="name">{{ graph.name }}</td>
+                                  <td class="view_panel">{{ graph.view_panel }}</td>
+                                  <td class="dash_id">{{ graph.dash_id }}</td>
+                                  <td class="width">{{ graph.width }}</td>
+                                  <td class="height">{{ graph.height }}</td>
+                                  <td class="actions">
+                                      <button class="btn btn-secondary2" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" data-graph='{"name": "{{ graph.name }}", "view_panel": "{{ graph.view_panel }}", "dash_id": "{{ graph.dash_id }}", "width": "{{ graph.width }}", "height": "{{ graph.height }}"}'>Edit</button>
+                                      <a class="btn btn-danger" href="/delete-graph?graph_name={{ graph.name }}">Delete</a>
+                                  </td>
+                              </tr>
+                              {% endfor %}
+                          </tbody>
+                      </table>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3 fs--1">
+                      <span data-list-info="data-list-info"></span>
+                      <div class="d-flex">
+                          <button class="page-link" data-list-pagination="prev">
+                              <span class="fas fa-chevron-left"></span>
+                          </button>
+                          <ul class="mb-0 pagination"></ul>
+                          <button class="page-link pe-0" data-list-pagination="next">
+                              <span class="fas fa-chevron-right"></span>
+                          </button>
+                      </div>
+                  </div>
+              </div>
           </div>
         </div>
-        {% with msgs = get_flashed_messages() %}
-          {% if msgs %}
-            {% for msg in msgs %}
-              {% if "ERROR" in msg %}
-                <div class="center-section flash-bad-alert">
-                  <p>{{ msg }}</p>
-                </div>  
-                {% else %}
-                <div class="center-section flash-good-alert">
-                  <p>{{ msg }}</p>
-                </div>  
-              {% endif %}                          
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
+        {% include 'includes/flashed-msg.html' %}
       </div>
     </div>
-    <div class="modal" id="addnewgraph">
+    <div class="modal fade" id="exampleModal" aria-hidden="true" style="display: none;">
       <div class="modal-dialog">
           <div class="modal-content">
+            <form method="POST" action="/save-graph">
               <div class="modal-header">
-                  <h1 class="modal-title" id="addnewgraphLabel">Add graph</h1>
+                  <h2 class="modal-title" id="addnewgraphLabel">Add graph</h2>
               </div>
               <div class="modal-body">
+                <div class="mt-3">
                   <label>Name</label>
-                  {{ form_for_graphs.name(class="form-select-nfr") }}  
+                  {{ form_for_graphs.name(class="form-control") }}  
+                </div>
+                <div class="mt-3">
                   <label>View panel</label>
-                  {{ form_for_graphs.view_panel(class="form-select-nfr") }}  
+                  {{ form_for_graphs.view_panel(class="form-control") }}
+                </div>
+                <div class="mt-3">  
                   <label>Dashboard Id</label>
-                  {{ form_for_graphs.dash_id(class="form-select-nfr") }} 
+                  {{ form_for_graphs.dash_id(class="form-select") }}
+                </div> 
+                <div class="mt-3">
                   <label>Panel width</label>
-                  {{ form_for_graphs.width(class="form-select-nfr") }} 
-                  <label>Panel height</label>
-                  {{ form_for_graphs.height(class="form-select-nfr") }} 
+                  {{ form_for_graphs.width(class="form-control") }}
+                </div> 
+                <div class="mt-3">
+                  <label class="mt-3">Panel height</label>
+                  {{ form_for_graphs.height(class="form-control") }} 
+                </div>
               </div>
-              <div>
+              <div class="modal-footer">
                   <div class="status-place" style="float: left;"></div>
-                  <button id="closeGraphModal" class="btn-secondary graph-modal-button-panel" data-bs-dismiss="modal">Close</button>
-                  <button class="btn-primary graph-modal-button-panel" onclick="saveGraph()">Save</button>
+                  <button class="btn btn-secondary2" data-bs-dismiss="modal" type="button">Close</button>
+                  <button class="btn btn-primary2" type="submit">Save</button>
               </div>
+            </form>
           </div>
       </div>
+    </div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+    <script src="/static/assets/js/perforge.js"></script>
     <script>
-      var acc = document.getElementsByClassName("dropdown-button");
-      var i;
-  
-      for (i = 0; i < acc.length; i++) {
-        acc[i].addEventListener("click", function() {
-          this.classList.toggle("dropdown-body-active");
-          var panel = this.nextElementSibling;
-          if (panel.style.maxHeight) {
-            panel.style.maxHeight = null;
-          } else {
-            panel.style.maxHeight = panel.scrollHeight + "px";
-          } 
-        });
-      }
-
       $(document).ready(function() {
-        // Handle the "Add graph" button click event
-        $('#addGraphButton').click(function() {
-          // Display the modal and overlay
-          $('#addnewgraph').css('display', 'block');
-          $('.main-body' ).addClass('blur' );
-          $('.sidebar' ).addClass('blur' );
+        // Store a reference to the modal and form
+        var modal = $('#exampleModal');
+        var form = modal.find('form');
+
+        // Listen for the modal open event
+        $('button[data-bs-toggle="modal"][data-bs-target="#exampleModal"]').click(function() {
+          var graph = $(this).data('graph');
+
+          $.each(graph, function(key, value) {
+            form.find('[name="' + key + '"]').val(value);
+          });
         });
 
-        // Handle the close button click event to close the modal and overlay
-        $('#closeGraphModal').click(function() {
-          $('#addnewgraph').css('display', 'none');
-          $('.main-body' ).removeClass('blur' );
-          $('.sidebar' ).removeClass('blur' );
-          window.location.reload();
+        // Listen for the modal close event
+        modal.on('hidden.bs.modal', function() {
+          form[0].reset(); // Reset the form to clear the values
         });
       });
-
-      function saveGraph(){
-        let status_place = document.querySelector('.status-place');
-        let modal       = document.querySelector('.modal-body');
-        let result      = {}
-        result["name"]       = modal.querySelector('#name').value;
-        result["view_panel"] = modal.querySelector('#view_panel').value;
-        result["dash_id"]    = modal.querySelector('#dash_id').value;
-        result["width"]      = modal.querySelector('#width').value;
-        result["height"]     = modal.querySelector('#height').value;
-
-        $.ajax({
-          url:'/new-graph',
-          type:"POST",
-          data:JSON.stringify(result),
-          contentType:"application/json",
-          success: function(data){
-              if(status_place.querySelector('.status-message') != null){
-                status_place.querySelector('.status-message').remove();
-              }
-              let elem = '<div class="good-msg status-message">'+data +'</div>';
-              status_place.insertAdjacentHTML("afterbegin", elem);
-          },
-          error: function () {
-              if(status_place.querySelector('.status-message') != null){
-                  status_place.querySelector('.status-message').remove();
-              }
-              let elem = '<div class="bad-msg status-message">Not saved</div>';
-              status_place.insertAdjacentHTML("afterbegin", elem);
-          },
-        })
-      }
-
-      function deleteGraph(name){
-        $.ajax({
-          url:'/delete-graph?graph_name=' + name,
-          type:"GET",
-          contentType:"application/json",
-          success: function(data){
-            window.location.reload();
-          },
-          error: function () {
-            window.location.reload();
-          },
-        })
-      }
     </script>
   </main>
 

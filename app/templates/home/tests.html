@@ -1,9 +1,8 @@
 {% extends "layouts/base-fullscreen.html" %}
-{% block title %} Azure {% endblock %} 
+{% block title %} PerForge {% endblock %} 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
-<link type="text/css" href="/static/assets/css/table.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/nfrs.css" rel="stylesheet">
 {% endblock stylesheets %}
@@ -13,342 +12,98 @@
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
                 <div class="main-body-header">
-                    <a class="text-white footer-logo-text">Test log</a>
-                    <div id="table-filter-count" class="filter-el">
-                        <select name="data_length" id="maxRows" class="form-select-nfr max-rows" aria-controls="data">
-                            <option selected value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select> 
+                </div>
+                <div class="card mb-3 margin-all-10" data-component-card="data-component-card">
+                    <div class="card-header">
+                      <div class="justify-content-between align-items-center">
+                        <h4 class="mb-0">Test log</h4>
+                      </div>
                     </div>
-                    <div id="data_filter" class="dataTables_filter filter-el">
-                        <input type="search" id="myInput" class="form-control-nfr" id="search"  placeholder="Search" onkeyup='searchFunction()'>                        
-                    </div>
-                    <div class="filter-el">
-                        <select class="form-select-nfr" id="influxdbName" name="influxdbName" onchange="window.location.href=this.value">
-                            {% for influxdb in influxdb_names %}
-                                <option value="/tests?influxdb={{ influxdb }}">{{ influxdb }}</option>
-                            {% endfor %} 
-                        </select>
-                    </div>
-                </div>    
-                <div class="table" id="table-id">
-                    <div class="table-header">
-                        <div class="header__item"><a id="runId" class="filter__link" href="#">runId</a></div>
-                        <div class="header__item"><a id="testName" class="filter__link" href="#">testName</a></div>
-                        <div class="header__item"><a id="duration" class="filter__link filter__link--number" href="#">Duration</a></div>
-                        <div class="header__item"><a id="maxThreads" class="filter__link filter__link--number" href="#">maxThreads</a></div>
-                        <div class="header__item"><a id="startTime" class="filter__link" href="#">startTime</a></div>
-                        <div class="header__item"><a id="endTime" class="filter__link" href="#">endTime</a></div>
-                        <div class="header__item"><a id="actions" class="filter__link" href="#">actions</a></div>
-                    </div>
-                    <div class="table-content" id="table-content">	
-                        {% for test in tests %}
-                        <div class="table-row">	
-                            <div class="table-data">{{ test.runId }}</div>
-                            <div class="table-data">{{ test.testName }}</div>
-                            <div class="table-data">{{ test.duration }}</div>
-                            <div class="table-data">{{ test.maxThreads }}</div>
-                            <div class="table-data">{{ test.startTime }}</div>
-                            <div class="table-data">{{ test.endTime }}</div>
-                            <div class="table-data">
-                                <div class="dropdown" style="display: inline-block;">
-                                    <a class="btn-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                      Report
-                                    </a>
-                                  
-                                    <ul class="dropdown-menu">
-                                      <li><a class="dropdown-item" style="color: white" href="/report?runId={{ test.runId }}">Open report</a></li>
-                                      <li><a class="dropdown-item" style="color: white" href="/grafana-result-dashboard?runId={{ test.runId }}&testName={{ test.testName }}&startTimestamp={{ test.startTimestamp }}&endTimestamp={{ test.endTimestamp }}">Open Grafana result dashboard</a></li>
-                                      <li><a class="dropdown-item" style="color: white" href="/generate-az-report?runId={{ test.runId }}&reportName={{ test.testName }}">Generate azure wiki report</a></li>
-                                      <li><a class="dropdown-item" style="color: white" href="/generate-confl-report?runId={{ test.runId }}&reportName={{ test.testName }}">Generate confluence wiki report</a></li>
-                                      <li><a class="dropdown-item" style="color: white" href="/generate-jira-report?runId={{ test.runId }}&reportName={{ test.testName }}">Generate confluence jira report</a></li>
-                                    </ul>
+                    <div class="card-body">
+                        <div id="table-id" data-list='{"valueNames":["runId", "testName", "duration", "maxThreads", "startTime", "endTime"], "page": 5, "pagination": true}'>
+                            <div class="d-flex align-items-center justify-content-end mb-3">
+                                <div class="d-flex" id="bulk-select-actions">
+                                    <div>
+                                        <div class="search-box position-relative" data-bs-toggle="search" data-bs-display="static">
+                                            <input class="form-control search-input search" type="search" placeholder="Search" aria-label="Search" />
+                                            <span class="fas fa-search search-box-icon"></span>
+                                        </div>
+                                    </div>
+                                    <select class="form-select ms-2" id="selectedAction">
+                                        <option selected="selected">Choose action</option>
+                                        <option value="Generate azure report">Generate azure report</option>
+                                        <option value="Delete">Delete</option>
+                                    </select>
+                                    <select class="form-select ms-2" id="influxdbName">
+                                        {% for influxdb in influxdb_names %}
+                                                <option value="/tests?influxdb={{ influxdb }}">{{ influxdb }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button class="btn btn-primary2 ms-2" data-selected-rows="data-selected-rows">Apply</button>
                                 </div>
-                                <div style="display: inline-block;">
-                                    <a class="btn-secondary" type="button">Delete</a>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table fs--1 mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div class="form-check mb-0 fs-0">
+                                                    <input class="form-check-input" id="bulk-select-example" type="checkbox" data-bulk-select='{"body":"bulk-select-body","actions":"bulk-select-actions","replacedElement":"bulk-select-replace-element"}'/>
+                                                </div>
+                                            </th>
+                                            <th class="sort" data-sort="runId">Run Id</th>
+                                            <th class="sort" data-sort="testName">Report flow</th>
+                                            <th class="sort" data-sort="duration">Duration</th>
+                                            <th class="sort" data-sort="maxThreads">Uesrs</th>
+                                            <th class="sort" data-sort="startTime">Start time</th>
+                                            <th class="sort" data-sort="endTime">End time</th>
+                                            <th class="sort" data-sort="actions">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="list" id="bulk-select-body">
+                                        {% for test in tests %}
+                                        <tr>
+                                            <td>
+                                                <div class="form-check fs-0">
+                                                    <input class="form-check-input" type="checkbox" data-bulk-select-row="{'runId':{{ test.runId }},'testName':{{ test.testName }},'duration':{{ test.duration }},'maxThreads':{{ test.maxThreads }},'startTime':{{ test.startTime }},'endTime':{{ test.endTime }}}" />
+                                                </div>
+                                            </td>
+                                            <td class="runId">{{ test.runId }}</td>
+                                            <td class="testName">{{ test.testName }}</td>
+                                            <td class="duration">{{ test.duration }}</td>
+                                            <td class="maxThreads">{{ test.maxThreads }}</td>
+                                            <td class="startTime">{{ test.startTime }}</td>
+                                            <td class="endTime">{{ test.endTime }}</td>
+                                            <td class="actions">
+                                                <a class="btn btn-danger" href="/grafana-result-dashboard?runId={{ test.runId }}&testName={{ test.testName }}&startTimestamp={{ test.startTimestamp }}&endTimestamp={{ test.endTimestamp }}">Grafana dashboard</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="d-flex justify-content-between mt-3 fs--1">
+                                <span data-list-info="data-list-info"></span>
+                                <div class="d-flex">
+                                    <button class="page-link" data-list-pagination="prev">
+                                        <span class="fas fa-chevron-left"></span>
+                                    </button>
+                                    <ul class="mb-0 pagination"></ul>
+                                    <button class="page-link pe-0" data-list-pagination="next">
+                                        <span class="fas fa-chevron-right"></span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                        {% endfor %} 
-                    </div>	
+                    </div>
                 </div>
-                <div class='pagination-container' style="float: right;">
-                    <nav>
-                      <ul class="pagination">
-                            <li class="page-item" data-page="prev" >
-                                <span class="page-link"> < <span class="sr-only">(current)</span></span>
-                            </li>
-                            <!--	Here the JS Function Will Add the Rows -->
-                            <li class="page-item" data-page="next" id="prev">
-                                <span class="page-link"> > <span class="sr-only">(current)</span></span>
-                            </li>
-                      </ul>
-                    </nav>
-                </div>
-                {% with msgs = get_flashed_messages() %}
-                    {% if msgs %}
-                        {% for msg in msgs %}
-                            {% if "ERROR" in msg %}
-                                <div class="center-section flash-bad-alert">
-                                    <p>{{ msg }}</p>
-                                </div>  
-                            {% else %}
-                                <div class="center-section flash-good-alert">
-                                    <p>{{ msg }}</p>
-                                </div>  
-                            {% endif %}                          
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
+                {% include 'includes/flashed-msg.html' %}
             </div>
         </div>
         <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="/static/assets/js/table.js"></script>
-        <script>
-            let urlParams = new URLSearchParams(window.location.search);
-            let queryString = urlParams.get('influxdb');
-            if (queryString != null && queryString != ""){
-                options = document.getElementById("influxdbName").querySelectorAll("option");
-                for(var i = 0; i < options.length; i++) {
-                    if( options[i].text == queryString){
-                        options[i].selected = true;
-                    }
-                }
-            }
-            let tableRows = document.getElementsByClassName("table-row")
-            for(var i = 0; i < tableRows.length; i++) {
-                dropdownItems = tableRows[i].querySelectorAll(".dropdown-item")
-                for(var j = 0; j < dropdownItems.length; j++) {
-                    if(dropdownItems[j].text == "Open report"){
-                        if (queryString != null && queryString != ""){
-                            dropdownItems[j].href = dropdownItems[j].href + "&influxdbName=" + queryString
-                        }
-                    }
-                }
-            }
-
-            var properties = [
-                'runId',
-                'testName',
-                'duration',
-                'maxThreads',
-                'startTime',
-                'endTime',
-            ];
-
-            $.each( properties, function( i, val ) {
-                
-                var orderClass = '';
-
-                $("#" + val).click(function(e){
-                    e.preventDefault();
-                    $('.filter__link.filter__link--active').not(this).removeClass('filter__link--active');
-                    $(this).toggleClass('filter__link--active');
-                    $('.filter__link').removeClass('asc desc');
-
-                    if(orderClass == 'desc' || orderClass == '') {
-                            $(this).addClass('asc');
-                            orderClass = 'asc';
-                    } else {
-                        $(this).addClass('desc');
-                        orderClass = 'desc';
-                    }
-
-                    var parent = $(this).closest('.header__item');
-                        var index = $(".header__item").index(parent);
-                    var $table = $('.table-content');
-                    var rows = $table.find('.table-row').get();
-                    var isSelected = $(this).hasClass('filter__link--active');
-                    var isNumber = $(this).hasClass('filter__link--number');
-                        
-                    rows.sort(function(a, b){
-
-                        var x = $(a).find('.table-data').eq(index).text();
-                            var y = $(b).find('.table-data').eq(index).text();
-                            
-                        if(isNumber == true) {
-                                    
-                            if(isSelected) {
-                                return x - y;
-                            } else {
-                                return y - x;
-                            }
-
-                        } else {
-                        
-                            if(isSelected) {		
-                                if(x < y) return -1;
-                                if(x > y) return 1;
-                                return 0;
-                            } else {
-                                if(x > y) return -1;
-                                if(x < y) return 1;
-                                return 0;
-                            }
-                        }
-                        });
-
-                    $.each(rows, function(index,row) {
-                        $table.append(row);
-                    });
-
-                    return false;
-                });
-
-            });
-
-            getPagination('#table-id');
-
-            function getPagination(table) {
-            var lastPage = 1;
-
-            $('#maxRows')
-                .on('change', function(evt) {
-                //$('.paginationprev').html('');						// reset pagination
-
-                lastPage = 1;
-                $('.pagination')
-                    .find('li')
-                    .slice(1, -1)
-                    .remove();
-                var trnum = 0; // reset tr counter
-                var maxRows = parseInt($(this).val()); // get Max Rows from select option
-
-                if (maxRows == 5000) {
-                    $('.pagination').hide();
-                } else {
-                    $('.pagination').show();
-                }
-
-                var totalRows = $('#table-content > div').length; // numbers of rows
-                $('#table-content > div').each(function() {
-                    // each TR in  table and not the header
-                    trnum++; // Start Counter
-                    if (trnum > maxRows) {
-                    // if tr number gt maxRows
-
-                    $(this).hide(); // fade it out
-                    }
-                    if (trnum <= maxRows) {
-                    $(this).show();
-                    } // else fade in Important in case if it ..
-                }); //  was fade out to fade it in
-                if (totalRows > maxRows) {
-                    // if tr total rows gt max rows option
-                    var pagenum = Math.ceil(totalRows / maxRows); // ceil total(rows/maxrows) to get ..
-                    //	numbers of pages
-                    for (var i = 1; i <= pagenum; ) {
-                    // for each page append pagination li
-                    $('.pagination #prev')
-                        .before(
-                        '<li class="page-item" data-page="' +
-                            i +
-                            '">\
-                                            <span class="page-link">' +
-                            i++ +
-                            '<span class="sr-only">(current)</span></span>\
-                                            </li>'
-                        )
-                        .show();
-                    } // end for i
-                } // end if row count > max rows
-                $('.pagination [data-page="1"]').addClass('active'); // add active class to the first li
-                $('.pagination li').on('click', function(evt) {
-                    // on click each page
-                    evt.stopImmediatePropagation();
-                    evt.preventDefault();
-                    var pageNum = $(this).attr('data-page'); // get it's number
-
-                    var maxRows = parseInt($('#maxRows').val()); // get Max Rows from select option
-
-                    if (pageNum == 'prev') {
-                        if (lastPage == 1) {
-                            return;
-                        }
-                        pageNum = --lastPage;
-                    }
-                    if (pageNum == 'next') {
-                        if (lastPage == $('.pagination li').length - 2) {
-                            return;
-                        }
-                        pageNum = ++lastPage;
-                    }
-
-                    lastPage = pageNum;
-                    var trIndex = 0; // reset tr counter
-                    $('.pagination li').removeClass('active'); // remove active class from all li
-                    $('.pagination [data-page="' + lastPage + '"]').addClass('active'); // add active class to the clicked
-                    // $(this).addClass('active');					// add active class to the clicked
-                    limitPagging();
-                    $('#table-content > div').each(function() {
-                        // each tr in table not the header
-                        trIndex++; // tr index counter
-                        // if tr index gt maxRows*pageNum or lt maxRows*pageNum-maxRows fade if out
-                        if (
-                            trIndex > maxRows * pageNum ||
-                            trIndex <= maxRows * pageNum - maxRows
-                        ) {
-                            $(this).hide();
-                        } else {
-                            $(this).show();
-                        } //else fade in
-                    }); // end of for each tr in table
-                }); // end of on click pagination list
-                limitPagging();
-            })
-            .val(10)
-            .change();
-
-            // end of on select change
-
-            // END OF PAGINATION
-            }
-
-            function limitPagging(){
-                // alert($('.pagination li').length)
-                if($('.pagination li').length > 7 ){
-                        if( $('.pagination li.active').attr('data-page') <= 3 ){
-                        $('.pagination li:gt(5)').hide();
-                        $('.pagination li:lt(5)').show();
-                        $('.pagination [data-page="next"]').show();
-                    }if ($('.pagination li.active').attr('data-page') > 3){
-                        $('.pagination li:gt(0)').hide();
-                        $('.pagination [data-page="next"]').show();
-                        for( let i = ( parseInt($('.pagination li.active').attr('data-page'))  -2 )  ; i <= ( parseInt($('.pagination li.active').attr('data-page'))  + 2 ) ; i++ ){
-                            $('.pagination [data-page="'+i+'"]').show();
-
-                        }
-                    }
-                }
-            }
-
-            function searchFunction() {
-                // Declare variables
-                var input, filter, table, row, cell, i,j, txtValue;
-                input = document.getElementById("myInput");
-                filter = input.value.toUpperCase();
-                table = document.getElementById("table-content");
-                row = $('#table-content > div');
-
-                // Loop through all table rows, and hide those who don't match the search query
-                for (i = 0; i < row.length; i++) {
-                    for (j = 0; j < row[i].getElementsByTagName("div").length; j++) {
-                    cell = row[i].getElementsByTagName("div")[j];
-                    if (cell) {
-                        txtValue = cell.textContent || cell.innerText;
-                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        row[i].style.display = "";
-                        break;
-                        } else {
-                        row[i].style.display = "none";
-                        }
-                    }
-                    }
-                }
-            }
-          </script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+        <script src="/static/assets/js/bootstrap.min.js"></script>
+        <script src="/static/assets/js/perforge.js"></script>
     </main>
     {% include 'includes/footer.html' %}
 {% endblock content %}

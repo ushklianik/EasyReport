@@ -144,21 +144,7 @@
                             </div>
                         </div>
                     </form>
-                    {% with msgs = get_flashed_messages() %}
-                        {% if msgs %}
-                            {% for msg in msgs %}
-                                {% if "ERROR" in msg %}
-                                    <div class="center-section flash-bad-alert">
-                                        <p>{{ msg }}</p>
-                                    </div>  
-                                {% else %}
-                                    <div class="center-section flash-good-alert">
-                                        <p>{{ msg }}</p>
-                                    </div>  
-                                {% endif %}                          
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
+                    {% include 'includes/flashed-msg.html' %}
                 </div>
             </div>
         </div>
