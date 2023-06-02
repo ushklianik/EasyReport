@@ -25,23 +25,9 @@ def get_graphs():
     except Exception as er:
         flash("ERROR: " + str(traceback.format_exc()))
     return redirect(url_for('index'))
-
-@app.route('/new-graph', methods=['POST'])
-def new_graph():
-    try:
-        project = request.cookies.get('project') 
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
-        if request.method == "POST":
-            pkg.save_graph(project, request.get_json())
-        return "Graph saved"
-    except Exception as er:
-        flash("ERROR: " + str(er))
-        return redirect(url_for('index'))
     
-@app.route('/update-graph', methods=['POST'])
-def update_graph():
+@app.route('/save-graph', methods=['POST'])
+def save_graph():
     try:
         project = request.cookies.get('project') 
         # Check if user is logged in
@@ -67,4 +53,4 @@ def delete_graph():
             flash("Graph deleted")
     except Exception as er:
         flash("ERROR: " + str(er))
-    return "Done"
+    return redirect(url_for('get_graphs'))
