@@ -6,7 +6,7 @@ from flask_login             import current_user
 
 # App modules
 from app         import app
-from app.forms   import influxdb_form, grafana_form, azure_form, atlassian_wiki_form, atlassian_jira_form
+from app.forms   import InfluxDBForm, GrafanaForm, AzureForm, AtlassianWikiForm, AtlassianJiraForm
 from app.backend import pkg
 import traceback
 
@@ -43,14 +43,14 @@ def add_influxdb():
         if not current_user.is_authenticated:
             return redirect(url_for('login'))
         # Declare the Influxdb form
-        form = influxdb_form(request.form)
+        form = InfluxDBForm(request.form)
         # get influxdb parameter if provided
         influxdb_config = request.args.get('influxdb_config')
         # Get current project
         project = request.cookies.get('project')  
         if influxdb_config != None:
             output = pkg.get_influxdb_config_values(project, influxdb_config)
-            form = influxdb_form(output)               
+            form = InfluxDBForm(output)               
         if form.validate_on_submit():
             pkg.save_influxdb(project, request.form.to_dict())
             influxdb_config = request.form.to_dict()["name"]
@@ -142,14 +142,14 @@ def add_azure():
         if not current_user.is_authenticated:
             return redirect(url_for('login'))
         # Declare the azure form
-        form = azure_form(request.form)
+        form = AzureForm(request.form)
         # Get current project
         project = request.cookies.get('project')  
         # get azure parameter if provided
         azure_config = request.args.get('azure_config')
         if azure_config != None:
             output = pkg.get_azure_config_values(project, azure_config)
-            form = azure_form(output)             
+            form = AzureForm(output)             
         if form.validate_on_submit():
             # assign form data to variables
             pkg.save_azure( project, request.form.to_dict())
@@ -183,14 +183,14 @@ def add_atlassian_wiki():
         if not current_user.is_authenticated:
             return redirect(url_for('login'))
         # Declare the atlassian wiki form
-        form = atlassian_wiki_form(request.form)
+        form = AtlassianWikiForm(request.form)
         # Get current project
         project = request.cookies.get('project')  
         # get atlassian wiki parameter if provided
         atlassian_wiki_config = request.args.get('atlassian_wiki_config')
         if atlassian_wiki_config != None:
             output = pkg.get_atlassian_wiki_config_values(project, atlassian_wiki_config)
-            form   = atlassian_wiki_form(output)               
+            form   = AtlassianWikiForm(output)               
         if form.validate_on_submit():
             # assign form data to variables
             pkg.save_atlassian_wiki( project, request.form.to_dict())
@@ -225,14 +225,14 @@ def add_atlassian_jira():
             return redirect(url_for('login'))
         # Declare the atlassian jira form
         # Sema: should be created in forms.py
-        form = atlassian_jira_form(request.form)
+        form = AtlassianJiraForm(request.form)
         # Get current project
         project = request.cookies.get('project')  
         # get atlassian jira  parameter if provided
         atlassian_jira_config = request.args.get('atlassian_jira_config')
         if atlassian_jira_config != None:
             output = pkg.get_atlassian_jira_config_values(project, atlassian_jira_config)
-            form   = atlassian_jira_form(output)        
+            form   = AtlassianJiraForm(output)        
         if form.validate_on_submit():
             # assign form data to variables
             pkg.save_atlassian_jira( project, request.form.to_dict())

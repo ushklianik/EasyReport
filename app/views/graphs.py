@@ -5,7 +5,7 @@ import traceback
 
 # App modules
 from app                     import app
-from app.forms               import graph_form
+from app.forms               import GraphForm
 from app.backend             import pkg
 
 
@@ -18,7 +18,7 @@ def get_graphs():
         # Get current project
         project = request.cookies.get('project')  
         # Declare the graphs form
-        form_for_graphs = graph_form(request.form)
+        form_for_graphs = GraphForm(request.form)
         graphs_list = pkg.get_graphs(project)
         form_for_graphs.dash_id.choices  = pkg.get_dashboards(project)
         return render_template('home/graphs.html', graphs_list=graphs_list, form_for_graphs=form_for_graphs)

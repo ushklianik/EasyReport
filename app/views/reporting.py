@@ -13,7 +13,7 @@ from flask_login             import current_user
 
 # App modules
 from app         import app
-from app.forms   import flow_config_form, graph_form
+from app.forms   import FlowConfigForm, GraphForm
 
 import traceback
 
@@ -30,9 +30,9 @@ def flow():
         # Flask message injected into the page, in case of any errors
         msg = None
         # Declare the graphs form
-        form_for_graphs = graph_form(request.form)
+        form_for_graphs = GraphForm(request.form)
         # Declare the Influxdb form
-        form = flow_config_form(request.form)
+        form = FlowConfigForm(request.form)
         form.influxdb.choices = pkg.get_integration_config_names(project, "influxdb")
         form.grafana.choices  = pkg.get_integration_config_names(project, "grafana")
         form.output.choices   = pkg.get_output_configs(project)
@@ -40,7 +40,7 @@ def flow():
         flow_config = request.args.get('flow_config')
         if flow_config != None:
             output = pkg.get_flow_config_values_in_dict(project, flow_config)
-            form = flow_config_form(output)
+            form = FlowConfigForm(output)
             form.influxdb.choices = pkg.get_integration_config_names(project, "influxdb")
             form.grafana.choices  = pkg.get_integration_config_names(project, "grafana")
             form.output.choices   = pkg.get_output_configs(project)
