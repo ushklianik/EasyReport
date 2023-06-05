@@ -12,9 +12,6 @@ from app         import app
 @app.route('/set-project', methods=['GET'])
 def setProject():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # Get current project
         project = request.args.get('project')
         # If project not provided, the default value is selected
@@ -29,9 +26,6 @@ def setProject():
 @app.route('/get-projects', methods=['GET'])
 def getProjects():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # Get all projects
         projects = pkg.get_projects()
     except Exception as er:

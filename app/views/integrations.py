@@ -14,9 +14,6 @@ import traceback
 @app.route('/integrations')
 def integrations():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # Get current project
         project = request.cookies.get('project')  
         # Get integrations configs
@@ -39,9 +36,6 @@ def integrations():
 @app.route('/influxdb', methods=['GET', 'POST'])
 def add_influxdb():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # Declare the Influxdb form
         form = InfluxDBForm(request.form)
         # get influxdb parameter if provided
@@ -63,9 +57,6 @@ def add_influxdb():
 @app.route('/delete/influxdb', methods=['GET'])
 def delete_influxdb():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # get influxdb parameter if provided
         influxdb_config = request.args.get('influxdb_config')
         # Get current project
@@ -81,9 +72,6 @@ def delete_influxdb():
 @app.route('/grafana', methods=['GET', 'POST'])
 def add_grafana():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # Get current project
         project = request.cookies.get('project')  
         # get grafana parameter if provided
@@ -102,9 +90,6 @@ def add_grafana():
 def get_grafana_config():
     try:
         output = "no data"
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # Get current project
         project = request.cookies.get('project')  
         # get grafana parameter if provided
@@ -120,9 +105,6 @@ def get_grafana_config():
 @app.route('/delete/grafana', methods=['GET'])
 def delete_grafana_config():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # get grafana parameter if provided
         grafana_config = request.args.get('grafana_config')
         # Get current project
@@ -138,9 +120,6 @@ def delete_grafana_config():
 @app.route('/azure', methods=['GET', 'POST'])
 def add_azure():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # Declare the azure form
         form = AzureForm(request.form)
         # Get current project
@@ -179,9 +158,6 @@ def delete_azure_config():
 @app.route('/atlassian-wiki', methods=['GET', 'POST'])
 def add_atlassian_wiki():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # Declare the atlassian wiki form
         form = AtlassianWikiForm(request.form)
         # Get current project
@@ -220,9 +196,6 @@ def delete_atlassian_wiki():
 @app.route('/atlassian-jira', methods=['GET', 'POST'])
 def add_atlassian_jira():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # Declare the atlassian jira form
         # Sema: should be created in forms.py
         form = AtlassianJiraForm(request.form)

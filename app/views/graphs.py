@@ -12,9 +12,6 @@ from app.backend             import pkg
 @app.route('/graphs', methods=['GET'])
 def get_graphs():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # Get current project
         project = request.cookies.get('project')  
         # Declare the graphs form
@@ -30,9 +27,6 @@ def get_graphs():
 def save_graph():
     try:
         project = request.cookies.get('project') 
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         if request.method == "POST":
             pkg.save_graph(project, request.form.to_dict())
         flash("Graph updated")
@@ -44,9 +38,6 @@ def save_graph():
 def delete_graph():
     try:
         project = request.cookies.get('project') 
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         graph_name = request.args.get('graph_name')
         if graph_name != None:
             pkg.delete_graph(project, graph_name)

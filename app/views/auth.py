@@ -1,12 +1,12 @@
 # Flask modules
-from flask                   import render_template, request, url_for, redirect, flash
-from flask_login             import login_user, logout_user, current_user
-from jinja2                  import TemplateNotFound
+from flask       import render_template, request, url_for, redirect, flash
+from flask_login import login_user, logout_user, current_user
+from jinja2      import TemplateNotFound
 
 # App modules
-from app         import app, lm, db, bc
-from app.models  import Users
-from app.forms   import LoginForm, RegisterForm
+from app        import app, lm, db, bc
+from app.models import Users
+from app.forms  import LoginForm, RegisterForm
 
 
 # provide login manager with load_user callback
@@ -87,8 +87,6 @@ def login():
 @app.route('/', defaults={'path': 'index.html'})
 @app.route('/<path>')
 def index(path):
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))
     try:    
         # Serve the file (if exists) from app/templates/FILE.html
         return render_template( 'home/' + path)
@@ -96,5 +94,3 @@ def index(path):
         return render_template('home/page-404.html'), 404
     except:
         return render_template('home/page-500.html'), 500
-
-    

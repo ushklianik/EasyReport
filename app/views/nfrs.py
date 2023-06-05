@@ -10,9 +10,6 @@ from app.backend.validation.validation import NFR
 @app.route('/nfrs', methods=['GET'])
 def get_nfrs():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # Get current project
         project = request.cookies.get('project')  
         nfr_obj = NFR(project)
@@ -25,9 +22,6 @@ def get_nfrs():
 @app.route('/nfr', methods=['GET', 'POST'])
 def get_nfr():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         nfrs = {}
         # Get current project
         project = request.cookies.get('project') 
@@ -46,9 +40,6 @@ def get_nfr():
 @app.route('/delete/nfr', methods=['GET'])
 def delete_nfrs():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # Get current project
         project = request.cookies.get('project')  
         nfr_obj = NFR(project)

@@ -1,15 +1,24 @@
 import os
 import logging
 
-from flask import Flask
+from flask import Flask, g, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_bcrypt import Bcrypt
 
 # Grabs the folder where the script runs.
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
+
+# List of routes that do not require authentication
+no_auth_required_routes = ['login', 'register']
+
+@app.before_request
+def check_authentication():
+    g.user = current_user
+    if not g.user.is_authenticated and request.endpoint not in no_auth_required_routes:
+        return redirect(url_for('login'))
 
 # Create logs directory if it doesn't exist
 log_directory = os.path.join(basedir, "logs")
