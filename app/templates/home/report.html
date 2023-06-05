@@ -109,7 +109,9 @@
                         </div>
                     {% endfor %} 
                 </div>    
-                {% include 'includes/flashed-msg.html' %}
+                {% with msgs = get_flashed_messages() %}
+                    {% include 'includes/flashed-msg.html' %}
+                {% endwith %}
             </div>
         </div>
         <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>

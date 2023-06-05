@@ -141,7 +141,9 @@
                         </div>
                     </div>
                 </div>
-                {% include 'includes/flashed-msg.html' %}
+                {% with msgs = get_flashed_messages() %}
+                    {% include 'includes/flashed-msg.html' %}
+                {% endwith %}
             </div>
         </div>
     </main>

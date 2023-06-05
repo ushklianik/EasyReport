@@ -1,23 +1,21 @@
-{% with msgs = get_flashed_messages() %}
-    {% if msgs %}
-        {% for msg in msgs %}
-            {% if "ERROR" in msg %}
-            <div class="center-section">
-                <div class="alert alert-outline-danger d-flex align-items-center" role="alert">
-                  <span class="fas fa-times-circle text-danger fs-3 me-3"></span>
-                  <p class="mb-0 flex-1">{{ msg }}</p>
-                  <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+{% if msgs %}
+    {% for msg in msgs %}
+        {% if "ERROR" in msg %}
+        <div class="center-section">
+            <div class="alert alert-outline-danger d-flex align-items-center" role="alert">
+              <span class="fas fa-times-circle text-danger fs-3 me-3"></span>
+              <p class="mb-0 flex-1">{{ msg }}</p>
+              <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            {% else %}
-            <div class="center-section">
-                <div class="alert alert-outline-success d-flex align-items-center" role="alert">
-                    <span class="fas fa-check-circle text-success fs-3 me-3"></span>
-                    <p class="mb-0 flex-1">{{ msg }}</p>
-                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+        </div>
+        {% else %}
+        <div class="center-section">
+            <div class="alert alert-outline-success d-flex align-items-center" role="alert">
+                <span class="fas fa-check-circle text-success fs-3 me-3"></span>
+                <p class="mb-0 flex-1">{{ msg }}</p>
+                <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            {% endif %}                          
-        {% endfor %}
-    {% endif %}
-{% endwith %}
+        </div>
+        {% endif %}                          
+    {% endfor %}
+{% endif %}

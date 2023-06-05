@@ -221,7 +221,7 @@ img {
     background-color: var(--bs-background);
 }
 
-.btn-primary {
+.btn-primary2 {
     cursor: pointer;
     padding: 10px;
     justify-content: center;
@@ -231,14 +231,14 @@ img {
     border: 0;
     transition: border-radius 0.2s ease-in;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
-    .btn-primary:hover {
+    .btn-primary2:hover {
         border-radius: 10px;
         color: var(--bs-white);
         background-color: var(--bs-cyan);
         border-color: var(--bs-dark); 
 }
 
-.btn-secondary {
+.btn-secondary2 {
     cursor: pointer;
     padding: 10px;
     justify-content: center;
@@ -249,13 +249,13 @@ img {
     border-color: var(--bs-dark);
     transition: border-radius 0.2s ease-in;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
-    .btn-secondary:hover {
+    .btn-secondary2:hover {
         border-radius: 10px;
         color: var(--bs-white);
         background-color: var(--bs-orange);
         border-color: var(--bs-dark); }
 
-.btn-success {
+.btn-success2 {
     cursor: pointer;
     padding: 10px;
     justify-content: center;
@@ -266,13 +266,13 @@ img {
     border-color: var(--bs-dark);
     transition: border-radius 0.2s ease-in;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
-    .btn-success:hover {
+    .btn-success2:hover {
         border-radius: 10px;
         color: var(--bs-white);
         background-color: var(--bs-green);
         border-color: var(--bs-dark); }
 
-.btn-warning {
+.btn-warning2 {
     cursor: pointer;
     padding: 10px;
     justify-content: center;
@@ -283,7 +283,7 @@ img {
     border-color: var(--bs-dark);
     transition: border-radius 0.2s ease-in;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(23, 31, 56, 0.075); }
-    .btn-warning:hover {
+    .btn-warning2:hover {
         border-radius: 10px;
         color: var(--bs-white);
         background-color: var(--bs-orange);
@@ -680,11 +680,11 @@ p {
     --btn-color: var(--bs-red);
 }
 
-.btn-secondary2 {
+.btn-secondary {
     --btn-color: var(--bs-orange);
 }
 
-.btn-primary2 {
+.btn-primary {
     --btn-color: #fff;
     --btn-bg: #3874ff;
     --btn-border-color: transparent;
@@ -1121,4 +1121,129 @@ svg:not(:host).svg-inline--fa, svg:not(:root).svg-inline--fa {
     -ms-user-select: none;
     user-select: none;
     opacity: .25
+}
+
+
+.input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    margin-left: -1px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0
+}
+
+.valid-feedback {
+    display: none;
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 75%;
+    color: #25b003
+}
+
+.was-validated :valid~.valid-feedback,.was-validated :valid~.valid-tooltip,.is-valid~.valid-feedback,.is-valid~.valid-tooltip {
+    display: block
+}
+
+.form-check-inline .form-check-input~.valid-feedback {
+    margin-left: .5em
+}
+
+.invalid-feedback {
+    display: none;
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 75%;
+    color: #ed2000
+}
+
+.was-validated :invalid~.invalid-feedback,.was-validated :invalid~.invalid-tooltip,.is-invalid~.invalid-feedback,.is-invalid~.invalid-tooltip {
+    display: block
+}
+
+.form-check-inline .form-check-input~.invalid-feedback {
+    margin-left: .5em
+}
+
+.was-validated .choices.invalid+.invalid-feedback {
+    display: block
+}
+
+.was-validated .form-control:valid,.form-control.is-valid {
+    border-color: #25b003;
+    padding-right: calc(1.49em + 1rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2325b003' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.3725em + 0.25rem) center;
+    background-size: calc(0.745em + 0.5rem) calc(0.745em + 0.5rem)
+}
+
+.was-validated .form-control:valid:focus,.form-control.is-valid:focus {
+    border-color: #25b003;
+    -webkit-box-shadow: 0 0 0 .25rem rgba(37,176,3,.25);
+    box-shadow: 0 0 0 .25rem rgba(37,176,3,.25)
+}
+
+.was-validated textarea.form-control:valid,textarea.form-control.is-valid {
+    padding-right: calc(1.49em + 1rem);
+    background-position: top calc(0.3725em + 0.25rem) right calc(0.3725em + 0.25rem)
+}
+
+.was-validated .form-select:valid,.form-select.is-valid {
+    border-color: #25b003
+}
+
+.was-validated .form-select:valid:not([multiple]):not([size]),.was-validated .form-select:valid:not([multiple])[size="1"],.form-select.is-valid:not([multiple]):not([size]),.form-select.is-valid:not([multiple])[size="1"] {
+    padding-right: 5rem;
+    background-image: var(--phoenix-form-select-indicator),url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2325b003' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-position: right 1rem center,center right 2.5rem;
+    background-size: 9px 12px,calc(0.745em + 0.5rem) calc(0.745em + 0.5rem)
+}
+
+.was-validated .form-select:valid:focus,.form-select.is-valid:focus {
+    border-color: #25b003;
+    -webkit-box-shadow: 0 0 0 .25rem rgba(37,176,3,.25);
+    box-shadow: 0 0 0 .25rem rgba(37,176,3,.25)
+}
+
+.was-validated .form-control-color:valid,.form-control-color.is-valid {
+    width: calc(3rem + calc(1.49em + 1rem))
+}
+
+.was-validated .form-control:invalid,.form-control.is-invalid {
+    border-color: #ed2000;
+    padding-right: calc(1.49em + 1rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23ed2000'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23ed2000' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.3725em + 0.25rem) center;
+    background-size: calc(0.745em + 0.5rem) calc(0.745em + 0.5rem)
+}
+
+.was-validated .form-control:invalid:focus,.form-control.is-invalid:focus {
+    border-color: #ed2000;
+    -webkit-box-shadow: 0 0 0 .25rem rgba(237,32,0,.25);
+    box-shadow: 0 0 0 .25rem rgba(237,32,0,.25)
+}
+
+.was-validated textarea.form-control:invalid,textarea.form-control.is-invalid {
+    padding-right: calc(1.49em + 1rem);
+    background-position: top calc(0.3725em + 0.25rem) right calc(0.3725em + 0.25rem)
+}
+
+.was-validated .form-select:invalid,.form-select.is-invalid {
+    border-color: #ed2000
+}
+
+.was-validated .form-select:invalid:not([multiple]):not([size]),.was-validated .form-select:invalid:not([multiple])[size="1"],.form-select.is-invalid:not([multiple]):not([size]),.form-select.is-invalid:not([multiple])[size="1"] {
+    padding-right: 5rem;
+    background-image: var(--phoenix-form-select-indicator),url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23ed2000'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23ed2000' stroke='none'/%3e%3c/svg%3e");
+    background-position: right 1rem center,center right 2.5rem;
+    background-size: 9px 12px,calc(0.745em + 0.5rem) calc(0.745em + 0.5rem)
+}
+
+.was-validated .form-select:invalid:focus,.form-select.is-invalid:focus {
+    border-color: #ed2000;
+    -webkit-box-shadow: 0 0 0 .25rem rgba(237,32,0,.25);
+    box-shadow: 0 0 0 .25rem rgba(237,32,0,.25)
+}
+
+.was-validated .form-control-color:invalid,.form-control-color.is-invalid {
+    width: calc(3rem + calc(1.49em + 1rem))
 }

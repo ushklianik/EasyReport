@@ -28,7 +28,7 @@
                                   <span class="fas fa-search search-box-icon"></span>
                               </div>
                           </div>
-                          <button class="btn btn-primary2 ms-2" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" add-graph="add-graph">Add graph</button>
+                          <button class="btn btn-primary ms-2" type="button" data-bs-toggle="modal" data-bs-target="#graphModal" add-graph="add-graph">Add graph</button>
                       </div>
                   </div>
                   <div class="table-responsive">
@@ -52,7 +52,7 @@
                                   <td class="width">{{ graph.width }}</td>
                                   <td class="height">{{ graph.height }}</td>
                                   <td class="actions">
-                                      <button class="btn btn-secondary2" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" data-graph='{"name": "{{ graph.name }}", "view_panel": "{{ graph.view_panel }}", "dash_id": "{{ graph.dash_id }}", "width": "{{ graph.width }}", "height": "{{ graph.height }}"}'>Edit</button>
+                                      <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#graphModal" data-graph='{"name": "{{ graph.name }}", "view_panel": "{{ graph.view_panel }}", "dash_id": "{{ graph.dash_id }}", "width": "{{ graph.width }}", "height": "{{ graph.height }}"}'>Edit</button>
                                       <a class="btn btn-danger" href="/delete-graph?graph_name={{ graph.name }}">Delete</a>
                                   </td>
                               </tr>
@@ -75,10 +75,12 @@
               </div>
           </div>
         </div>
-        {% include 'includes/flashed-msg.html' %}
+        {% with msgs = get_flashed_messages() %}
+            {% include 'includes/flashed-msg.html' %}
+        {% endwith %}
       </div>
     </div>
-    <div class="modal fade" id="exampleModal" aria-hidden="true" style="display: none;">
+    <div class="modal fade" id="graphModal" aria-hidden="true" style="display: none;">
       <div class="modal-dialog">
           <div class="modal-content">
             <form method="POST" action="/save-graph">
@@ -109,23 +111,21 @@
               </div>
               <div class="modal-footer">
                   <div class="status-place" style="float: left;"></div>
-                  <button class="btn btn-secondary2" data-bs-dismiss="modal" type="button">Close</button>
-                  <button class="btn btn-primary2" type="submit">Save</button>
+                  <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                  <button class="btn btn-primary" type="submit">Save</button>
               </div>
             </form>
           </div>
       </div>
     </div>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
-    <script src="/static/assets/js/perforge.js"></script>
     <script>
       $(document).ready(function() {
         // Store a reference to the modal and form
-        var modal = $('#exampleModal');
+        var modal = $('#graphModal');
         var form = modal.find('form');
 
         // Listen for the modal open event
-        $('button[data-bs-toggle="modal"][data-bs-target="#exampleModal"]').click(function() {
+        $('button[data-bs-toggle="modal"][data-bs-target="#graphModal"]').click(function() {
           var graph = $(this).data('graph');
 
           $.each(graph, function(key, value) {

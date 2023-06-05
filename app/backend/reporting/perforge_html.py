@@ -1,6 +1,6 @@
 from app.backend.integrations.influxdb.influxdb import influxdb
 from app.backend.integrations.influxdb.backend_listener import custom
-from app.backend.validation.validation import nfr
+from app.backend.validation.validation import NFR
 from datetime import datetime
 from dateutil import tz
 import plotly
@@ -144,8 +144,8 @@ class html_report:
         self.get_avg_bandwidth_stats()
         self.getavg_response_time_graph()
         self.get_rps_graph()
-        nfr_obj = nfr(self.project)
-        comp_result = nfr_obj.compare_with_nfrs(app_name = self.report['app_name'], runId = self.report['run_id'],start = self.report["start_timestamp"], end = self.report["end_timestamp"])
-        self.report['nfrs'] = comp_result
-        self.report['apdex'] = nfr_obj.calculate_apdex(comp_result)
+        NFR_obj = NFR(self.project)
+        comp_result = NFR_obj.compare_with_NFRs(app_name = self.report['app_name'], runId = self.report['run_id'],start = self.report["start_timestamp"], end = self.report["end_timestamp"])
+        self.report['NFRs'] = comp_result
+        self.report['apdex'] = NFR_obj.calculate_apdex(comp_result)
         self.influxdb_obj.close_influxdb_connection()

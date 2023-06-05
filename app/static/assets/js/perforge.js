@@ -23,6 +23,7 @@
     };
     const hasClass = (e,t)=>e.classList.value.includes(t);
     const addClass = (e,t)=>e.classList.add(t);
+    const removeClass = (e,t)=>e.classList.remove(t);
 
     const setCookie = (e,t,o)=>{
         const r = new Date;
@@ -34,13 +35,49 @@
         return t ? t[2] : t
     };
     const getRandomNumber = (e,t)=>Math.floor(Math.random() * (t - e) + e);
+
+    const sendPostRequest = (url, json) => {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: url,
+          type: "POST",
+          data: json,
+          contentType: "application/json",
+          success: function (data) {
+            resolve(data.redirect_url);
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            reject({ jqXHR, textStatus, errorThrown });
+          },
+        });
+      });
+    };
+
+    const validateForm = (form, event, callback) => {
+      form.classList.add('was-validated')
+      if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+          callback(false);
+      } else {
+          // If validation is successful, update button style
+          const submitBtn = document.getElementById('submitBtn');
+          removeClass(submitBtn, 'btn-secondary');
+          addClass(submitBtn, 'btn-primary');
+          event.preventDefault();
+          callback(true);
+      }
+    };
     
     var utils = {
+        validateForm: validateForm,
+        sendPostRequest: sendPostRequest,
         docReady: docReady,
         camelize: camelize,
         getData: getData,
         hasClass: hasClass,
         addClass: addClass,
+        removeClass: removeClass,
         setCookie: setCookie,
         getCookie: getCookie,
         getRandomNumber: getRandomNumber
@@ -392,18 +429,6 @@
             });
           }
         }
-    };
-    const sendRequest = (url, json) => {
-        $.ajax({
-            url:url,
-            type:"POST",
-            data:json,
-            contentType:"application/json",
-            success: function(data){
-            },
-            error: function () {
-            },
-          });
     };
 
     docReady(bulkSelectInit),

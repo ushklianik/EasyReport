@@ -3,8 +3,6 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
-<link type="text/css" href="/static/assets/css/report.css" rel="stylesheet">
-<link type="text/css" href="/static/assets/css/nfrs.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
@@ -12,92 +10,76 @@
         <div class="main-background">
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
-                <div class="main-body-header">
-                    <a>NFRs</a>
-                </div> 
-                <div class="full-screen-section flex-direction-column" id="nfrs-accordion">
-                    <div class="marging-10">
-                        {% for nfrs_item in nfrs_list %}
-                        <div>
-                            <button class="dropdown-button">
-                                <div class="grey-text-color" style="font-size: 1rem;padding-right: 8px;">App name:</div>{{ nfrs_item.app_name }}
-                                <div class="grey-text-color" style="font-size: 1rem;padding-left: 32px;">Number of NFRs:</div>
-                                <div class="nfr-circle" id="{{ nfrs_item.app_name }}"></div>
-                            </button>
-                            <div class="dropdown-body">
-                                <div class="margin-all-10">
-                                    <div class="margin-all-10">
-                                        <a class="btn-primary" style="width: 80px;" href="/nfr?app_name={{ nfrs_item.app_name }}" role="button">Edit</a>
-                                        <a class="btn-secondary" style="width: 80px;" href="#" role="button">Delete</a>
-                                    </div>
-                                    <div class="nfr-table-wraper">
-                                        <div class="nfr-table">
-                                            <div class="nfr-table-header grey-text-color">Scope</div>
-                                            <div class="nfr-table-header grey-text-color">Metric</div>
-                                            <div class="nfr-table-header grey-text-color">Aggregation</div>
-                                            <div class="nfr-table-header grey-text-color">Operation</div>
-                                            <div class="nfr-table-header grey-text-color">Threshold</div>
-                                            <div class="nfr-table-header grey-text-color">Weight</div>
-                                        </div>
-                                        <div class="nfr-table">
-                                            {% for nfr in nfrs_item.rows %}
-                                                <div class="nfr-table-column">{{ nfr.scope }}</div>
-                                                <div class="nfr-table-column">
-                                                    <div>
-                                                        <span class="nfr-metric-name">{{ nfr.metric }}</span>
-                                                    </div>
-                                                </div>
-                                                <div class="nfr-table-column">{{ nfr.aggregation }}</div>
-                                                <div class="nfr-table-column">{{ nfr.operation }}</div>
-                                                <div class="nfr-table-column">{{ nfr.threshold }}</div>
-                                                <div class="nfr-table-column">{{ nfr.weight }}</div>
-                                            {% endfor %} 
-                                        </div>
+              <div class="main-body-header">
+              </div> 
+              <div class="card mb-3 margin-all-10" data-component-card="data-component-card">
+                <div class="card-header">
+                  <div class="justify-content-between align-items-center">
+                    <h4 class="mb-0">NFRS</h4>
+                  </div>
+                </div>
+                <div class="card-body">
+                    <div id="table-id" data-list='{"valueNames":["name", "nfrs"], "page": 10, "pagination": true}'>
+                        <div class="d-flex align-items-center justify-content-end mb-3">
+                            <div class="d-flex">
+                                <div>
+                                    <div class="search-box position-relative" data-bs-toggle="search" data-bs-display="static">
+                                        <input class="form-control search-input search" type="search" placeholder="Search" aria-label="Search" />
+                                        <span class="fas fa-search search-box-icon"></span>
                                     </div>
                                 </div>
+                                <a class="btn btn-primary ms-2" href="/nfr">New NFR</a>
                             </div>
                         </div>
-                        {% endfor %} 
+                        <div class="table-responsive">
+                            <table class="table fs--1 mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="sort" data-sort="name">Test name</th>
+                                        <th class="sort" data-sort="nfrs">NFRS</th>
+                                        <th class="sort" data-sort="actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="list">
+                                    {% for nfrs_item in nfrs_list %}
+                                    <tr>
+                                        <td class="name">{{ nfrs_item.test_name }}</td>
+                                        <td class="nfrs">
+                                            {% for nfr in nfrs_item.rows %}
+                                                <div>
+                                                    {{ nfr.aggregation }} {{ nfr.metric }} {{ nfr.operation }} {{ nfr.threshold }} for {{ nfr.scope }}
+                                                </div>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="actions">
+                                            <a class="btn btn-secondary" href="/nfr?test_name={{ nfrs_item.test_name }}">Edit</a>
+                                            <a class="btn btn-danger" href="/delete/nfr?test_name={{ nfrs_item.test_name }}">Delete</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-between mt-3 fs--1">
+                            <span data-list-info="data-list-info"></span>
+                            <div class="d-flex">
+                                <button class="page-link" data-list-pagination="prev">
+                                    <span class="fas fa-chevron-left"></span>
+                                </button>
+                                <ul class="mb-0 pagination"></ul>
+                                <button class="page-link pe-0" data-list-pagination="next">
+                                    <span class="fas fa-chevron-right"></span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <a class="btn-primary" href="/nfr" style="width: 150px;" role="button">Create new</a>
                 </div>
-                {% include 'includes/flashed-msg.html' %}
+              </div>
+              {% with msgs = get_flashed_messages() %}
+                  {% include 'includes/flashed-msg.html' %}
+              {% endwith %}
             </div>
         </div>
-        <script>
-            var nfrsJson = JSON.parse('{{ nfrs_list | tojson }}');
-            var nfrsPanel = document.getElementById("nfrs-panel");
-            if(nfrsJson["status"] != null){
-                if(nfrsJson["status"] == "error"){
-                    if(nfrsPanel.querySelector('.status-message') != null){
-                        nfrsPanel.querySelector('.status-message').remove();
-                    }
-                    let elem = '<div class="bad-msg status-message">'+nfrsJson["message"]+'</div>';
-                    nfrsPanel.insertAdjacentHTML("beforeend", elem);
-                }
-            }
-            for(var i = 0; i < nfrsJson.length; i++) {
-                if(nfrsJson[i]["app_name"] != null){
-                    var elem = document.getElementById(nfrsJson[i]["app_name"]);
-                    elem.textContent = nfrsJson[i]["rows"].length;
-                }
-            }
-
-            var acc = document.getElementsByClassName("dropdown-button");
-            var i;
-
-            for (i = 0; i < acc.length; i++) {
-            acc[i].addEventListener("click", function() {
-                this.classList.toggle("dropdown-body-active");
-                var panel = this.nextElementSibling;
-                if (panel.style.maxHeight) {
-                panel.style.maxHeight = null;
-                } else {
-                panel.style.maxHeight = panel.scrollHeight + "px";
-                } 
-            });
-            }
-        </script>
     </main>
     {% include 'includes/footer.html' %}
 {% endblock content %}
