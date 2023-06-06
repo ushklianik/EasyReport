@@ -53,6 +53,22 @@
       });
     };
 
+    const sendGetRequest = (url) => {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: url,
+          type: "GET",
+          dataType: 'json',
+          success: function (data) {
+            resolve(data);
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            reject({ jqXHR, textStatus, errorThrown });
+          },
+        });
+      });
+    };
+
     const validateForm = (form, event, callback) => {
       form.classList.add('was-validated')
       if (!form.checkValidity()) {
@@ -68,20 +84,8 @@
           callback(true);
       }
     };
-    
-    var utils = {
-        validateForm: validateForm,
-        sendPostRequest: sendPostRequest,
-        docReady: docReady,
-        camelize: camelize,
-        getData: getData,
-        hasClass: hasClass,
-        addClass: addClass,
-        removeClass: removeClass,
-        setCookie: setCookie,
-        getCookie: getCookie,
-        getRandomNumber: getRandomNumber
-    };
+
+
 
     class DomNode {
         constructor(s) {
@@ -217,15 +221,14 @@
             new BulkSelect(e).init();
         }
         ));
-    }
-    ;
+    };
 
     const togglePaginationButtonDisable = (button, disabled) => {
         button.disabled = disabled;
         button.classList[disabled ? 'add' : 'remove']('disabled');
     };
       
-      const listInit = () => {
+    const listInit = () => {
         const { getData } = window.perforge.utils;
         if (window.List) {
           const lists = document.querySelectorAll('[data-list]');
@@ -430,6 +433,22 @@
           }
         }
     };
+
+    var utils = {
+      listInit: listInit,
+      validateForm: validateForm,
+      sendPostRequest: sendPostRequest,
+      sendGetRequest: sendGetRequest,
+      docReady: docReady,
+      camelize: camelize,
+      getData: getData,
+      hasClass: hasClass,
+      addClass: addClass,
+      removeClass: removeClass,
+      setCookie: setCookie,
+      getCookie: getCookie,
+      getRandomNumber: getRandomNumber
+  };
 
     docReady(bulkSelectInit),
     docReady(listInit),

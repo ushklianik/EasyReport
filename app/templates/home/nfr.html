@@ -195,19 +195,19 @@
                 const forms = document.querySelectorAll(".needs-validation");
                 Array.from(forms).forEach((form) => {
                     form.addEventListener(
-                    "submit",
-                    (event) => {
-                        perforge.utils.validateForm(form, event, (result) => {
-                        if (result) {
-                            perforge.utils
-                            .sendPostRequest("/nfr", getNFRs())
-                            .then((redirectUrl) => {
-                                window.location.replace(redirectUrl);
-                            })
-                            .catch((error) => {
-                                console.error("Request failed:", error);
-                            });
-                        }
+                        "submit",
+                        (event) => {
+                            perforge.utils.validateForm(form, event, (result) => {
+                            if (result) {
+                                perforge.utils
+                                .sendPostRequest("/nfr", getNFRs())
+                                .then((redirectUrl) => {
+                                    window.location.replace(redirectUrl);
+                                })
+                                .catch((error) => {
+                                    console.error("Request failed:", error);
+                                });
+                            }
                         });
                     },
                     false

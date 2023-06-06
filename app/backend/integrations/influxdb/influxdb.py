@@ -56,19 +56,16 @@ class influxdb(integration):
     def get_test_log(self):
         result = []
         try:
-            startM = datetime.now().timestamp()
             tables = self.influxdb_connection.query_api().query(custom.get_test_log_query(self.bucket))
-            endM = datetime.now().timestamp()
             for table in tables:
                 for row in table.records:
                     del row.values["result"]
                     del row.values["table"]
                     result.append(row.values)
-            msg = {"status":"good", "message":result}
+            return result
         except Exception as er:
             logging.warning(er)
-            msg = {"status":"error", "message":er}
-        return msg
+            return result
 
     def send_query(self, query):
         results = []

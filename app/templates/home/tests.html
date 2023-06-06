@@ -20,7 +20,7 @@
                       </div>
                     </div>
                     <div class="card-body">
-                        <div id="table-id" data-list='{"valueNames":["runId", "testName", "duration", "maxThreads", "startTime", "endTime"], "page": 5, "pagination": true}'>
+                        <div id="table-id">
                             <div class="d-flex align-items-center justify-content-end mb-3">
                                 <div class="d-flex" id="bulk-select-actions">
                                     <div>
@@ -36,7 +36,7 @@
                                     </select>
                                     <select class="form-select ms-2" id="influxdbName">
                                         {% for influxdb in influxdb_names %}
-                                                <option value="/tests?influxdb={{ influxdb }}">{{ influxdb }}</option>
+                                                <option value="{{ influxdb }}">{{ influxdb }}</option>
                                         {% endfor %}
                                     </select>
                                     <button class="btn btn-primary ms-2" data-selected-rows="data-selected-rows">Apply</button>
@@ -61,24 +61,16 @@
                                         </tr>
                                     </thead>
                                     <tbody class="list" id="bulk-select-body">
-                                        {% for test in tests %}
                                         <tr>
-                                            <td>
-                                                <div class="form-check fs-0">
-                                                    <input class="form-check-input" type="checkbox" data-bulk-select-row="{'runId':{{ test.runId }},'testName':{{ test.testName }},'duration':{{ test.duration }},'maxThreads':{{ test.maxThreads }},'startTime':{{ test.startTime }},'endTime':{{ test.endTime }}}" />
-                                                </div>
-                                            </td>
-                                            <td class="runId">{{ test.runId }}</td>
-                                            <td class="testName">{{ test.testName }}</td>
-                                            <td class="duration">{{ test.duration }}</td>
-                                            <td class="maxThreads">{{ test.maxThreads }}</td>
-                                            <td class="startTime">{{ test.startTime }}</td>
-                                            <td class="endTime">{{ test.endTime }}</td>
-                                            <td class="actions">
-                                                <a class="btn btn-danger" href="/grafana-result-dashboard?runId={{ test.runId }}&testName={{ test.testName }}&startTimestamp={{ test.startTimestamp }}&endTimestamp={{ test.endTimestamp }}">Grafana dashboard</a>
-                                            </td>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
                                         </tr>
-                                        {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
@@ -94,13 +86,72 @@
                                     </button>
                                 </div>
                             </div>
+                            <div class="center-section" id="spinner">
+                                <div class="spinner-border text-info" role="status"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                {% include 'includes/flashed-msg.html' %}
+                {% with msgs = get_flashed_messages() %}
+                    {% include 'includes/flashed-msg.html' %}
+                {% endwith %}
             </div>
         </div>
         <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                var influxdb_name = $("#influxdbName").val();
+                perforge.utils
+                    .sendGetRequest('/load_tests?influxdb_name=' + influxdb_name)
+                    .then((data) => {
+                        if(data.status === 'success'){
+                            updateTable(data.tests);
+                        }else{
+                            const badmsg = document.getElementById("bad-msg");
+                            badmsg.style.display = "flex";
+                            const msg = badmsg.querySelector("#msg");
+                            msg.textContent = data.message;
+                        }
+                        $("#spinner").hide();
+                    })
+                    .catch((error) => {
+                        const badmsg = document.getElementById("bad-msg");
+                        badmsg.style.display = "flex";
+                        const msg = badmsg.querySelector("#msg");
+                        msg.textContent = error;
+                        $("#spinner").hide();
+                    });
+    
+                function updateTable(tests){
+                    $("#table-id").attr('data-list', '{"valueNames":["runId", "testName", "duration", "maxThreads", "startTime", "endTime"], "page": 5, "pagination": true}');
+
+                    var tableBody = $("#bulk-select-body");
+                    tableBody.empty();
+
+                    tests.forEach(function(test){
+                        tableBody.append(
+                            `<tr>
+                                <td>
+                                    <div class="form-check fs-0">
+                                        <input class="form-check-input" type="checkbox" data-bulk-select-row="{'runId':${test.runId},'testName':${test.testName},'duration':${test.duration},'maxThreads':${test.maxThreads},'startTime':${test.startTime},'endTime':${test.endTime}}" />
+                                    </div>
+                                </td>
+                                <td class="runId">${test.runId}</td>
+                                <td class="testName">${test.testName}</td>
+                                <td class="duration">${test.duration}</td>
+                                <td class="maxThreads">${test.maxThreads}</td>
+                                <td class="startTime">${test.startTime}</td>
+                                <td class="endTime">${test.endTime}</td>
+                                <td class="actions">
+                                    <a class="btn btn-danger" href="/grafana-result-dashboard?runId=${test.runId}&testName=${test.testName}&startTimestamp=${test.startTimestamp}&endTimestamp=${test.endTimestamp}">Grafana dashboard</a>
+                                </td>
+                            </tr>`
+                        );
+                    });
+                    perforge.utils.listInit();
+                }
+            });
+        </script>
     </main>
     {% include 'includes/footer.html' %}
 {% endblock content %}
