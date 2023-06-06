@@ -1,21 +1,22 @@
 # Flask modules
-from flask       import request, make_response
+from flask import request, make_response
+
 # App modules
-from app         import app
-from app.backend.reporting.azure_wiki import azureport
+from app                                        import app
+from app.backend.reporting.azure_wiki           import azureport
 from app.backend.integrations.influxdb.influxdb import influxdb
-from app.backend.integrations.grafana.grafana import grafana
+from app.backend.integrations.grafana.grafana   import grafana
 
-
+# Route for generating Azure report
 @app.route('/gen-az-report', methods=['GET'])
 def gen_az_report():
     grafana_obj = grafana("default")
     # Get current project
-    project        = "default"
+    project         = "default"
     run_id          = request.args.get('run_id')
     baseline_run_id = request.args.get('baseline_run_id')
     report_name     = request.args.get('reportName')
-    azreport = azureport(project, report_name)
+    azreport        = azureport(project, report_name)
     azreport.generate_report(run_id, baseline_run_id)
     resp = make_response("Done")
     resp.headers['Access-Control-Allow-Origin'] = grafana_obj.server
@@ -23,14 +24,14 @@ def gen_az_report():
     resp.headers['access-control-allow-credentials'] = 'true'
     return resp
 
-
+# Route for setting baseline
 @app.route('/set-baseline', methods=['GET'])
 def set_baseline():
     infludx_obj = influxdb("default")
     grafana_obj = grafana("default")
     infludx_obj.connect_to_influxdb()
     if request.args.get('user') == "admin":
-        infludx_obj.add_or_update_test(run_id = request.args.get('run_id'),status = request.args.get('status'), build = request.args.get('build'), testName = request.args.get('testName'))
+        infludx_obj.add_or_update_test(run_id=request.args.get('run_id'), status=request.args.get('status'), build=request.args.get('build'), testName=request.args.get('testName'))
     resp = make_response("Done")
     resp.headers['Access-Control-Allow-Origin'] = grafana_obj.server
     resp.headers['access-control-allow-methods'] = '*'
@@ -38,12 +39,13 @@ def set_baseline():
     infludx_obj.close_influxdb_connection()
     return resp
 
+# Route for deleting InfluxDB data
 @app.route('/delete-influxdata', methods=['GET'])
 def influx_data_delete():
     influxdb_obj = influxdb("default")
-    grafana_obj = grafana("default")
+    grafana_obj  = grafana("default")
     influxdb_obj.connect_to_influxdb()
-    run_id  = request.args.get('run_id')
+    run_id = request.args.get('run_id')
     start  = request.args.get('start')
     end    = request.args.get('end')
     status = request.args.get('status')

@@ -1,38 +1,33 @@
 # Flask modules
-from flask                   import render_template, request, url_for, redirect, flash
-from flask_login             import current_user
-import traceback
+from flask import render_template, request, url_for, redirect, flash
 
 # App modules
-from app                     import app
-from app.forms               import graph_form
-from app.backend             import pkg
+from app         import app
+from app.forms   import GraphForm
+from app.backend import pkg
 
+import traceback
 
+# Route for getting all graphs
 @app.route('/graphs', methods=['GET'])
 def get_graphs():
     try:
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
         # Get current project
-        project = request.cookies.get('project')  
+        project = request.cookies.get('project')
         # Declare the graphs form
-        form_for_graphs = graph_form(request.form)
-        graphs_list = pkg.get_graphs(project)
-        form_for_graphs.dash_id.choices  = pkg.get_dashboards(project)
+        form_for_graphs = GraphForm(request.form)
+        graphs_list     = pkg.get_graphs(project)
+        form_for_graphs.dash_id.choices = pkg.get_dashboards(project)
         return render_template('home/graphs.html', graphs_list=graphs_list, form_for_graphs=form_for_graphs)
     except Exception as er:
         flash("ERROR: " + str(traceback.format_exc()))
     return redirect(url_for('index'))
-    
+
+# Route for saving a graph
 @app.route('/save-graph', methods=['POST'])
 def save_graph():
     try:
-        project = request.cookies.get('project') 
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
+        project = request.cookies.get('project')
         if request.method == "POST":
             pkg.save_graph(project, request.form.to_dict())
         flash("Graph updated")
@@ -40,15 +35,13 @@ def save_graph():
         flash("ERROR: " + str(er))
     return redirect(url_for('get_graphs'))
 
+# Route for deleting a graph
 @app.route('/delete-graph', methods=['GET'])
 def delete_graph():
     try:
-        project = request.cookies.get('project') 
-        # Check if user is logged in
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
+        project    = request.cookies.get('project')
         graph_name = request.args.get('graph_name')
-        if graph_name != None:
+        if graph_name is not None:
             pkg.delete_graph(project, graph_name)
             flash("Graph deleted")
     except Exception as er:
