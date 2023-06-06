@@ -1,21 +1,33 @@
+<div class="center-section" style="display: none;" id="bad-msg">
+    <div class="alert alert-outline-danger d-flex align-items-center" role="alert">
+      <span class="fas fa-times-circle text-danger fs-3 me-3"></span>
+      <p class="mb-0 flex-1" id="msg"></p>
+      <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+<div class="center-section" style="display: none;" id="good-msg">
+    <div class="alert alert-outline-success d-flex align-items-center" role="alert">
+        <span class="fas fa-check-circle text-success fs-3 me-3"></span>
+        <p class="mb-0 flex-1" id="msg"></p>
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
 {% if msgs %}
     {% for msg in msgs %}
         {% if "ERROR" in msg %}
-        <div class="center-section">
-            <div class="alert alert-outline-danger d-flex align-items-center" role="alert">
-              <span class="fas fa-times-circle text-danger fs-3 me-3"></span>
-              <p class="mb-0 flex-1">{{ msg }}</p>
-              <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
+        <script>
+            const badmsg = document.getElementById("bad-msg");
+            badmsg.style.display = "flex";
+            const msg = badmsg.querySelector("#msg");
+            msg.textContent = "{{ msg }}"
+        </script>
         {% else %}
-        <div class="center-section">
-            <div class="alert alert-outline-success d-flex align-items-center" role="alert">
-                <span class="fas fa-check-circle text-success fs-3 me-3"></span>
-                <p class="mb-0 flex-1">{{ msg }}</p>
-                <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
+        <script>
+            const badmsg = document.getElementById("good-msg");
+            badmsg.style.display = "flex";
+            const msg = badmsg.querySelector("#msg");
+            msg.textContent = "{{ msg }}"
+        </script>
         {% endif %}                          
     {% endfor %}
 {% endif %}
