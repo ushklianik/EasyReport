@@ -8,7 +8,7 @@ from app.backend.reporting.atlassian_jira import atlassian_jira_report
 from datetime import datetime
 
 # Flask modules
-from flask                   import render_template, request, url_for, redirect, flash
+from flask                   import render_template, request, url_for, redirect, flash, jsonify
 from flask_login             import current_user
 
 # App modules
@@ -94,18 +94,29 @@ def get_tests():
         # Get current project
         project = request.cookies.get('project')  
         influxdb_names = pkg.get_integration_config_names(project, "influxdb")
-        influxdb_name = request.args.get('influxdb')
-        influxdb_obj = influxdb(project=project, name=influxdb_name)
-        influxdb_obj.connect_to_influxdb()
-        msg = influxdb_obj.get_test_log()
-        if(msg["status"] != "error"):
-            tests = pkg.sort_tests(msg["message"])
-        else:
-            tests = []
-        return render_template('home/tests.html', tests=tests, msg=msg, influxdb_names=influxdb_names)
+        return render_template('home/tests.html', influxdb_names=influxdb_names)
     except Exception as er:
         flash("ERROR: " + str(traceback.format_exc()))
         return redirect(url_for("index"))
+    
+@app.route('/load_tests', methods=['GET'])
+def load_tests():
+    try:
+        # Check if user is logged in
+        if not current_user.is_authenticated:
+            return jsonify(status="error", message="User not authenticated")
+        # Get current project
+        project = request.cookies.get('project')
+        influxdb_name = request.args.get('influxdb_name')
+        influxdb_obj = influxdb(project=project, name=influxdb_name)
+        influxdb_obj.connect_to_influxdb()
+        tests = influxdb_obj.get_test_log()
+        if(tests):
+            tests = pkg.sort_tests(tests)
+        return jsonify(status="success", tests=tests)
+    except Exception:
+        flash("ERROR: " + str(traceback.format_exc()))
+        return jsonify(status="error", message=str(traceback.format_exc()))
 
 @app.route('/report', methods=['GET'])
 def get_report():
@@ -139,7 +150,7 @@ def generate_azure_wiki_report():
         azreport.generate_report(runId, baseline_run_id)
         return redirect(url_for('getTests'))
     except Exception as er:
-        flash("ERROR: " + str(er))
+        flash("ERROR: " + str(traceback.format_exc()))
         return redirect(url_for("index"))
 
 @app.route('/generate-confl-report', methods=['GET'])

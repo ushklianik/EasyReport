@@ -1,0 +1,226 @@
+{% extends "layouts/base-fullscreen.html" %}
+{% block title %} New flow {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<!-- <link type="text/css" href="/static/assets/css/pixel.css" rel="stylesheet"> -->
+<link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/nfrs.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/report.css" rel="stylesheet">
+{% endblock stylesheets %}
+{% block content %}
+    <main>
+        {% include 'includes/preloader2.html' %}
+        <div class="main-background">
+            {% include 'includes/sidebar.html' %}
+            <div class="main-body">
+                <div class="main-body-header">
+                    <a>New flow config</a>
+                </div>
+                <div class="marging-10">
+                    <form method="POST" action="/flow">
+                        {{ form.hidden_tag() }}
+                        <div class="full-screen-section">
+                            <div class="col-4">
+                                <div class="card-container-fx">
+                                    <span class="circle-with-number">1</span>
+                                </div>
+                                <div>
+                                    <label for="name">Flow name</label>
+                                    {{ form.name(class="form-control-nfr", style="width:250px") }}
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card-container-fx">
+                                    <span class="circle-with-number">2</span>
+                                </div>
+                                <div>
+                                    <label for="influxdb">Influxdb name</label>
+                                    {{ form.influxdb(class="form-select-nfr", style="width:250px") }}
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card-container-fx">
+                                    <span class="circle-with-number">3</span>
+                                </div>
+                                <div class>
+                                    <label for="grafana">Grafana name</label>
+                                    {{ form.grafana(class="form-select-nfr", style="width:250px") }}
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card-container-fx">
+                                    <span class="circle-with-number">4</span>
+                                </div>
+                                <div>
+                                    <label for="output">Output name</label>
+                                    {{ form.output(class="form-select-nfr", style="width:250px") }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="full-screen-section" style="margin-top: 30px;">
+                            <div class="flex-direction-column col-4">
+                                <div class="col-4">
+                                    <div class="card-container-fx">
+                                        <span class="circle-with-number">5</span>
+                                    </div>
+                                    <div>
+                                        <label>Choose graph</label>
+                                        <input type="search" class="form-control-nfr" id="search"  placeholder="Search" onkeyup='searchFilter()' style="width:250px">
+                                        <div id='options' class='d-none'>
+                                            <select class="input-form-select" multiple="">
+                                                {% for graph in graphs %}
+                                                    <option id='graph-item'>{{ graph }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 30px;margin-left: 5px;">
+                                    <label>Available variables:</label>
+                                    <div>
+                                        <label class="var-name">${current_vusers}:</label>
+                                        <label class="var-description">Max number of threads</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${current_duration}:</label>
+                                        <label class="var-description">Duration of the test.</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${current_start_time}:</label>
+                                        <label class="var-description">Start datetime for the test.</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${current_end_time}:</label>
+                                        <label class="var-description">End datetime for the test.</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${current_grafana_link}:</label>
+                                        <label class="var-description">Link to Grafana dashboard with test results.</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${baseline_vusers}:</label>
+                                        <label class="var-description">Max number of threads for baseline test (If specified).</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${baseline_duration}:</label>
+                                        <label class="var-description">Duration of the baseline test (If specified).</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${baseline_start_time}:</label>
+                                        <label class="var-description">Start datetime for the baseline test (If specified).</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${baseline_end_time}:</label>
+                                        <label class="var-description">End datetime for the baseline test (If specified).</label>
+                                    </div>
+                                    <div>
+                                        <label class="var-name">${baseline_grafana_link}:</label>
+                                        <label class="var-description">Link to Grafana dashboard with baseline test results (If specified).</label>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 30px;">
+                                    <button class="btn-primary" type="submit" style="width: 70px;">Save</button>
+                                    {% if flow_config %}
+                                        <a href="/delete/flow?flow_config={{ flow_config }}" class="btn-secondary" style="width: 70px;">Delete</a>
+                                    {% else %}
+                                        <a class="btn-secondary" style="width: 70px;">Delete</a>
+                                    {% endif %}   
+                                </div>
+                            </div>
+                            <div class="flex-direction-column flex-center-center" style="width:70%;margin-left:40px;">
+                                {{ form.header(wrap="off", rows="4") }}
+                                <!-- <textarea class="report-footer" rows="4" cols="50" wrap="hard"></textarea> -->
+                                <div id='wrapper' class='wrapper'> 
+                                    {% for graph in form.graphs %}
+                                        <div class="graph-group" aria-atomic="true">
+                                            <button class="btn-close-id btn-close"></button>
+                                            <!-- <input class="graph-element" id="graphs-0" name="graphs-0" type="text" value="avg"> -->
+                                            {{ graph(class="graph-element") }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {{ form.footer(wrap="off", rows="4") }}
+                            </div>
+                        </div>
+                    </form>
+                    {% with msgs = get_flashed_messages() %}
+                        {% include 'includes/flashed-msg.html' %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+        <script>
+            var graphs = document.getElementById('wrapper');
+            var search = document.getElementById('search');
+            var options = document.getElementById('options');
+            var graph = document.querySelectorAll('#graph-item');
+            var txtVal, filter;
+            var card_id = 0;
+
+            function searchFilter(){
+                for(var i = 0; i < graph.length; i++){
+                    txtVal = graph[i].innerText;
+                    filter = search.value.toUpperCase();
+                    if(txtVal.toUpperCase().indexOf(filter) > -1){
+                        graph[i].style.display = '';
+                    }else{
+                        graph[i].style.display = 'none';
+                    }    
+                }
+            }
+
+            search.onclick = function(){
+                options.classList.toggle('d-none');
+            }
+
+            for (var i = 0; i < graph.length; i++) {
+                
+                graph[i].onclick = function() {
+
+                    const name = this.innerHTML;
+                    id = "graphs-" + card_id;
+                    card_id = card_id + 1;
+                    
+                    const cardElement = "<div class='graph-group' aria-atomic='true'>" +
+                                "<button class='btn-close-id btn-close'></button>" +
+                                "<input class='graph-element' id='"+id+"' name='"+id+"' type='text' value='"+name+"'>" +
+                            "</div>"
+
+                    graphs.insertAdjacentHTML("beforeend", cardElement);
+
+                    const cardName = document.querySelector('.card .details .name');
+
+                    document.getElementById('options').classList.add('d-none');
+
+                    var closeBtn = document.getElementsByClassName('btn-close-id');
+                    for(var i = 0; i < closeBtn.length; i++){
+                        closeBtn[i].onclick = function(){
+                            this.parentElement.remove();
+                        }
+                    }
+                }
+            }
+            var closeBtn = document.getElementsByClassName('btn-close-id');
+            for(var i = 0; i < closeBtn.length; i++){
+                closeBtn[i].onclick = function(){
+                    this.parentElement.remove();
+                }
+            }
+
+
+            var textarea = document.querySelector('textarea');
+            textarea.addEventListener('keydown', autosize);            
+            function autosize(){
+                var el = this;
+                setTimeout(function(){
+                    el.style.cssText = 'height:auto; padding:0';
+                    // for box-sizing other than "content-box" use:
+                    // el.style.cssText = '-moz-box-sizing:content-box';
+                    el.style.cssText = 'height:' + el.scrollHeight + 'px';
+                },0);
+            }
+        </script>
+    </main>
+    {% include 'includes/footer.html' %}
+{% endblock content %}
