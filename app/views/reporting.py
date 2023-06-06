@@ -1,23 +1,22 @@
 # Python modules
 from datetime import datetime
 
-from app.backend import pkg
-from app.backend.integrations.influxdb.influxdb import influxdb
-from app.backend.reporting.perforge_html import html_report
-from app.backend.reporting.azure_wiki import azureport
-from app.backend.reporting.atlassian_wiki import atlassian_wiki_report
-from app.backend.reporting.atlassian_jira import atlassian_jira_report
-
 # Flask modules
 from flask import render_template, request, url_for, redirect, flash
-from flask_login import current_user
 
 # App modules
-from app import app
-from app.forms import FlowConfigForm, GraphForm
+from app                                        import app
+from app.backend                                import pkg
+from app.backend.integrations.influxdb.influxdb import influxdb
+from app.backend.reporting.perforge_html        import html_report
+from app.backend.reporting.azure_wiki           import azureport
+from app.backend.reporting.atlassian_wiki       import atlassian_wiki_report
+from app.backend.reporting.atlassian_jira       import atlassian_jira_report
+from app.forms                                  import FlowConfigForm, GraphForm
 
 import traceback
 
+# Route for managing flow configuration
 @app.route('/flow', methods=['GET', 'POST'])
 def flow():
     try:
@@ -50,12 +49,10 @@ def flow():
         flash("ERROR: " + str(er))
         return render_template('home/all-flows.html')
 
-
+# Route for deleting a flow configuration
 @app.route('/delete/flow', methods=['GET'])
 def delete_flow():
     try:
-        # get azure parameter if provided
-        flow_config = None
         flow_config = request.args.get('flow_config')
         # Get current project
         project = request.cookies.get('project')
@@ -66,7 +63,7 @@ def delete_flow():
         flash("ERROR: " + str(er))
     return render_template('home/all-flows.html')
 
-
+# Route for displaying all flow configurations
 @app.route('/all-flows', methods=['GET'])
 def all_flows():
     try:
@@ -78,7 +75,7 @@ def all_flows():
         flash("ERROR: " + str(er))
         return redirect(url_for("index"))
 
-
+# Route for displaying test results
 @app.route('/tests', methods=['GET'])
 def get_tests():
     try:
@@ -98,7 +95,7 @@ def get_tests():
         flash("ERROR: " + str(traceback.format_exc()))
         return redirect(url_for("index"))
 
-
+# Route for displaying HTML report
 @app.route('/report', methods=['GET'])
 def get_report():
     try:
@@ -113,7 +110,7 @@ def get_report():
         flash("ERROR: " + str(er))
         return redirect(url_for("index"))
 
-
+# Route for generating Azure wiki report
 @app.route('/generate-az-report', methods=['GET'])
 def generate_azure_wiki_report():
     try:
@@ -129,7 +126,7 @@ def generate_azure_wiki_report():
         flash("ERROR: " + str(er))
         return redirect(url_for("index"))
 
-
+# Route for generating Atlassian wiki report
 @app.route('/generate-confl-report', methods=['GET'])
 def generate_atlassian_wiki_report():
     try:
@@ -145,7 +142,7 @@ def generate_atlassian_wiki_report():
         flash("ERROR: " + str(er))
         return redirect(url_for("index"))
 
-
+# Route for generating Atlassian Jira report
 @app.route('/generate-jira-report', methods=['GET'])
 def generate_atlassian_jira_report():
     try:
@@ -161,7 +158,7 @@ def generate_atlassian_jira_report():
         flash("ERROR: " + str(er))
         return redirect(url_for("index"))
 
-
+# Route for displaying Grafana result dashboard
 @app.route('/grafana-result-dashboard', methods=['GET'])
 def get_grafana_result_dashboard():
     try:

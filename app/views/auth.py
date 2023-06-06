@@ -1,6 +1,6 @@
 # Flask modules
 from flask       import render_template, request, url_for, redirect, flash
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user
 from jinja2      import TemplateNotFound
 
 # App modules
