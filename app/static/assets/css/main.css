@@ -416,6 +416,67 @@ img {
     border-radius: 10px;
 }
 
+.row {
+    --gutter-x: 2rem;
+    --gutter-y: 2rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-top: calc(-1*var(--gutter-y));
+    margin-right: calc(-0.5*var(--gutter-x));
+    margin-left: calc(-0.5*var(--gutter-x));
+}
+
+.row>* {
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: calc(var(--gutter-x)*.5);
+    padding-left: calc(var(--gutter-x)*.5);
+    margin-top: var(--gutter-y);
+}
+
+.col-auto {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    width: auto;
+}
+
+@media (min-width: 1200px){
+    .col-xl-8 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 auto;
+        flex: 0 0 auto;
+        width: 66.66666667% !important;
+    }
+
+    .col-xl-4 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 auto;
+        flex: 0 0 auto;
+        width: 33.33333333% !important;
+    }
+}
+.col-12 {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    width: 100%;
+}
+
+.flex-between-end {
+    -webkit-box-align: end;
+    -ms-flex-align: end;
+    align-items: flex-end;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
 .graph-table {
     display: grid;
     grid-template-columns: auto 150px 350px 150px 150px;
@@ -498,16 +559,59 @@ input:focus, select:focus {
     width: 20rem;
 }
 
+.g-5, .gy-5 {
+    --gutter-y: 2rem;
+}
+
 .mb-0 {
     margin-bottom: 0 !important;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem !important;
 }
 
 .mb-3 {
     margin-bottom: 16px !important;
 }
 
+.mt-3 {
+    margin-top: 16px !important;
+}
+
+.mb-5 {
+    margin-bottom: 2rem !important;
+}
+
+.mt-5 {
+    margin-top: 2rem !important;
+}
+
+.mb-6 {
+    margin-bottom: 2.5rem !important;
+}
+
+.g-3, .gy-3 {
+    --gutter-y: 1rem;
+}
+
+.mb-9 {
+    margin-bottom: 4rem !important;
+}
+
 .ms-2 {
     margin-left: 0.5rem !important;
+}
+
+.mb-sm-0 {
+    margin-bottom: 0 !important;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem !important;
+}
+.me-2 {
+    margin-right: 0.5rem !important;
 }
 
 .d-flex {
@@ -1095,6 +1199,7 @@ svg:not(:host).svg-inline--fa, svg:not(:root).svg-inline--fa {
     height: 1em;
     padding: .25em .25em;
     color: #000;
+    fill: var(--text-main-color);
     background: rgba(0,0,0,0) url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
     border: 0;
     border-radius: .375rem;
@@ -1346,7 +1451,7 @@ svg:not(:host).svg-inline--fa, svg:not(:root).svg-inline--fa {
     height: 1rem;
     width: 1rem;
     min-width: 1rem;
-    /* color: var(--phoenix-navbar-vertical-dropdown-indicator-color); */
+    /* color: var(--navbar-vertical-dropdown-indicator-color); */
     margin-left: -0.25rem;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -1364,12 +1469,12 @@ svg:not(:host).svg-inline--fa, svg:not(:root).svg-inline--fa {
 }
 
 .nav {
-    --phoenix-nav-link-padding-x: 1rem;
-    --phoenix-nav-link-padding-y: 0.5rem;
-    --phoenix-nav-link-font-weight: ;
-    --phoenix-nav-link-color: var(--phoenix-link-color);
-    --phoenix-nav-link-hover-color: var(--phoenix-link-hover-color);
-    --phoenix-nav-link-disabled-color: #6e7891;
+    --nav-link-padding-x: 1rem;
+    --nav-link-padding-y: 0.5rem;
+    --nav-link-font-weight: ;
+    --nav-link-color: var(--link-color);
+    --nav-link-hover-color: var(--link-hover-color);
+    --nav-link-disabled-color: #6e7891;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -1427,4 +1532,89 @@ svg:not(:host).svg-inline--fa, svg:not(:root).svg-inline--fa {
     -webkit-transform: rotate(0deg);
     -ms-transform: rotate(0deg);
     transform: rotate(0deg)
+}
+
+.text-align-center{
+    text-align: center !important
+}
+
+textarea  {
+    width: 100%;
+    background-color: var(--bs-background-dark);
+    border-radius: 0.375rem;
+    color: var(--text-main-color);
+    resize: vertical;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    border-color: var(--border-main-color);
+}
+
+textarea:focus  {
+    outline: none !important;
+    border-color: #3874ff;
+}
+
+.vue-select-imput {
+    --vs-controls-color: var(--text-main-color);
+    --vs-border-color: var(--border-main-color);
+  
+    --vs-dropdown-bg: var(--bs-background-dark);
+    --vs-dropdown-color: var(--text-main-color);
+    --vs-dropdown-option-color: var(--text-main-color);
+  
+    --vs-selected-bg: #3874ff;
+    --vs-selected-color: var(--text-main-color);
+  
+    --vs-search-input-bg: var(--bs-background-dark);
+  
+    --vs-dropdown-option--active-bg: #3874ff;
+    --vs-dropdown-option--active-color: var(--text-main-color);
+    --vs-line-height: 1.6;
+    --vs-border-radius: 0.375rem;
+  }
+
+.badge-success {
+    --badge-bg: rgba(144, 214, 127, 0.08);
+    --badge-color: #90d67f !important;
+    --badge-border-color: rgba(144, 214, 127, 0.2 );
+}
+
+.badge-primary {
+    --badge-bg: rgba(133, 169, 255, 0.08);
+    --badge-color: #85a9ff !important;
+    --badge-border-color: rgba(133, 169, 255, 0.2 );
+}
+
+.badge {
+    --badge-padding-x: 0.711111em;
+    --badge-padding-y: 0.355555em;
+    --badge-font-size: 0.75em;
+    --badge-font-weight: 700;
+    --badge-color: #fff;
+    --badge-border-radius: 0.25rem;
+    display: inline-block;
+    padding: var(--badge-padding-y) var(--badge-padding-x);
+    text-transform: uppercase;
+    font-size: var(--badge-font-size);
+    font-weight: var(--badge-font-weight);
+    line-height: 1;
+    color: var(--badge-color);
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: var(--badge-border-radius);
+    border: 1px solid var(--badge-border-color);
+    background-color: var(--badge-bg);
+}
+
+.flex-end {
+    display: flex;
+    justify-content: end;
+    width: 100%;
+}
+
+.template-el-label {
+    width: 300px;
+    padding-left: 10px;
+    padding-right: 10px;
 }

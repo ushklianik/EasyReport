@@ -12,69 +12,88 @@ from app.backend.reporting.perforge_html        import html_report
 from app.backend.reporting.azure_wiki           import azureport
 from app.backend.reporting.atlassian_wiki       import atlassian_wiki_report
 from app.backend.reporting.atlassian_jira       import atlassian_jira_report
-from app.forms                                  import FlowConfigForm, GraphForm
+from app.forms                                  import FlowConfigForm, TemplateConfigForm
 
 import traceback
 
 # Route for managing flow configuration
-@app.route('/flow', methods=['GET', 'POST'])
-def flow():
+@app.route('/template', methods=['GET', 'POST'])
+def template():
     try:
         # Get current project
-        project = request.cookies.get('project')
-        graphs  = pkg.get_config_names(project, "graphs")
-        # Flask message injected into the page, in case of any errors
-        msg = None
-        # Declare the graphs form
-        form_for_graphs = GraphForm(request.form)
-        # Declare the Influxdb form
-        form                  = FlowConfigForm(request.form)
-        form.influxdb.choices = pkg.get_integration_config_names(project, "influxdb")
-        form.grafana.choices  = pkg.get_integration_config_names(project, "grafana")
-        form.output.choices   = pkg.get_output_configs(project)
-        # get grafana parameter if provided
-        flow_config = request.args.get('flow_config')
-        if flow_config is not None:
-            output                = pkg.get_flow_config_values_in_dict(project, flow_config)
-            form                  = FlowConfigForm(output)
-            form.influxdb.choices = pkg.get_integration_config_names(project, "influxdb")
-            form.grafana.choices  = pkg.get_integration_config_names(project, "grafana")
-            form.output.choices   = pkg.get_output_configs(project)
-        if form.validate_on_submit():
-            msg = pkg.save_flow_config(project, request.form.to_dict())
-            flash("Flow config added.")
-            flow_config = request.form.to_dict()["name"]
-        return render_template('home/flow.html', form=form, flow_config=flow_config, graphs=graphs, msg=msg, form_for_graphs=form_for_graphs)
-    except Exception as er:
-        flash("ERROR: " + str(er))
-        return render_template('home/all-flows.html')
+        project  = request.cookies.get('project')
+        # Get graphs
+        graphs   = pkg.get_config_names(project, "graphs")
+        templates = ["demo1", "demo2", "demo3"]
+        flows = pkg.get_config_names(project, "flows")
 
-# Route for deleting a flow configuration
-@app.route('/delete/flow', methods=['GET'])
-def delete_flow():
-    try:
-        flow_config = request.args.get('flow_config')
-        # Get current project
-        project = request.cookies.get('project')
-        if flow_config is not None:
-            pkg.delete_config(project, flow_config)
-            flash("Flow config is deleted.")
+        form                  = TemplateConfigForm(request.form)
+        form.flow.choices     = pkg.get_config_names(project, "flows")
+        # get grafana parameter if provided
+        template = request.args.get('template')
+        if template is not None:
+            output                = pkg.get_template_values_in_dict(project, template)
+            form                  = TemplateConfigForm(output)
+        if form.validate_on_submit():
+            pkg.save_template(project, request.form.to_dict())
+            flash("Template added.")
+            template = request.form.to_dict()["name"]
+        return render_template('home/template.html', graphs=graphs, templates=templates, flows=flows)
     except Exception as er:
-        flash("ERROR: " + str(er))
-    return render_template('home/all-flows.html')
+        flash("ERROR: " + str(traceback.format_exc()))
+        return render_template('home/reporting.html')
 
 # Route for displaying all flow configurations
-@app.route('/all-flows', methods=['GET'])
-def all_flows():
+@app.route('/reporting', methods=['GET', 'POST'])
+def get_reporting():
+    try:
+        # Get current project
+        project               = request.cookies.get('project')
+        flow                  = FlowConfigForm(request.form)
+        flow.influxdb.choices = pkg.get_integration_config_names(project, "influxdb")
+        flow.grafana.choices  = pkg.get_integration_config_names(project, "grafana")
+        flow.output.choices   = pkg.get_output_configs(project)
+        if flow.validate_on_submit():
+            pkg.save_flow_config(project, request.form.to_dict())
+            flash("Flow config added.")
+
+        flows                 = pkg.get_config_names(project, "flows")
+        return render_template('home/reporting.html', flows=flows, flow=flow)
+    except Exception:
+        flash("ERROR: " + str(traceback.format_exc()))
+        return redirect(url_for("index"))
+    
+# Route for managing flow configuration
+@app.route('/save-flow', methods=['GET', 'POST'])
+def save_flow():
     try:
         # Get current project
         project = request.cookies.get('project')
-        flows   = pkg.get_config_names(project, "flow_configs")
-        return render_template('home/all-flows.html', flows=flows)
-    except Exception as er:
-        flash("ERROR: " + str(er))
-        return redirect(url_for("index"))
+        # Declare the Influxdb form
+        form    = FlowConfigForm(request.form)
+        if form.validate_on_submit():
+            print(request.form.to_dict())
+            pkg.save_flow_config(project, request.form.to_dict())
+            flash("Flow config added.")
+        return redirect(url_for("get_reporting"))
+    except Exception:
+        flash("ERROR: " + str(traceback.format_exc()))
+        return redirect(url_for("get_reporting"))
 
+# Route for deleting flow configuration
+@app.route('/delete-flow', methods=['GET', 'POST'])
+def delete_flow():
+    try:
+        flow = request.args.get('flow')
+        # Get current project
+        project = request.cookies.get('project')
+        if flow is not None:
+            pkg.delete_config(project, flow)
+            flash("Flow is deleted.")
+    except Exception as er:
+        flash("ERROR: " + str(traceback.format_exc()))
+    return redirect(url_for("get_reporting"))
+    
 @app.route('/tests', methods=['GET'])
 def get_tests():
     try:

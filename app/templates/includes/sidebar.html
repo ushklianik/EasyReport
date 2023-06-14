@@ -25,35 +25,16 @@
             </span>
         </div>
     </a>
-    <a class="nav-link dropdown-indicator" href="#reporting" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="reporting">
+    <a class="nav-link" type="button" href="/reporting">
         <div class="d-flex align-items-center">
-            <div class="dropdown-indicator-icon">
-                <span class="fas fa-caret-right"></span>
-            </div>
             <span class="nav-link-icon">
                 <span class="fas fa-book-open"></span>
             </span>
-            <span class="nav-link-text">Reporting</span>
+            <span class="nav-link-text-wrapper">
+                <span class="nav-link-text">Reporting</span>
+            </span>
         </div>
     </a>
-    <div class="parent-wrapper">
-        <ul class="nav collapse parent" id="reporting">
-            <li class="nav-item">
-                <a class="nav-link" href="/all-flows" data-bs-toggle="" aria-expanded="false">
-                    <div class="d-flex align-items-center">
-                        <span class="nav-link-text">Flows</span>
-                    </div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/" data-bs-toggle="" aria-expanded="false">
-                    <div class="d-flex align-items-center">
-                        <span class="nav-link-text">Templates</span>
-                    </div>
-                </a>
-            </li>
-        </ul>
-    </div>
     <a class="nav-link" type="button" href="/integrations">
         <div class="d-flex align-items-center">
             <span class="nav-link-icon">
@@ -126,6 +107,12 @@
                 </a>
             </li>
         </ul>
+    </div>
+    <div class="fixed-bottom">
+        <a id = "projects-dropdown" data-bs-toggle="dropdown"></a>
+        <div id="projects-list" class="dropdown-menu">
+            <a class="dropdown-item" href="#">New project</a>
+        </div>
     </div>
 </div>
 <script>

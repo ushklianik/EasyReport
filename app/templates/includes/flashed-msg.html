@@ -19,14 +19,14 @@
             const badmsg = document.getElementById("bad-msg");
             badmsg.style.display = "flex";
             const msg = badmsg.querySelector("#msg");
-            msg.textContent = "{{ msg }}"
+            msg.textContent = `{{ msg }}`
         </script>
         {% else %}
         <script>
             const badmsg = document.getElementById("good-msg");
             badmsg.style.display = "flex";
             const msg = badmsg.querySelector("#msg");
-            msg.textContent = "{{ msg }}"
+            msg.textContent = `{{ msg }}`
         </script>
         {% endif %}                          
     {% endfor %}
