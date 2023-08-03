@@ -657,8 +657,8 @@ p {
     display: block;
     width: 100%;
     padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: inherit;
+    font-weight: inherit;
     color: var(--text-main-color);
     background-color: var(--bs-background-dark);
     background-clip: padding-box;

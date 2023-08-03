@@ -18,44 +18,43 @@
                 <div class="full-screen-section margin-all-10">
                     {% raw %}
                     <div id="app" style="width: 100%;">
-                        <form class="needs-validation" novalidate="" @submit="checkForm">
+                        <form class="needs-validation" novalidate="">
                             <div class="row flex-between-end mb-5">
                                 <div class="col-auto">
                                     <h2 class="mb-2">Template page</h2>
                                 </div>
                                 <div class="col-auto">
-                                    <button class="btn btn-secondary me-2 mb-2 mb-sm-0" type="button">Discard</button>
-                                    <button class="btn btn-primary mb-2 mb-sm-0" type="submit">Save</button>
+                                    <button class="btn btn-primary mb-2 mb-sm-0" @click="checkForm">Save</button>
                                 </div>
                             </div>
                             <div class="row g-5">
                             <div class="col-12 col-xl-8">
                                 <h4 class="mb-3">Report title</h4>
-                                <input v-model="title" class="form-control mb-5" type="text" placeholder="Write title here..." required>
+                                <input v-model="title" id="template-title" class="form-control mb-5" type="text" placeholder="Write title here..." required>
                                 <h4 class="mb-3">Report template</h4>
                                 <draggable v-model="template" :element="'div'">
                                     <div v-for="element in template" :key="element.id">
                                         <div v-if="element.type === 'text'" class="template-group">
                                             <textarea v-model="element.content" required></textarea>
-                                            <button class='btn-close-id btn-close ms-2' @click="removeElement(element)"></button>
+                                            <button class='btn-close-id btn-close ms-2' @click="removeElement(element)" type="button"></button>
                                         </div>
                                         <div v-else-if="element.type === 'graph'" class="template-group">
                                             <span class="badge badge-success">GRAPH</span>
                                             <div class="template-el-label">Name: {{ element.content }}</div>
                                             <div class="flex-end">
-                                                <button class='btn-close-id btn-close' @click="removeElement(element)"></button>
+                                                <button class='btn-close-id btn-close' @click="removeElement(element)" type="button"></button>
                                             </div>
                                         </div>
                                         <div v-else-if="element.type === 'template'" class="template-group">
                                             <span class="badge badge-primary">TEMPLATE</span>
                                             <div class="template-el-label">Name: {{ element.content }}</div>
                                             <div class="flex-end">
-                                                <button class='btn-close-id btn-close' @click="removeElement(element)"></button>
+                                                <button class='btn-close-id btn-close' @click="removeElement(element)" type="button"></button>
                                             </div>
                                         </div>
                                     </div>
                                 </draggable>
-                                <button class="btn btn-primary mt-3" @click="addTextElement">Add Text</button>
+                                <button class="btn btn-primary mt-3" @click="addTextElement" type="button">Add Text</button>
                             </div>
                             <div class="col-12 col-xl-4">
                                 <div class="row g-2">
@@ -64,12 +63,12 @@
                                             <div class="card-body">
                                                 <div class="margin-all-10">
                                                     <label for="template">Template name</label>
-                                                    <input v-model="name" class="form-control" type="text" required>
+                                                    <input v-model="name" id="template-name" class="form-control" type="text" required>
                 
                                                 </div>
                                                 <div class="margin-all-10">
                                                     <label for="flow">Flow name</label>
-                                                    <v-select v-model="flow" class="vue-select-imput" :options="flows" label="flow" :attrs="{ required: true }">
+                                                    <v-select v-model="flow" class="vue-select-imput" :options="flows" label="flow">
                                                     </v-select>
                                                     
                                                 </div>
@@ -168,11 +167,7 @@
                         flow: "",
                         name: "",
                         title: "",
-                        template: [
-                            { id: 1, type: 'text', content: 'some text' },
-                            { id: 2, type: 'graph', content: 'AVG' },
-                            { id: 3, type: 'text', content: 'some text' },
-                        ],
+                        template: [],
                     };
                 },
                 methods: {
@@ -198,57 +193,40 @@
                             this.template.splice(index, 1);
                         }
                     },
-                    saveTemplate() {
-                        const result = {
-                            "name": this.name,
-                            "flow": this.flow,
-                            "title": this.title,
-                            "data": this.template
-                        }
-                        perforge.utils
-                            .sendPostRequest("/template", JSON.stringify(result))
-                            .then((redirectUrl) => {
-                                // window.location.replace(redirectUrl);
-                            })
-                            .catch((error) => {
-                                console.error("Request failed:", error);
-                            });
-                    },
                     checkForm() {
                         const form = document.querySelector(".needs-validation");
                         perforge.utils.validateForm(form, event, (result) => {
-                            alert(result);
-                                    // if (result) {
-                                    //     perforge.utils
-                                    //     .sendPostRequest("/nfr", getNFRs())
-                                    //     .then((redirectUrl) => {
-                                    //         window.location.replace(redirectUrl);
-                                    //     })
-                                    //     .catch((error) => {
-                                    //         console.error("Request failed:", error);
-                                    //     });
-                                    //}
+                            if (result) {
+                                const results = {
+                                    "name": this.name,
+                                    "flow": this.flow,
+                                    "title": this.title,
+                                    "data": this.template
+                                }
+                                perforge.utils
+                                .sendPostRequest("/template", JSON.stringify(results))
+                                .then((redirectUrl) => {
+                                    window.location.replace(redirectUrl);
+                                })
+                                .catch((error) => {
+                                    console.error("Request failed:", error);
+                                });
+                            }
                         });
-                        // if (this.name && this.age) {
-                        //     return true;
-                        // }
-
-                        // this.errors = [];
-
-                        // if (!this.name) {
-                        //     this.errors.push('Name required.');
-                        // }
-                        // if (!this.age) {
-                        //     this.errors.push('Age required.');
-                        // }
-
-                        // e.preventDefault();
                     },
                 },
                 created() {
                     this.graphs = JSON.parse('{{ graphs | tojson }}');
                     this.templates = JSON.parse('{{ templates | tojson }}');
                     this.flows = JSON.parse('{{ flows | tojson }}');
+
+                    this.template_data = JSON.parse('{{ template_data | tojson }}'.replace(/\n/g, "\\n"));
+                    if (this.template_data && this.template_data.name != null) {
+                        this.title    = this.template_data.title;
+                        this.name     = this.template_data.name;
+                        this.flow     = this.template_data.flow;
+                        this.template = this.template_data.data;
+                    }
                 },
             });
         </script>

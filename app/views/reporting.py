@@ -15,33 +15,45 @@ from app.backend.reporting.atlassian_jira       import atlassian_jira_report
 from app.forms                                  import FlowConfigForm, TemplateConfigForm
 
 import traceback
+import json
 
 # Route for managing flow configuration
 @app.route('/template', methods=['GET', 'POST'])
 def template():
     try:
         # Get current project
-        project  = request.cookies.get('project')
+        project   = request.cookies.get('project')
         # Get graphs
-        graphs   = pkg.get_config_names(project, "graphs")
-        templates = ["demo1", "demo2", "demo3"]
-        flows = pkg.get_config_names(project, "flows")
-
-        form                  = TemplateConfigForm(request.form)
-        form.flow.choices     = pkg.get_config_names(project, "flows")
+        graphs    = pkg.get_config_names(project, "graphs")
+        templates = pkg.get_config_names(project, "templates")
+        flows     = pkg.get_config_names(project, "flows")
         # get grafana parameter if provided
-        template = request.args.get('template')
+        template  = request.args.get('template')
+        template_data = []
         if template is not None:
-            output                = pkg.get_template_values_in_dict(project, template)
-            form                  = TemplateConfigForm(output)
-        if form.validate_on_submit():
-            pkg.save_template(project, request.form.to_dict())
+            template_data = pkg.get_template_values(project, template)
+        if request.method == "POST":
+            pkg.save_template(project, request.get_json())
             flash("Template added.")
-            template = request.form.to_dict()["name"]
-        return render_template('home/template.html', graphs=graphs, templates=templates, flows=flows)
+            return jsonify({'redirect_url': 'reporting'})
+    except Exception:
+        flash("ERROR: " + str(traceback.format_exc()))
+        return redirect(url_for("get_reporting"))
+    return render_template('home/template.html', graphs=graphs, templates=templates, flows=flows, template_data=template_data)
+
+# Route for deleting flow configuration
+@app.route('/delete-template', methods=['GET'])
+def delete_template():
+    try:
+        template = request.args.get('template')
+        # Get current project
+        project = request.cookies.get('project')
+        if template is not None:
+            pkg.delete_config(project, template)
+            flash("Template is deleted.")
     except Exception as er:
         flash("ERROR: " + str(traceback.format_exc()))
-        return render_template('home/reporting.html')
+    return redirect(url_for("get_reporting"))
 
 # Route for displaying all flow configurations
 @app.route('/reporting', methods=['GET', 'POST'])
@@ -58,7 +70,8 @@ def get_reporting():
             flash("Flow config added.")
 
         flows                 = pkg.get_config_names(project, "flows")
-        return render_template('home/reporting.html', flows=flows, flow=flow)
+        templates             = pkg.get_config_names(project, "templates")
+        return render_template('home/reporting.html', flows=flows, flow=flow, templates=templates)
     except Exception:
         flash("ERROR: " + str(traceback.format_exc()))
         return redirect(url_for("index"))

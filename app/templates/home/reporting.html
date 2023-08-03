@@ -8,7 +8,6 @@
 {% endblock stylesheets %}
 {% block content %}
     <main>
-        {% include 'includes/preloader2.html' %}
         <div class="main-background">
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
@@ -101,6 +100,15 @@
                                             </tr>
                                         </thead>
                                         <tbody class="list">
+                                            {% for template in templates %}
+                                            <tr>
+                                                <td class="name text-align-center">{{ template }}</td>
+                                                <td class="actions text-align-center">
+                                                    <a class="btn btn-danger" href="/delete-template?template={{ template }}">Delete</a>
+                                                    <a class="btn btn-secondary" href="/template?template={{ template }}">Edit</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>

@@ -46,3 +46,14 @@ class atlassian_wiki_model(BaseModel):
     space_key:        str
     is_default:       str
 
+class template_object_model(BaseModel):
+    id:               int
+    type:             str
+    content:          str
+    
+class template_model(BaseModel):
+    name:             str
+    flow:             str
+    title:            str
+    data:             list[template_object_model]
+

@@ -31,13 +31,13 @@ def get_nfr():
             nfr_obj = NFR(project)
             nfr_obj.save_nfrs(request.get_json())
             flash("NFR saved.")
+            return jsonify({'redirect_url': 'nfrs'})
         elif request.args.get('test_name') is not None:
             nfr_obj = NFR(project)
             nfrs    = nfr_obj.get_nfr(request.args.get('test_name'))
-            return render_template('home/nfr.html', nfrs=nfrs)
     except Exception:
         flash("ERROR: " + str(traceback.format_exc()))
-    return jsonify({'redirect_url': 'nfrs'})
+    return render_template('home/nfr.html', nfrs=nfrs)
 
 # Route for deleting a non-functional requirement
 @app.route('/delete/nfr', methods=['GET'])
