@@ -50,7 +50,7 @@ class azure(integration):
         for i in range(3):
             try:
                 response = requests.put(
-                url=self.org_url + "/" + self.project +"/_apis/wiki/wikis/"+self.identifier+"/attachments?name="+name+"&api-version=6.0", headers=self.azure_headers_attachments, data=image) 
+                url=self.org_url + "/" + self.project_id +"/_apis/wiki/wikis/"+self.identifier+"/attachments?name="+name+"&api-version=6.0", headers=self.azure_headers_attachments, data=image) 
                 if response.status_code != 201:
                     name = str(random.randint(1,100)) + name
                 elif response.status_code == 201:
@@ -58,6 +58,7 @@ class azure(integration):
             except Exception as er:
                 logging.warning('ERROR: uploading image to azure failed')
                 logging.warning(er)   
+        return None
     
     def put_page(self, path, page_content):
         wiki_api_url = self.org_url + "/"+self.project_id+"/_apis/wiki/wikis/"+self.identifier+"/pages?path="+path+"&api-version=6.0"

@@ -3,38 +3,110 @@
 <div class="sidebar">
     <div class="sidebar-header">
         <img src="/static/assets/img/logo.png" height="25" alt="Easy Report">
-        <a type="button" href="/">Easy Report</a>
+        <a type="button" href="/">PerForge</a>
     </div>
-    <a class="btn-sidebar" type="button" href="/">
-        <span class="fas fa-home"></span> Home
+    <a class="nav-link" type="button" href="/">
+        <div class="d-flex align-items-center">
+            <span class="nav-link-icon">
+                <span class="fas fa-home"></span>
+            </span>
+            <span class="nav-link-text-wrapper">
+                <span class="nav-link-text">Home</span>
+            </span>
+        </div>
     </a>
-    <a class="btn-sidebar" type="button" href="/tests">
-        <span class="fas fa-tachometer-alt"></span> Tests
+    <a class="nav-link" type="button" href="/tests">
+        <div class="d-flex align-items-center">
+            <span class="nav-link-icon">
+                <span class="fas fa-tachometer-alt"></span>
+            </span>
+            <span class="nav-link-text-wrapper">
+                <span class="nav-link-text">Tests</span>
+            </span>
+        </div>
     </a>
-    <a class="btn-sidebar" type="button" href="/all-flows">
-        <span class="fas fa-book-open"></span> Report flows
+    <a class="nav-link" type="button" href="/reporting">
+        <div class="d-flex align-items-center">
+            <span class="nav-link-icon">
+                <span class="fas fa-book-open"></span>
+            </span>
+            <span class="nav-link-text-wrapper">
+                <span class="nav-link-text">Reporting</span>
+            </span>
+        </div>
     </a>
-    <a class="btn-sidebar" type="button" href="/integrations">
-        <span class="far fa-sun"></span> Integrations
+    <a class="nav-link" type="button" href="/integrations">
+        <div class="d-flex align-items-center">
+            <span class="nav-link-icon">
+                <span class="far fa-sun"></span>
+            </span>
+            <span class="nav-link-text-wrapper">
+                <span class="nav-link-text">Integrations</span>
+            </span>
+        </div>
     </a>
-    <a class="btn-sidebar" type="button" href="/graphs">
-        <span class="fas fa-chart-area"></span> Graphs
+    <a class="nav-link" type="button" href="/graphs">
+        <div class="d-flex align-items-center">
+            <span class="nav-link-icon">
+                <span class="fas fa-chart-area"></span>
+            </span>
+            <span class="nav-link-text-wrapper">
+                <span class="nav-link-text">Graphs</span>
+            </span>
+        </div>
     </a>
-    <a class="btn-sidebar" type="button" href="/nfrs">
-        <span class="far fa-check-circle"></span> NFRs
+    <a class="nav-link" type="button" href="/nfrs">
+        <div class="d-flex align-items-center">
+            <span class="nav-link-icon">
+                <span class="far fa-check-circle"></span>
+            </span>
+            <span class="nav-link-text-wrapper">
+                <span class="nav-link-text">NFRs</span>
+            </span>
+        </div>
     </a>
-    <a type="button" class="btn-sidebar-small" href="#n">
-        <span class="far fa-user-circle"></span> Profile
+    <a class="nav-link dropdown-indicator" href="#profile" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="profile">
+        <div class="d-flex align-items-center">
+            <div class="dropdown-indicator-icon">
+                <span class="fas fa-caret-right"></span>
+            </div>
+            <span class="nav-link-icon">
+                <span class="far fa-user-circle"></span>
+            </span>
+            <span class="nav-link-text">Profile</span>
+        </div>
     </a>
-    <button type="button" class="btn-sidebar-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="fas fa-angle-down"></span>
-        <span class="sr-only">Toggle Dropdown</span>
-    </button>
-    <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">New project...</a>
-        <a class="dropdown-item" href="#">Settings</a>
-        <a class="dropdown-item" href="#">Profile</a>
-        <a class="dropdown-item" href="/login">Sign out</a>
+    <div class="parent-wrapper">
+        <ul class="nav collapse parent" id="profile">
+            <li class="nav-item">
+                <a class="nav-link" href="/" data-bs-toggle="" aria-expanded="false">
+                    <div class="d-flex align-items-center">
+                        <span class="nav-link-text">New project...</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/" data-bs-toggle="" aria-expanded="false">
+                    <div class="d-flex align-items-center">
+                        <span class="nav-link-text">Settings</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/" data-bs-toggle="" aria-expanded="false">
+                    <div class="d-flex align-items-center">
+                        <span class="nav-link-text">Profile</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login" data-bs-toggle="" aria-expanded="false">
+                    <div class="d-flex align-items-center">
+                        <span class="nav-link-text">Sign out</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
     </div>
     <div class="fixed-bottom">
         <a id = "projects-dropdown" data-bs-toggle="dropdown"></a>

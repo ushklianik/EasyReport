@@ -10,12 +10,12 @@ class azure_model(BaseModel):
     is_default:        str
 
 class grafana_model(BaseModel):
-    name:                  str
-    server:                str
-    org_id:                str
-    token:                 str
-    is_default:            str
-    dashboards:            list
+    name:             str
+    server:           str
+    org_id:           str
+    token:            str
+    is_default:       str
+    dashboards:       list
 
 class influxdb_model(BaseModel):
     name:             str
@@ -28,13 +28,13 @@ class influxdb_model(BaseModel):
     is_default:       str
 
 class atlassian_jira_model(BaseModel):
-    name:                str
-    email:               str
-    token:               str
-    org_url:             str
-    project_id:          str
-    epic:                str
-    is_default:          str
+    name:             str
+    email:            str
+    token:            str
+    org_url:          str
+    project_id:       str
+    epic:             str
+    is_default:       str
     
 
 class atlassian_wiki_model(BaseModel):
@@ -46,3 +46,19 @@ class atlassian_wiki_model(BaseModel):
     space_key:        str
     is_default:       str
 
+class template_object_model(BaseModel):
+    id:               int
+    type:             str
+    content:          str
+    
+class template_model(BaseModel):
+    name:             str
+    flow:             str
+    title:            str
+    data:             list[template_object_model]
+
+class flow_model(BaseModel):
+    name:             str
+    influxdb:         str
+    grafana:          str
+    output:           str

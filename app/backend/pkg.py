@@ -40,7 +40,8 @@ def validate_config(project, key1, key2 = None):
     save_new_config(project, fl)
 
 def get_projects():
-    return get_files_in_dir("./app/projects/") 
+    return get_files_in_dir("./app/projects/")
+
 
 def delete_config(project, config):
     # Define the integration types as a list of dictionaries
@@ -50,7 +51,8 @@ def delete_config(project, config):
         {"list_name": "integrations", "key": "azure"},
         {"list_name": "integrations", "key": "atlassian_wiki"},
         {"list_name": "integrations", "key": "atlassian_jira"},
-        {"list_name": "flow_configs"}
+        {"list_name": "flows"},
+        {"list_name": "templates"}
     ]
     # Validate the config type
     for type in integration_types:
@@ -62,7 +64,7 @@ def delete_config(project, config):
     fl = json.load(get_json_config(project))
     # Iterate over the integration types and remove the config if it exists
     for key_obj in integration_types:
-        if key_obj["list_name"] == "flow_configs":
+        if key_obj["list_name"] == "flows" or key_obj["list_name"] == "templates":
             for idx, obj in enumerate(fl[key_obj["list_name"]]):
                 if obj["name"] == config:
                     fl[key_obj["list_name"]].pop(idx)
@@ -100,6 +102,16 @@ def get_integration_values(project, integration_name, config_name):
     fl = json.load(get_json_config(project))
     output = MultiDict()
     for item in fl["integrations"][integration_name]:
+        if item["name"] == config_name:
+            for key, value in item.items():
+                output.add(key, check_if_token(value))
+    return output
+
+def get_json_values(project, json_name, config_name):
+    validate_config(project, json_name)
+    fl = json.load(get_json_config(project))
+    output = MultiDict()
+    for item in fl[json_name]:
         if item["name"] == config_name:
             for key, value in item.items():
                 output.add(key, check_if_token(value))
@@ -227,31 +239,27 @@ def get_output_configs(project):
 
 ####################### FLOW CONFIG:         
 
-def get_flow_config_values_in_dict(project, flow_config):
-    validate_config(project, "flow_configs")
+def save_flow_config(project, flow):
+    validate_config(project, "flows")
     fl = json.load(get_json_config(project))
-    output = MultiDict()
-    for item in fl["flow_configs"]:
-        if item["name"] == flow_config:
-            for key in item:
-                if key == "graphs":
-                    for graph in item[key]:
-                        output.add(key+"-"+str(graph["position"]), graph["name"])
-                else:
-                    output.add(key, item[key])
-    return output   
+    fl["flows"] = save_dict(flow, fl["flows"], get_config_names(project, "flows"))
+    save_new_config(project, fl)
 
-def save_flow_config(project, form):
-    validate_config(project, "flow_configs")
+def get_flow_values(project, flow):
+    output = md.flow_model.parse_obj(get_json_values(project, "flows", flow))
+    return output.dict()
+
+####################### TEMPLATE CONFIG: 
+
+def get_template_values(project, template):
+    output = md.template_model.parse_obj(get_json_values(project, "templates", template))
+    return output.dict()
+
+def save_template(project, data):
+    data = md.template_model.parse_obj(data)
+    validate_config(project, "templates")
     fl = json.load(get_json_config(project))
-    newConfig = {}
-    newConfig["graphs"] = []
-    for key in form:
-        if "graphs" in key:
-            newConfig["graphs"].append({ "position": int(key[7:]), "name" : form[key] })
-        else:
-            newConfig[key] = form[key]
-    fl["flow_configs"] = save_dict(form, fl["flow_configs"], get_config_names(project, "flow_configs"))
+    fl["templates"] = save_dict(data.dict(), fl["templates"], get_config_names(project, "templates"))
     save_new_config(project, fl)
     
 ####################### GRAPHS:  
@@ -262,6 +270,14 @@ def get_graph(project, name):
     for graph in fl["graphs"]:
         if graph["name"] == name:
             return graph
+
+def check_graph(project, name):
+    validate_config(project, "graphs")
+    fl = json.load(get_json_config(project))
+    for graph in fl["graphs"]:
+        if graph["name"] == name:
+            return True
+    return False
 
 def get_graphs(project):
     validate_config(project, "graphs")

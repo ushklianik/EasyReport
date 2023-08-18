@@ -48,14 +48,18 @@ class AzureForm(FlaskForm):
     is_default     = SelectField('Default', choices=[('true', 'True'), ('false', 'False')], default='false')
 
 
-class FlowConfigForm(FlaskForm):
+class TemplateConfigForm(FlaskForm):
     name     = StringField('Name', validators=[DataRequired()])
     graphs   = FieldList(StringField())
+    footer   = TextAreaField('Footer')
+    header   = TextAreaField('Header')
+    flow     = SelectField('Flow name', validators=[DataRequired()])
+
+class FlowConfigForm(FlaskForm):
+    name     = StringField('Name', validators=[DataRequired()])
     influxdb = SelectField('Influxdb config', validators=[DataRequired()])
     grafana  = SelectField('Grafana config', validators=[DataRequired()])
     output   = SelectField('Output config', validators=[DataRequired()])
-    footer   = TextAreaField('Footer')
-    header   = TextAreaField('Header')
 
 
 class GraphForm(FlaskForm):
