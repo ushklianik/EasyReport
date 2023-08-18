@@ -21,6 +21,7 @@
           return e.dataset[camelize(t)]
       }
   };
+
   const hasClass = (e,t)=>e.classList.value.includes(t);
   const addClass = (e,t)=>e.classList.add(t);
   const removeClass = (e,t)=>e.classList.remove(t);
@@ -87,6 +88,17 @@
         callback(true);
     }
   };
+
+  function extractRunIds(input) {
+    const runIds = [];
+    for (const item of input) {
+        const runIdMatch = item.match(/'runId':(.*?)(,|$)/);
+        if (runIdMatch) {
+            runIds.push(runIdMatch[1]);
+        }
+    }
+    return runIds;
+  }
 
 
 
@@ -165,6 +177,8 @@
           this.actions = new DomNode(document.getElementById(t)),
           this.replacedElement = new DomNode(document.getElementById(s)),
           this.bulkSelectRows = document.getElementById(e).querySelectorAll("[data-bulk-select-row]");
+          console.log(this.bulkSelectRows);
+          
       }
       attachRowNodes(e) {
           this.bulkSelectRows = e;
@@ -406,8 +420,7 @@
     
             //bulk-select
             if (bulkSelect) {
-              const bulkSelectInstance =
-                window.perforge.BulkSelect.getInstance(bulkSelect);
+              const bulkSelectInstance = window.perforge.BulkSelect.getInstance(bulkSelect);
               bulkSelectInstance.attachRowNodes(
                 list.items.map(item =>
                   item.elm.querySelector('[data-bulk-select-row]')
@@ -442,6 +455,7 @@
     validateForm: validateForm,
     sendPostRequest: sendPostRequest,
     sendGetRequest: sendGetRequest,
+    extractRunIds: extractRunIds,
     docReady: docReady,
     camelize: camelize,
     getData: getData,
@@ -460,15 +474,20 @@
       //Tests
       const selectedRowsBtn = document.querySelector('[data-selected-rows]');
       const selectedAction = document.getElementById('selectedAction');
+      const selectedTemplate = document.getElementById('templateName');
       if (selectedRowsBtn) {
         const bulkSelectEl = document.getElementById('bulk-select-example');
         const bulkSelectInstance = window.perforge.BulkSelect.getInstance(bulkSelectEl);
         selectedRowsBtn.addEventListener('click', () => {
-          const selectedRows = {
-              data: bulkSelectInstance.getSelectedRows()
-            };
-          selectedRows['selectedAction'] = selectedAction.value;
-          sendRequest('/generate',JSON.stringify(selectedRows,undefined,2));
+          
+          const transformedList = extractRunIds(bulkSelectInstance.getSelectedRows());
+
+          const selectedRows = {}
+
+          selectedRows["tests"] = transformedList;
+          selectedRows["selectedAction"] = selectedAction.value;
+          selectedRows["template"] = selectedTemplate.value;
+          sendPostRequest('/generate',JSON.stringify(selectedRows));
         });
       }
 

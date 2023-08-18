@@ -40,7 +40,8 @@ def validate_config(project, key1, key2 = None):
     save_new_config(project, fl)
 
 def get_projects():
-    return get_files_in_dir("./app/projects/") 
+    return get_files_in_dir("./app/projects/")
+
 
 def delete_config(project, config):
     # Define the integration types as a list of dictionaries
@@ -244,6 +245,10 @@ def save_flow_config(project, flow):
     fl["flows"] = save_dict(flow, fl["flows"], get_config_names(project, "flows"))
     save_new_config(project, fl)
 
+def get_flow_values(project, flow):
+    output = md.flow_model.parse_obj(get_json_values(project, "flows", flow))
+    return output.dict()
+
 ####################### TEMPLATE CONFIG: 
 
 def get_template_values(project, template):
@@ -265,6 +270,14 @@ def get_graph(project, name):
     for graph in fl["graphs"]:
         if graph["name"] == name:
             return graph
+
+def check_graph(project, name):
+    validate_config(project, "graphs")
+    fl = json.load(get_json_config(project))
+    for graph in fl["graphs"]:
+        if graph["name"] == name:
+            return True
+    return False
 
 def get_graphs(project):
     validate_config(project, "graphs")

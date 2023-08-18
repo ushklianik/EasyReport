@@ -116,7 +116,8 @@ def get_tests():
         # Get current project
         project = request.cookies.get('project')  
         influxdb_names = pkg.get_integration_config_names(project, "influxdb")
-        return render_template('home/tests.html', influxdb_names=influxdb_names)
+        templates = pkg.get_config_names(project, "templates")
+        return render_template('home/tests.html', influxdb_names=influxdb_names, templates = templates)
     except Exception as er:
         flash("ERROR: " + str(traceback.format_exc()))
         return redirect(url_for("index"))
@@ -202,6 +203,24 @@ def generate_atlassian_jira_report():
     except Exception as er:
         flash("ERROR: " + str(er))
         return redirect(url_for("index"))
+    
+# Route for generating a report
+@app.route('/generate', methods=['GET','POST'])
+def generate_report():
+    # try:
+        project       = request.cookies.get('project')
+        if request.method == "POST":
+            data      = request.get_json()
+            template  = data["template"]
+            action    = data["selectedAction"]
+            if action == "azure_report":
+                az = azureport(project, template)
+                az.generate_report(data["tests"])
+                del(az)
+            return "hello"
+    # except Exception as er:
+    #     flash("ERROR: " + str(er))
+    #     return redirect(url_for("index"))
 
 # Route for displaying Grafana result dashboard
 @app.route('/grafana-result-dashboard', methods=['GET'])

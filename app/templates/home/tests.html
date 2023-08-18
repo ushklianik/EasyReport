@@ -31,8 +31,16 @@
                                     </div>
                                     <select class="form-select ms-2" id="selectedAction">
                                         <option selected="selected">Choose action</option>
-                                        <option value="Generate azure report">Generate azure report</option>
-                                        <option value="Delete">Delete</option>
+                                        <option value="azure_report">Azure report</option>
+                                        <option value="atlassian_wiki_report">Atlassian wiki report</option>
+                                        <option value="atlassian_jira_report">Atlassian jira report</option>
+                                        <option value="delete">Delete</option>
+                                    </select>
+                                    <select class="form-select ms-2" id="templateName">
+                                        <option selected="selected">Choose template</option>
+                                        {% for template in templates %}
+                                                <option value="{{ template }}">{{ template }}</option>
+                                        {% endfor %}
                                     </select>
                                     <select class="form-select ms-2" id="influxdbName">
                                         {% for influxdb in influxdb_names %}
