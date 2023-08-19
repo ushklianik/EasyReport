@@ -47,7 +47,10 @@
                                                 <option value="{{ influxdb }}">{{ influxdb }}</option>
                                         {% endfor %}
                                     </select>
-                                    <button class="btn btn-primary ms-2" data-selected-rows="data-selected-rows">Apply</button>
+                                    <button class="btn btn-primary ms-2" data-selected-rows="data-selected-rows" style="min-width: 86px;">
+                                        <span id="spinner-apply" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                        <div id="spinner-apply-text">Apply</div>
+                                    </button>
                                 </div>
                             </div>
                             <div class="table-responsive">

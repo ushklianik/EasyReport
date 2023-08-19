@@ -475,10 +475,15 @@
       const selectedRowsBtn = document.querySelector('[data-selected-rows]');
       const selectedAction = document.getElementById('selectedAction');
       const selectedTemplate = document.getElementById('templateName');
+      const spinner = document.getElementById("spinner-apply");
+      const spinnerText = document.getElementById("spinner-apply-text");
       if (selectedRowsBtn) {
         const bulkSelectEl = document.getElementById('bulk-select-example');
         const bulkSelectInstance = window.perforge.BulkSelect.getInstance(bulkSelectEl);
         selectedRowsBtn.addEventListener('click', () => {
+
+          spinner.style.display = "inline-block";
+          spinnerText.style.display = "none";
           
           const transformedList = extractRunIds(bulkSelectInstance.getSelectedRows());
 
@@ -487,7 +492,10 @@
           selectedRows["tests"] = transformedList;
           selectedRows["selectedAction"] = selectedAction.value;
           selectedRows["template"] = selectedTemplate.value;
-          sendPostRequest('/generate',JSON.stringify(selectedRows));
+          sendPostRequest('/generate',JSON.stringify(selectedRows)).then(function (){
+            spinner.style.display = "none";
+            spinnerText.style.display = "";
+          });
         });
       }
 

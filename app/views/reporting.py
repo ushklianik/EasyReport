@@ -213,11 +213,16 @@ def generate_report():
             data      = request.get_json()
             template  = data["template"]
             action    = data["selectedAction"]
+            result    = "Choose what you need"
             if action == "azure_report":
-                az = azureport(project, template)
-                az.generate_report(data["tests"])
+                az     = azureport(project, template)
+                result = az.generate_report(data["tests"])
                 del(az)
-            return "hello"
+            elif action == "atlassian_wiki_report":
+                awr    = atlassian_wiki_report(project, template)
+                result = awr.generate_report(data["tests"])
+                del(awr)
+            return result
     # except Exception as er:
     #     flash("ERROR: " + str(er))
     #     return redirect(url_for("index"))
