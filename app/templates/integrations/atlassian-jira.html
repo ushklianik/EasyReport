@@ -4,50 +4,53 @@
 {% block stylesheets %}
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
-<link type="text/css" href="/static/assets/css/integrations.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
     <main>
         <div class="main-background">
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
-                <div class="main-body-header">
-                    <a>Atlassian Jira configuration</a>
-                </div>
+                <div class="main-body-header"></div>
                 <div class="center-section">
-                    <a>Add your Atlassian Jira configuration</a>
-                </div>
-                <div class="center-section">
-                    <form method="POST" action="/atlassian-jira">
-                        {{ form.hidden_tag() }}
-                        <div class="center-section width-500">
-                            <label for="name">Name</label>
-                            {{ form.name(class="form-control") }}
-                            <label for="email">Email</label>
-                            {{ form.email(class="form-control") }}
-                            <label for="token">Password</label>
-                            <div class="input-group">
-                                {{ form.token(class="form-control", type="password") }}
-                                <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
+                    <div class="card mb-3 margin-all-10 width-700" data-component-card="data-component-card">
+                        <div class="card-header">
+                            <div class="justify-content-between align-items-center">
+                            <h4 class="mb-0">Add Atlassian Jira integration</h4>
                             </div>
-                            <label for="org_url">Jira organization url</label>
-                            {{ form.org_url(class="form-control") }}
-                            <label for="project_id">Project</label>
-                            {{ form.project_id(class="form-control") }}
-                            <label for="epic">Epic</label>
-                            {{ form.epic(class="form-control") }}
-                            <label for="is_default">Default</label>
-                            {{ form.is_default(class="form-control") }}
-                            <button class="btn-primary" type="submit">Save</button>
-                            {% if atlassian_jira_config %}
-                                <a href="/delete/atlassian-jira?atlassian_jira_config={{ atlassian_jira_config }}" class="btn-secondary">Delete</a>
-                            {% endif %}
                         </div>
-                    </form>
+                        <div class="card-body">
+                            <form method="POST" action="/atlassian-jira">
+                                {{ form.hidden_tag() }}
+                                <div class="center-section">
+                                    <label for="name">Name</label>
+                                    {{ form.name(class="form-control") }}
+                                    <label for="email" class="mt-2">Email</label>
+                                    {{ form.email(class="form-control") }}
+                                    <label for="token" class="mt-2">Password</label>
+                                    <div class="input-group">
+                                        {{ form.token(class="form-control", type="password") }}
+                                        <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
+                                    </div>
+                                    <label for="org_url" class="mt-2">Jira organization url</label>
+                                    {{ form.org_url(class="form-control") }}
+                                    <label for="project_id" class="mt-2">Project</label>
+                                    {{ form.project_id(class="form-control") }}
+                                    <label for="epic" class="mt-2">Epic</label>
+                                    {{ form.epic(class="form-control") }}
+                                    <label for="is_default" class="mt-2">Default</label>
+                                    {{ form.is_default(class="form-control") }}
+                                    <button class="btn btn-primary mt-5" type="submit">Save</button>
+                                    {% if atlassian_jira_config %}
+                                        <a href="/delete/atlassian-jira?atlassian_jira_config={{ atlassian_jira_config }}" class="btn btn-secondary ms-2 mt-5">Delete</a>
+                                    {% endif %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% with msgs = get_flashed_messages() %}
+                        {% include 'includes/flashed-msg.html' %}
+                    {% endwith %}
                 </div>
-                {% with msgs = get_flashed_messages() %}
-                    {% include 'includes/flashed-msg.html' %}
-                {% endwith %}
             </div>
         </div>
     </main>

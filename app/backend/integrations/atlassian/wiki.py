@@ -36,7 +36,8 @@ class wiki(integration):
                 else:
                     return {"status":"error", "message":"No such config name"}
 
-    def put_image_to_confl(self, image, name, page_id):
+    def put_image_to_confl(self, image, name, page_id, test_id):
+        name = test_id+"_"+name
         name = name.replace(" ", "-") + ".png"
         for i in range(3):
             try:
@@ -49,12 +50,12 @@ class wiki(integration):
                 logging.warning(er)  
         
     def put_page(self, title, content):
-        try:
+        # try:
             response = self.confl.update_or_create(title=title, body=content, parent_id=self.parent_id, representation='storage')
             return response
-        except Exception as er:
-            logging.warning(er) 
-            return {"status":"error", "message":er}
+        # except Exception as er:
+        #     logging.warning(er) 
+        #     return {"status":"error", "message":er}
 
     def create_or_update_page(self, title, content):
         self.put_page(title, content)

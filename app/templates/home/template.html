@@ -197,11 +197,17 @@
                         const form = document.querySelector(".needs-validation");
                         perforge.utils.validateForm(form, event, (result) => {
                             if (result) {
+                                let plainTemplate = JSON.parse(JSON.stringify(this.template));
+                                for (const item of plainTemplate) {
+                                    if (item.type === 'text') {
+                                        item.content = item.content.replace(/"/g, '\\\"');
+                                    }
+                                }
                                 const results = {
                                     "name": this.name,
                                     "flow": this.flow,
                                     "title": this.title,
-                                    "data": this.template
+                                    "data": plainTemplate
                                 }
                                 perforge.utils
                                 .sendPostRequest("/template", JSON.stringify(results))
@@ -219,6 +225,7 @@
                     this.graphs = JSON.parse('{{ graphs | tojson }}');
                     this.templates = JSON.parse('{{ templates | tojson }}');
                     this.flows = JSON.parse('{{ flows | tojson }}');
+
 
                     this.template_data = JSON.parse('{{ template_data | tojson }}'.replace(/\n/g, "\\n"));
                     if (this.template_data && this.template_data.name != null) {

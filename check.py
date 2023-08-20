@@ -1,6 +1,5 @@
-from app.backend.reporting.reporting_base import reporting_base
+from app.backend.integrations.atlassian.wiki import wiki
 
-obj = reporting_base("default", "temp1")
-print(obj.title)
-print(obj.influxdb)
-print(obj.data)
+obj = wiki("default", "conflwiki")
+page = obj.confl.get_page_by_id("17105117", expand="body.storage")
+print(page['body']['storage']['value'])

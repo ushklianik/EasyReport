@@ -4,7 +4,6 @@
 {% block stylesheets %}
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
-<link type="text/css" href="/static/assets/css/integrations.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
     <main>
@@ -12,44 +11,49 @@
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
                 <div class="main-body-header">
-                    <a>InfluxDB configuration</a>
                 </div>
                 <div class="center-section">
-                    <h3>Add your InfluDB configuration</h3>
-                </div>
-                <div class="center-section">
-                    <form method="POST" action="/influxdb">
-                        {{ form.hidden_tag() }}
-                        <div class="center-section width-500">
-                            <label for="name">Name</label>
-                            {{ form.name(class="form-control") }}
-                            <label for="url">Url</label>
-                            {{ form.url(class="form-control") }}
-                            <label for="org_id">Org</label>
-                            {{ form.org_id(class="form-control") }}
-                            <label for="token">Token</label>
-                            <div class="input-group">
-                                {{ form.token(class="form-control", type="password") }}
-                                <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
+                    <div class="card mb-3 margin-all-10 width-700" data-component-card="data-component-card">
+                        <div class="card-header">
+                            <div class="justify-content-between align-items-center">
+                            <h4 class="mb-0">Add Influxdb integration</h4>
                             </div>
-                            <label for="timeout">Timeout</label>
-                            {{ form.timeout(class="form-control") }}
-                            <label for="bucket">Bucket</label>
-                            {{ form.bucket(class="form-control") }}
-                            <label for="measurement">Measurement</label>
-                            {{ form.measurement(class="form-control") }}
-                            <label for="is_default">Default</label>
-                            {{ form.is_default(class="form-control") }}
-                            <button class="btn-primary" type="submit">Save</button>
-                            {% if influxdb_config %}
-                                <a href="/delete/influxdb?influxdb_config={{ influxdb_config }}" class="btn-secondary">Delete</a>
-                            {% endif %}
                         </div>
-                    </form>
+                        <div class="card-body">
+                            <form method="POST" action="/influxdb">
+                                {{ form.hidden_tag() }}
+                                <div class="center-section">
+                                    <label for="name">Name</label>
+                                    {{ form.name(class="form-control") }}
+                                    <label for="url" class="mt-2">Url</label>
+                                    {{ form.url(class="form-control") }}
+                                    <label for="org_id" class="mt-2">Org</label>
+                                    {{ form.org_id(class="form-control") }}
+                                    <label for="token" class="mt-2">Token</label>
+                                    <div class="input-group">
+                                        {{ form.token(class="form-control", type="password") }}
+                                        <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
+                                    </div>
+                                    <label for="timeout" class="mt-2">Timeout</label>
+                                    {{ form.timeout(class="form-control") }}
+                                    <label for="bucket" class="mt-2">Bucket</label>
+                                    {{ form.bucket(class="form-control") }}
+                                    <label for="measurement" class="mt-2">Measurement</label>
+                                    {{ form.measurement(class="form-control") }}
+                                    <label for="is_default" class="mt-2">Default</label>
+                                    {{ form.is_default(class="form-control") }}
+                                    <button class="btn btn-primary mt-5" type="submit">Save</button>
+                                    {% if influxdb_config %}
+                                        <a href="/delete/influxdb?influxdb_config={{ influxdb_config }}" class="btn btn-secondary ms-2 mt-5">Delete</a>
+                                    {% endif %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% with msgs = get_flashed_messages() %}
+                        {% include 'includes/flashed-msg.html' %}
+                    {% endwith %}
                 </div>
-                {% with msgs = get_flashed_messages() %}
-                    {% include 'includes/flashed-msg.html' %}
-                {% endwith %}
             </div>
         </div>
     </main>

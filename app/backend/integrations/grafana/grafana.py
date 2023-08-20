@@ -49,6 +49,11 @@ class grafana(integration):
         return dash_id.replace("/d/", "/render/d-solo/")
     
     def render_image_encoded(self, graph_name, start, stop, test_name, run_id, baseline_run_id = None):
+        image = self.render_image(graph_name, start, stop, test_name, run_id, baseline_run_id)
+        image = base64.b64encode(image)
+        return image
+
+    def render_image(self, graph_name, start, stop, test_name, run_id, baseline_run_id = None):
         image = None
         if (pkg.check_graph(self.project, graph_name)):
             graph_json = pkg.get_graph(self.project, graph_name)
@@ -61,35 +66,10 @@ class grafana(integration):
             try:   
                 response = requests.get(url=url, headers={ 'Authorization': 'Bearer ' + self.token}, timeout=180)
                 if response.status_code == 200:
-                    image = base64.b64encode(response.content)
+                    image = response.content
                 else:
                     logging.info('ERROR: downloading image from Grafana failed, metric: ' + graph_name)
             except Exception as er:
                 logging.warning('ERROR: downloading image from Grafana failed')
                 logging.warning(er)
         return image
-
-    def render_image(self, graph_names, start, stop, test_name, run_id, baseline_run_id = None):
-        graphs = []
-        screenshots = []
-        for graph in graph_names:
-            graph_json = pkg.get_graph(self.project, graph["name"])
-            graph_json["position"] = graph["position"]
-            graphs.append(graph_json)
-        for graph in graphs:
-            if "comparison" in graph["dashId"]:
-                url = self.get_grafana_link(start, stop, test_name, graph["dashId"])
-                url = url+"&var-current_runId="+run_id+"&var-baseline_runId="+baseline_run_id+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
-            else:
-                url = self.get_grafana_link(start, stop, test_name, graph["dashId"])
-                url = url+"&var-runId="+run_id+"&panelId="+graph["viewPanel"]+"&width="+graph["width"]+"&height="+graph["height"]
-            try:   
-                response = requests.get(url=url, headers={ 'Authorization': 'Bearer ' + self.token}, timeout=180)
-                if response.status_code == 200:
-                    screenshots.append({"image": response.content, "position": graph["position"], "name": graph["name"]})
-                else:
-                    logging.info('ERROR: downloading image from Grafana failed, metric: ' + graph["name"])
-            except Exception as er:
-                logging.warning('ERROR: downloading image from Grafana failed')
-                logging.warning(er)
-        return screenshots

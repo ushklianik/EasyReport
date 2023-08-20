@@ -4,7 +4,6 @@
 {% block stylesheets %}
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
-<link type="text/css" href="/static/assets/css/integrations.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
 <main>
@@ -12,42 +11,47 @@
         {% include 'includes/sidebar.html' %}
         <div class="main-body">
             <div class="main-body-header">
-                <a>Azure configuration</a>
             </div>
             <div class="center-section">
-                <a>Add your Azure configuration</a>
-            </div>
-            <div class="center-section">
-                <form method="POST" action="/azure">
-                    {{ form.hidden_tag() }}
-                    <div class="center-section width-500">
-                        <label for="name">Name</label>
-                        {{ form.name(class="form-control") }}
-                        <label for="token">Personal Access Token</label>
-                        <div class="input-group">
-                            {{ form.token(class="form-control", type="password") }}
-                            <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
+                <div class="card mb-3 margin-all-10 width-700" data-component-card="data-component-card">
+                    <div class="card-header">
+                        <div class="justify-content-between align-items-center">
+                        <h4 class="mb-0">Add Azure integration</h4>
                         </div>
-                        <label for="org_url">Wiki Organization Url</label>
-                        {{ form.org_url(class="form-control") }}
-                        <label for="project_id">Wiki Project</label>
-                        {{ form.project_id(class="form-control") }}
-                        <label for="identifier">Wiki Identifier</label>
-                        {{ form.identifier(class="form-control") }}
-                        <label for="path_to_report">Wiki Path To Report</label>
-                        {{ form.path_to_report(class="form-control") }}
-                        <label for="is_default">Default</label>
-                        {{ form.is_default(class="form-control") }}
-                        <button class="btn-primary" type="submit">Save</button>
-                        {% if azure_config %}
-                            <a href="/delete/azure?azure_config={{ azure_config }}" class="btn-secondary">Delete</a>
-                        {% endif %}
                     </div>
-                </form>
+                    <div class="card-body">
+                        <form method="POST" action="/azure">
+                            {{ form.hidden_tag() }}
+                            <div class="center-section width-500">
+                                <label for="name">Name</label>
+                                {{ form.name(class="form-control") }}
+                                <label for="token" class="mt-2">Personal Access Token</label>
+                                <div class="input-group">
+                                    {{ form.token(class="form-control", type="password") }}
+                                    <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
+                                </div>
+                                <label for="org_url" class="mt-2">Wiki Organization Url</label>
+                                {{ form.org_url(class="form-control") }}
+                                <label for="project_id" class="mt-2">Wiki Project</label>
+                                {{ form.project_id(class="form-control") }}
+                                <label for="identifier" class="mt-2">Wiki Identifier</label>
+                                {{ form.identifier(class="form-control") }}
+                                <label for="path_to_report" class="mt-2">Wiki Path To Report</label>
+                                {{ form.path_to_report(class="form-control") }}
+                                <label for="is_default" class="mt-2">Default</label>
+                                {{ form.is_default(class="form-control") }}
+                                <button class="btn btn-primary mt-5" type="submit">Save</button>
+                                {% if azure_config %}
+                                    <a href="/delete/azure?azure_config={{ azure_config }}" class="btn btn-secondary ms-2 mt-5">Delete</a>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>  
+                </div>
+                {% with msgs = get_flashed_messages() %}
+                    {% include 'includes/flashed-msg.html' %}
+                {% endwith %}
             </div>
-            {% with msgs = get_flashed_messages() %}
-                {% include 'includes/flashed-msg.html' %}
-            {% endwith %}
         </div>
     </main>
     {% include 'includes/footer.html' %}

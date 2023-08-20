@@ -4,7 +4,6 @@
 {% block stylesheets %}
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
-<link type="text/css" href="/static/assets/css/integrations.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
     <main>
@@ -12,52 +11,57 @@
             {% include 'includes/sidebar.html' %}
             <div class="main-body">
                 <div class="main-body-header">
-                    <a>Grafana configuration</a>
                 </div>
                 <div class="center-section">
-                    <a>Add your Grafana configuration</a>
-                </div>
-                <div class="center-section">
-                    <form id="configForm">
-                        <div class="center-section width-500">
-                            <label class="input-label" for="name">Name:</label>
-                            <input class="form-control" type="text" id="name" name="name" required>
-                    
-                            <label class="input-label" for="server">Server:</label>
-                            <input class="form-control" type="text" id="server" name="server" required>
-                    
-                            <label class="input-label" for="token">Token:</label>
-                            <div class="input-group">
-                                <input class="form-control" type="password" id="token" name="token" required>
-                                <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
-                            </div>
-                    
-                            <label class="input-label" for="org_id">Organization ID:</label>
-                            <input class="form-control" type="text" id="org_id" name="org_id" required>
-
-                            <label class="input-label" for="is_default">Is Default:</label>
-                            <select class="form-control" id="is_default" name="is_default">
-                                <option value="true">True</option>
-                                <option value="false">False</option>
-                            </select>
-                            
-                            <label class="input-label" for="dashboards">Dashboards:</label>
-                            <div id="dashboardContainer">
-                                <input type="text" class="form-control dashboardInput" name="dashboards[]" required>
-                            </div>
-                            <div class="m10-top">
-                                <button class="btn-primary" type="button" id="addDashboard">Add Dashboard</button>
-                                <button class="btn-primary" type="submit">Save</button>
-                                {% if grafana_config %}
-                                    <a href="/delete/grafana?grafana_config={{ grafana_config }}" class="btn-secondary">Delete</a>
-                                {% endif %}
+                    <div class="card mb-3 margin-all-10 width-700" data-component-card="data-component-card">
+                        <div class="card-header">
+                            <div class="justify-content-between align-items-center">
+                            <h4 class="mb-0">Add Influxdb integration</h4>
                             </div>
                         </div>
-                    </form>
-                </div>
-                {% with msgs = get_flashed_messages() %}
+                        <div class="card-body">
+                            <form id="configForm">
+                                <div class="center-section">
+                                    <label class="input-label mt-2" for="name">Name:</label>
+                                    <input class="form-control" type="text" id="name" name="name" required>
+                            
+                                    <label class="input-label mt-2" for="server">Server:</label>
+                                    <input class="form-control" type="text" id="server" name="server" required>
+                            
+                                    <label class="input-label mt-2" for="token">Token:</label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="password" id="token" name="token" required>
+                                        <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
+                                    </div>
+                            
+                                    <label class="input-label mt-2" for="org_id">Organization ID:</label>
+                                    <input class="form-control" type="text" id="org_id" name="org_id" required>
+
+                                    <label class="input-label mt-2" for="is_default">Is Default:</label>
+                                    <select class="form-control" id="is_default" name="is_default">
+                                        <option value="true">True</option>
+                                        <option value="false">False</option>
+                                    </select>
+                                    
+                                    <label class="input-label mt-2" for="dashboards">Dashboards:</label>
+                                    <div id="dashboardContainer">
+                                        <input type="text" class="form-control dashboardInput" name="dashboards[]" required>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-primary mt-5" type="button" id="addDashboard">Add Dashboard</button>
+                                        <button class="btn btn-primary mt-5" type="submit">Save</button>
+                                        {% if grafana_config %}
+                                            <a href="/delete/grafana?grafana_config={{ grafana_config }}" class="btn btn-secondary ms-2 mt-5">Delete</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% with msgs = get_flashed_messages() %}
                     {% include 'includes/flashed-msg.html' %}
-                {% endwith %}
+                    {% endwith %}
+                </div>
             </div>
         </div>
     </main>
@@ -98,7 +102,7 @@
             $('#addDashboard').click(function() {
                 var dashboardInput = '<div class="flex m10-top">' +
                                         '<input type="text" class="form-control dashboardInput" name="dashboards[]" required> ' +
-                                        '<button type="button" class="btn-warning deleteDashboard">Delete</button>' +
+                                        '<button type="button" class="btn btn-secondary ms-2 deleteDashboard">Delete</button>' +
                                      '</div>';
                 $('#dashboardContainer').append(dashboardInput);
             });
