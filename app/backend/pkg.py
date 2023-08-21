@@ -42,6 +42,24 @@ def validate_config(project, key1, key2 = None):
 def get_projects():
     return get_files_in_dir("./app/projects/")
 
+def get_project_stats(project):
+    result = {}
+    result["integrations"] = 0
+    result["flows"]        = 0
+    result["graphs"]       = 0
+    result["nfrs"]         = 0
+    result["templates"]    = 0
+    validate_config(project, "integrations")
+    fl = json.load(get_json_config(project))
+    for integration in fl["integrations"]:
+        result["integrations"] += len(fl["integrations"][integration])
+    validate_config(project, "flows")
+    result["flows"] = len(fl["flows"])
+    validate_config(project, "graphs")
+    result["graphs"] = len(fl["graphs"])
+    validate_config(project, "templates")
+    result["templates"] = len(fl["templates"])
+    return result
 
 def delete_config(project, config):
     # Define the integration types as a list of dictionaries

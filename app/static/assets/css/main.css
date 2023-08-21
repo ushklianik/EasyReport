@@ -51,7 +51,7 @@
     --bs-font-sans-serif: Nunito Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
     --bs-gradient: radial-gradient(circle at -10% -10%, rgb(37, 35, 40) 0.5%, rgb(30, 30, 30) 90%);
     --form-select-indicator: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik03NS4zNDggMTI3LjE5MkM3Mi40MzgxIDEyNy4xOTIgNjkuODUxNCAxMjYuMjIyIDY3LjkxMTUgMTI0LjI4Mkw1LjgzMjE1IDYyLjIwMjNDMS42Mjg4NyA1OC4zMjIzIDEuNjI4ODcgNTEuNTMyNCA1LjgzMjE1IDQ3LjY1MjVDOS43MTIxMSA0My40NDkyIDE2LjUwMiA0My40NDkyIDIwLjM4MiA0Ny42NTI1TDc1LjM0OCAxMDIuMjk1TDEyOS45OTEgNDcuNjUyNUMxMzMuODcxIDQzLjQ0OTIgMTQwLjY2MSA0My40NDkyIDE0NC41NDEgNDcuNjUyNUMxNDguNzQ0IDUxLjUzMjQgMTQ4Ljc0NCA1OC4zMjIzIDE0NC41NDEgNjIuMjAyM0w4Mi40NjEzIDEyNC4yODJDODAuNTIxMyAxMjYuMjIyIDc3LjkzNDcgMTI3LjE5MiA3NS4zNDggMTI3LjE5MloiIGZpbGw9IiM5RkE2QkMiLz4KPC9zdmc+Cg==);
-
+    --gradient-lighter: linear-gradient( 141deg, rgb(33 30 36) 10%, rgb(0 85 150) 60%, rgb(17 85 90) 100% )
 }
 
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
@@ -164,6 +164,13 @@ img {
     align-items: center;
     justify-content: center;
     margin: 15px 15px 0 15px;
+}
+
+.start-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: start;
 }
 
 .card-container-fl {
@@ -603,6 +610,14 @@ input:focus, select:focus {
     padding: 2rem !important;
 }
 
+.pl-10 {
+    padding-left: 10px !important;
+}
+
+.pr-10 {
+    padding-right: 10px !important;
+}
+
 .gy-5 {
     --gutter-y: 2rem;
 }
@@ -617,6 +632,10 @@ input:focus, select:focus {
 
 .mb-3 {
     margin-bottom: 16px !important;
+}
+
+.mt-1 {
+    margin-top: 4px !important;
 }
 
 .mt-2 {
@@ -652,6 +671,10 @@ input:focus, select:focus {
     margin-left: 0.5rem !important;
 }
 
+.ms-4 {
+    margin-left: 1rem !important;
+}
+
 .mb-sm-0 {
     margin-bottom: 0 !important;
 }
@@ -659,8 +682,13 @@ input:focus, select:focus {
 .mb-2 {
     margin-bottom: 0.5rem !important;
 }
+
 .me-2 {
     margin-right: 0.5rem !important;
+}
+
+.me-4 {
+    margin-right: 1rem !important;
 }
 
 .width-700 {
@@ -673,10 +701,15 @@ input:focus, select:focus {
     display: flex !important;
 }
 
+
 .flex-1 {
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
+}
+
+.lh-sm {
+    line-height: 1.2 !important;
 }
 
 p {
@@ -919,6 +952,30 @@ th {
     font-weight: 800;
     text-align: inherit;
     text-align: -webkit-match-parent;
+}
+
+.text-900 {
+    --phoenix-text-opacity: 1;
+    color: var(--text-main-color) !important;
+}
+.lh-lg {
+    line-height: 1.4 !important;
+}
+
+.text-primary {
+    --phoenix-text-opacity: 1;
+    color: var(--bs-blue);
+}
+.fw-bold {
+    font-weight: 700 !important;
+}
+
+.fs-2-5 {
+    font-size: 2.5625rem !important;
+}
+
+.fs-2 {
+    font-size: 1.5625rem !important;
 }
 
 .fs--1 {
@@ -1571,6 +1628,27 @@ svg:not(:host).svg-inline--fa, svg:not(:root).svg-inline--fa {
     border-radius: 16px !important; 
 }
 
+.card-project {
+    width: 200px !important;
+    height: 200px !important;
+    margin-top: 0px !important;
+    margin-left: 0px !important;
+    margin-right: 10px !important;
+    border-radius: 16px !important; 
+    width: 100%;
+    font-size: 30px;
+}
+
+.card-docs {
+    width: 410px !important;
+    height: 190px !important;
+    margin-top: 0px !important;
+    margin-left: 0px !important;
+    margin-right: 10px !important;
+    border-radius: 16px !important; 
+    width: 100%;
+}
+
 .card-img-top {
     border-top-left-radius: inherit;
     border-top-right-radius: inherit;
@@ -1788,6 +1866,13 @@ textarea:focus  {
         -ms-flex: 0 0 auto;
         flex: 0 0 auto;
         width: 16.66666667%
+    }
+
+    .col-lg-2-5 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 auto;
+        flex: 0 0 auto;
+        width: 19.87%
     }
 
     .col-lg-3 {
@@ -2123,6 +2208,13 @@ textarea:focus  {
         width: 16.66666667%
     }
 
+    .col-xxl-2-5 {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 auto;
+        flex: 0 0 auto;
+        width: 19.90%
+    }
+
     .col-xxl-3 {
         -webkit-box-flex: 0;
         -ms-flex: 0 0 auto;
@@ -2382,4 +2474,15 @@ textarea:focus  {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 auto;
     flex: 0 0 auto;
+}
+
+.border-bottom-sm {
+    border-bottom: var(--card-border-width) solid var(--card-border-color) !important;
+}
+
+.useful-links {
+    padding: 0;
+    list-style: none;
+    font-size: inherit;
+    color: var(--bs-blue) !important;
 }
