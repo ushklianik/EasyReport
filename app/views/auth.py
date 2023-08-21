@@ -4,9 +4,10 @@ from flask_login import login_user, logout_user
 from jinja2      import TemplateNotFound
 
 # App modules
-from app        import app, lm, db, bc
-from app.models import Users
-from app.forms  import LoginForm, RegisterForm
+from app         import app, lm, db, bc
+from app.models  import Users
+from app.forms   import LoginForm, RegisterForm
+from app.backend import pkg
 
 
 # provide login manager with load_user callback
@@ -88,9 +89,12 @@ def login():
 @app.route('/<path>')
 def index(path):
     try:    
-        # Serve the file (if exists) from app/templates/FILE.html
-        return render_template( 'home/' + path)
+        project = request.cookies.get('project')
+        projects = pkg.get_projects()
+        project_stats = pkg.get_project_stats(project)
+        return render_template( 'home/' + path, projects = projects, project_stats=project_stats)
     except TemplateNotFound:
         return render_template('home/page-404.html'), 404
-    except:
+    except Exception as er:
+        flash("ERROR: " + str(er))
         return render_template('home/page-500.html'), 500

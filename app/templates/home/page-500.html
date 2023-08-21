@@ -25,6 +25,11 @@
                 </div>
             </div>
         </div>
+        <div class="center-section">
+            {% with msgs = get_flashed_messages() %}
+            {% include 'includes/flashed-msg.html' %}
+            {% endwith %}
+        </div>
     </div>
 </main>
 {% include 'includes/footer.html' %}

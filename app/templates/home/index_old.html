@@ -1,0 +1,338 @@
+{% extends "layouts/base-fullscreen.html" %}
+{% block title %} Home {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/sidebars.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
+<link type="text/css" href="/static/assets/css/home.css" rel="stylesheet">
+{% endblock stylesheets %}
+{% block content %}
+    <main>
+        {% include 'includes/preloader2.html' %}
+        <div class="main-background">
+            {% include 'includes/sidebar.html' %}
+            <div class="main-body">
+                <div class="flex-center-center typed-title-block typed-title-block">
+                    <span id="typeWriter" class="typed-title"></span><span class="typed-title">|</span>
+                </div> 
+                <div id="infographic">
+                    <div class="wiki-step one">
+                       <div class="circle tool-name">
+                          EASY
+                       </div>
+                       <article data-step="1">
+                          <header class="infographic-step">
+                             <i class="fas fa-suitcase"></i>
+                             <h6>choose project</h6>
+                          </header>
+                 
+                          <div class="dr-body">
+                             <small>By default, you are now in a "default" project. If the tool will be used by several teams, then it is better to create your own project by clicking on the button in the lower left corner. </small>
+                 
+                             <div class="infographic-btn-block controls">
+                                <a> </a>
+                                <a class="infographic-btn" href="#">Next</a>
+                             </div>
+                          </div>
+                       </article>
+                       <article data-step="2">
+                          <header class="infographic-step">
+                             <i class="fas fa-database"></i>
+                             <h6>Configure InflixDB</h6>
+                          </header>
+                 
+                          <div class="dr-body">
+                             <small>The tool connects to influxdb to get test data that is used for the "Test" page and reports. To add a new influxdb configuration, go to the "Integrations" page. </small>
+                             <div class="infographic-btn-block controls">
+                                <a class="infographic-btn" href="#">Prev</a>
+                                <a class="infographic-btn" href="#">Next</a>
+                             </div>
+                          </div>
+                       </article>
+                       <article data-step="3">
+                          <header class="infographic-step">
+                             <i class="fas fa-chart-line"></i>
+                             <h6>Configure Grafana</h6>
+                          </header>
+                 
+                          <div class="dr-body">
+                             <small>Grafana is used to visualize graphs. It is important to note that grafana must have "grafana-image-renderer" plugin or "grafana-image-renderer" docker container connected. To add new Grafana config go to the "Integrations" page.</small>
+                             <div class="infographic-btn-block controls">
+                                <a class="infographic-btn" href="#">Prev</a>
+                                <a class="infographic-btn" href="#">Next</a>
+                             </div>
+                          </div>
+                       </article>
+                       <article data-step="4">
+                          <header class="infographic-step">
+                             <i class="fas fa-map"></i>
+                             <h6>Configure Output</h6>
+                          </header>
+                 
+                          <div class="dr-body">
+                             <small>The tool can export reports to azure wiki, confluence wiki and confluence jira. To add new target destination, go to "Integrations" page.</small>
+                             <div class="infographic-btn-block controls">
+                                <a class="infographic-btn" href="#">Prev</a>
+                                <a class="infographic-btn" href="#">Next</a>
+                             </div>
+                          </div>
+                       </article>
+                       <article data-step="5">
+                          <header class="infographic-step">
+                             <i class="fas fa-chart-area"></i>
+                             <h6>Add graphs</h6>
+                          </header>
+                 
+                          <div class="dr-body">
+                             <small>Then you need to configure which graphs from grfana can be rendered. To add a new graph, go to the flow page.</small>
+                             <div class="infographic-btn-block controls">
+                                <a class="infographic-btn" href="#">Prev</a>
+                                <a class="infographic-btn" href="#">Next</a>
+                             </div>
+                          </div>
+                       </article>
+                    </div>
+                    <div class="wiki-step one">
+                       <div class="circle tool-name">
+                          REPORT
+                       </div>
+                       <article data-step="6">
+                          <header class="infographic-step">
+                             <i class="fas fa-paper-plane"></i>
+                             <h6>Configure reporting flow</h6>
+                          </header>
+                 
+                          <div class="dr-body">
+                             <small>When all the integrations are set up, you need to create a report flow. Where you need to specify which influxdb, grafana should be used and to which destination the report should be saved. To configure this, go to the flow configuration page.</small>
+                 
+                             <div class="infographic-btn-block controls">
+                                <a class="infographic-btn" href="#">Prev</a>
+                                <a class="infographic-btn" href="#">Next</a>
+                             </div>
+                          </div>
+                       </article>
+                       <article data-step="7">
+                          <header class="infographic-step">
+                             <i class="fas fa-pager"></i>
+                             <h6>Configure reporting template</h6>
+                          </header>
+                 
+                          <div class="dr-body">
+                             <small>To configure the structure of the report, you need to create a template on the flow configuration page. The syntax depends on the target destination. In addition, you can use various variables that will be replaced with values.</small>
+                             <div class="infographic-btn-block controls">
+                                <a class="infographic-btn" href="#">Prev</a>
+                                <a class="infographic-btn" href="#">Next</a>
+                             </div>
+                          </div>
+                       </article>
+                       <article data-step="8">
+                          <header class="infographic-step">
+                             <i class="fas fa-check-circle"></i>
+                             <h6>Add NFRs</h6>
+                          </header>
+                 
+                          <div class="dr-body">
+                             <small>NFRS</small>
+                             <div class="infographic-btn-block controls">
+                                <a class="infographic-btn" href="#">Prev</a>
+                                <a class="infographic-btn" href="#">Next</a>
+                             </div>
+                          </div>
+                       </article>
+                       <article data-step="9">
+                          <header class="infographic-step">
+                             <i class="fas fa-truck"></i>
+                             <h6>Intagrate auto reporting into CI or Grafana</h6>
+                          </header>
+                 
+                          <div class="dr-body">
+                             <small>CI</small>
+                             <div class="infographic-btn-block controls">
+                                <a class="infographic-btn" href="#">Prev</a>
+                                <a class="infographic-btn" href="#">Next</a>
+                             </div>
+                          </div>
+                       </article>
+                       <article data-step="10">
+                          <header class="infographic-step">
+                             <i class="fas fa-cookie-bite"></i>
+                             <h6>Enjoy</h6>
+                          </header>
+                 
+                          <div class="dr-body">
+                             <small>enjoy</small>
+                             <div class="infographic-btn-block controls">
+                                <a class="infographic-btn" href="#">Prev</a>
+                             </div>
+                          </div>
+                       </article>
+                    </div>
+                 </div>
+
+                <div class="wiki">
+                    <nav class="wiki-nav">
+                      <ul class="wiki-ul">
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="#influxdb">Influxdb</a></li>
+                        <li><a href="#grafana">Grafana</a>
+                          <ul class="sub-menu">
+                            <li><a href="#how-to-add-graphs">How to add graphs</a></li>
+                          </ul>
+                        </li>
+                        <li><a href="#output">Output</a>
+                          <ul class="sub-menu">
+                            <li><a href="#azure-wiki">Azure Wiki</a></li>
+                            <li><a href="#confluence-wiki">Confluence Wiki</a></li>
+                            <li><a href="#confluence-jira">Confluence Jira</a></li>
+                          </ul>
+                        </li>
+                        <li><a href="#reporting-flow">Reporting flow</a>
+                            <ul class="sub-menu">
+                              <li><a href="#reporting-template">Reporting template</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#nfrs">NFRs</a></li>
+                        <li><a href="#usage">Example usage</a></li>
+                      </ul>
+                    </nav>
+              
+                    <div class="wiki-content">
+                      <section id="projects" class="content active">
+                        <h2>Projects</h2>
+                        <p>TO DO</p>
+                      </section>
+              
+                      <section id="influxdb" class="content">
+                        <h2>Influxdb</h2>
+                        <p>TO DO</p>
+                      </section>
+              
+                      <section id="grafana" class="content">
+                        <h2>Grafana</h2>
+                        <p>TO DO</p>
+                      </section>
+                      <section id="how-to-add-graphs" class="content">
+                        <h2>How to add graphs</h2>
+                        <p>TO DO</p>
+                      </section>
+              
+                      <section id="output" class="content">
+                        <h2>Output</h2>
+                        <p>TO DO</p>
+                      </section>
+              
+                      <section id="azure-wiki" class="content">
+                        <h2>Azure Wiki</h2>
+                        <p>TO DO</p>
+                      </section>
+              
+                      <section id="confluence-wiki" class="content">
+                        <h2>Confluence Wiki</h2>
+                        <p>TO DO</p>
+                      </section>
+
+                      <section id="confluence-jira" class="content">
+                        <h2>Confluence Jira</h2>
+                        <p>TO DO</p>
+                      </section>
+
+                      <section id="reporting-flow" class="content">
+                        <h2>Reporting flow</h2>
+                        <p>TO DO</p>
+                      </section>
+
+                      <section id="reporting-template" class="content">
+                        <h2>Reporting template</h2>
+                        <p>TO DO</p>
+                      </section>
+
+                      <section id="nfrs" class="content">
+                        <h2>NFRs</h2>
+                        <p>TO DO</p>
+                      </section>
+
+                      <section id="usage" class="content">
+                        <h2>Example usage</h2>
+                        <p>TO DO</p>
+                      </section>
+                    </div>
+               </div>
+               {% with msgs = get_flashed_messages() %}
+                     {% include 'includes/flashed-msg.html' %}
+               {% endwith %}
+            </div>
+        </div>
+        <script>
+            $("#infographic article").click(function () {
+                $(this).toggleClass("active");
+            });
+            $("#infographic article .controls .infographic-btn").on("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var currentEl = $(this).closest("article");
+                var currentI = currentEl.data("step");
+                currentEl.removeClass("active");
+                var nextI = $(this).is(":first-child") ? currentI - 1 : currentI + 1;
+                var nextEl = $("article[data-step='" + nextI + "']");
+                nextEl.click();
+                var y = document
+                    .querySelector("article[data-step='" + nextI + "'")
+                    .getBoundingClientRect().top;
+                var supportsNativeSmoothScroll =
+                    "scrollBehavior" in document.documentElement.style;
+
+                if (supportsNativeSmoothScroll) {
+                    window.scrollTo({
+                        top: y + window.pageYOffset - 300,
+                        behavior: "smooth"}
+                    );
+                } else {
+                    window.scrollTo(0, y + window.pageYOffset - 300);
+                }
+            });
+            $(document).mouseup(function (e) {
+            var tgt = $("#infographic article.active");
+            if (!tgt.is(e.target) && tgt.has(e.target).length === 0)
+                tgt.removeClass("active");
+            });
+        </script>
+        <script>
+            setTimeout(function() {
+                typeWriter('typeWriter', ['Hi! Welcome to Easy Report.', 'Here you can find instractions on', 'how to use'], 0, 0)
+            }, 2000);
+
+            function typeWriter(elementId, sentences, i, j) {
+            if (i < sentences.length) {
+            if (j < sentences[i].length) {
+                document.getElementById(elementId).innerHTML =
+                sentences[i].substring(0, j + 1) + '';
+                setTimeout(function() {
+                typeWriter(elementId, sentences, i, j + 1);
+                }, 100);
+            } else {
+                setTimeout(function() {
+                typeWriter(elementId, sentences, i + 1, 0);
+                }, 1000);
+            }
+            }
+        }
+
+            const links = document.querySelectorAll('nav a');
+            const content = document.querySelectorAll('.content');
+            links.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                content.forEach(section => {
+                section.classList.remove('active');
+                });
+
+                const target = document.querySelector(this.getAttribute('href'));
+                target.classList.add('active');
+            });
+            });
+          </script>
+    </main>
+    {% include 'includes/footer.html' %}
+{% endblock content %}
