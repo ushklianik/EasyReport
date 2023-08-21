@@ -12,7 +12,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 
 # List of routes that do not require authentication
-no_auth_required_routes = ['login', 'register']
+no_auth_required_routes = ['login', 'register', 'static']
 
 @app.before_request
 def check_authentication():
