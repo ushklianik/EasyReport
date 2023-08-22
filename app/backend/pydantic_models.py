@@ -62,3 +62,16 @@ class flow_model(BaseModel):
     influxdb:         str
     grafana:          str
     output:           str
+
+class nfr(BaseModel):
+    scope:            str
+    metric:           str
+    aggregation:      str
+    operation:        str  
+    threshold:        int      
+    weight:           str
+    name:             str
+
+class nfr_group(BaseModel):
+    name:             str
+    rows:             list[nfr]

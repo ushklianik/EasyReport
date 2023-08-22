@@ -14,33 +14,60 @@ def get_files_in_dir(path):
             output.append(elem)
     return output
 
-def save_new_config(project, fl):
-    pathToConfig = "./app/projects/" + project + "/config.json"
-    with open(pathToConfig, 'w') as json_file:
-        json.dump(fl, json_file, indent=4, separators=(',',': '))
+def save_new_config(project, data):
+    path_to_config = "./app/config/config.json"
+    # Load existing configuration if it exists
+    if os.path.exists(path_to_config):
+        with open(path_to_config, 'r') as json_file:
+            config = json.load(json_file)
+    else:
+        config = []
+    # Update or add the project's data
+    for obj in config:
+        if obj["name"] == project:
+            obj["data"] = data
+            break
+    else:
+        config.append({"name": project, "data": data})
+    # Save the updated configuration
+    with open(path_to_config, 'w') as json_file:
+        json.dump(config, json_file, indent=4, separators=(',', ': '))
 
-def get_json_config(project):
-    pathToConfig = "./app/projects/" + project + "/config.json"
-    if pt.isfile(pathToConfig) is False or pt.getsize(pathToConfig) == 0:
-        save_new_config(project, {})
-    return open(pathToConfig, 'r')  
+def get_json_config():
+    path_to_config = "./app/config/config.json"
+    if pt.isfile(path_to_config) is False or pt.getsize(path_to_config) == 0:
+        return []
+    with open(path_to_config, 'r') as json_file:
+        config = json.load(json_file)
+    return config
+
+def get_project_config(project):
+    config = get_json_config()
+    for obj in config:
+        if obj["name"] == project:
+            return obj["data"]
+    return {}
 
 def validate_config(project, key1, key2 = None):
-    fl = json.load(get_json_config(project))
+    data = get_project_config(project)
     if key2 == None:
-        if key1 not in fl:
-            fl[key1] = []
+        if key1 not in data:
+            data[key1] = []
     else:
-        if key1 not in fl:
-            fl[key1] = {}
-            fl[key1][key2] = []
+        if key1 not in data:
+            data[key1] = {}
+            data[key1][key2] = []
         else:
-            if key2 not in fl[key1]:
-                fl[key1][key2] = []
-    save_new_config(project, fl)
+            if key2 not in data[key1]:
+                data[key1][key2] = []
+    save_new_config(project, data)
 
 def get_projects():
-    return get_files_in_dir("./app/projects/")
+    config = get_json_config()
+    result = []
+    for obj in config:
+        result.append(obj["name"])
+    return result
 
 def get_project_stats(project):
     result = {}
@@ -50,15 +77,17 @@ def get_project_stats(project):
     result["nfrs"]         = 0
     result["templates"]    = 0
     validate_config(project, "integrations")
-    fl = json.load(get_json_config(project))
-    for integration in fl["integrations"]:
-        result["integrations"] += len(fl["integrations"][integration])
+    data = get_project_config(project)
+    for integration in data["integrations"]:
+        result["integrations"] += len(data["integrations"][integration])
     validate_config(project, "flows")
-    result["flows"] = len(fl["flows"])
+    result["flows"] = len(data["flows"])
     validate_config(project, "graphs")
-    result["graphs"] = len(fl["graphs"])
+    result["graphs"] = len(data["graphs"])
     validate_config(project, "templates")
-    result["templates"] = len(fl["templates"])
+    result["templates"] = len(data["templates"])
+    validate_config(project, "nfrs")
+    result["nfrs"] = len(data["nfrs"])
     return result
 
 def delete_config(project, config):
@@ -79,21 +108,21 @@ def delete_config(project, config):
        else:
            validate_config(project, type.get("list_name"))
     # Load the configuration file
-    fl = json.load(get_json_config(project))
+    data = get_project_config(project)
     # Iterate over the integration types and remove the config if it exists
     for key_obj in integration_types:
         if key_obj["list_name"] == "flows" or key_obj["list_name"] == "templates":
-            for idx, obj in enumerate(fl[key_obj["list_name"]]):
+            for idx, obj in enumerate(data[key_obj["list_name"]]):
                 if obj["name"] == config:
-                    fl[key_obj["list_name"]].pop(idx)
+                    data[key_obj["list_name"]].pop(idx)
                     break
         else:
-            for idx, obj in enumerate(fl[key_obj["list_name"]][key_obj["key"]]):
+            for idx, obj in enumerate(data[key_obj["list_name"]][key_obj["key"]]):
                 if obj["name"] == config:
-                    fl[key_obj["list_name"]][key_obj["key"]].pop(idx)
+                    data[key_obj["list_name"]][key_obj["key"]].pop(idx)
                     break
     # Save the updated configuration file
-    save_new_config(project, fl)
+    save_new_config(project, data)
 
 def get_integration_config_names(project, integration_name):
     return get_config_names(project, "integrations", integration_name)
@@ -101,12 +130,12 @@ def get_integration_config_names(project, integration_name):
 def get_config_names(project, key1, key2 = None):
     result = []
     validate_config(project, key1, key2)
-    fl = json.load(get_json_config(project))
+    data = get_project_config(project)
     if (key2):
-        for key in fl[key1][key2]:
+        for key in data[key1][key2]:
             result.append(key["name"])
     else:
-        for key in fl[key1]:
+        for key in data[key1]:
             result.append(key["name"])
     return result
 
@@ -117,9 +146,9 @@ def check_if_token(value):
 
 def get_integration_values(project, integration_name, config_name):
     validate_config(project, "integrations", integration_name)
-    fl = json.load(get_json_config(project))
+    data = get_project_config(project)
     output = MultiDict()
-    for item in fl["integrations"][integration_name]:
+    for item in data["integrations"][integration_name]:
         if item["name"] == config_name:
             for key, value in item.items():
                 output.add(key, check_if_token(value))
@@ -127,9 +156,9 @@ def get_integration_values(project, integration_name, config_name):
 
 def get_json_values(project, json_name, config_name):
     validate_config(project, json_name)
-    fl = json.load(get_json_config(project))
+    data = get_project_config(project)
     output = MultiDict()
-    for item in fl[json_name]:
+    for item in data[json_name]:
         if item["name"] == config_name:
             for key, value in item.items():
                 output.add(key, check_if_token(value))
@@ -147,28 +176,28 @@ def del_csrf_token(data):
        del data['csrf_token']
     return data
 
-def save_integration(project, data, integration_type):
+def save_integration(project, newdata, integration_type):
     validate_config(project, "integrations", integration_type)
-    fl = json.load(get_json_config(project))
-    fl["integrations"][integration_type] = save_dict(data,  fl["integrations"][integration_type], get_integration_config_names(project, integration_type))
-    save_new_config(project, fl)
+    data = get_project_config(project)
+    data["integrations"][integration_type] = save_dict(newdata, data["integrations"][integration_type], get_integration_config_names(project, integration_type))
+    save_new_config(project, data)
 
 def get_default_integration(project, integration_type):
     validate_config(project, "integrations", integration_type)
-    fl = json.load(get_json_config(project))
-    for config in fl["integrations"][integration_type]:
+    data = get_project_config(project)
+    for config in data["integrations"][integration_type]:
         if config["is_default"] == "true":
             return config["name"]
         
-def save_dict(data, fl, list):
-    data = del_csrf_token(data)
-    data = save_token(data)
-    if data["name"] not in list: fl.append(data)
+def save_dict(newdata, data, list):
+    newdata = del_csrf_token(newdata)
+    newdata = save_token(newdata)
+    if newdata["name"] not in list: data.append(newdata)
     else: 
-        for idx, obj in enumerate(fl):
-            if obj["name"] == data["name"]:
-                fl[idx] = data
-    return fl
+        for idx, obj in enumerate(data):
+            if obj["name"] == newdata["name"]:
+                data[idx] = newdata
+    return data
 
 ####################### INFLUXDB:
 
@@ -199,9 +228,9 @@ def get_default_grafana(project):
 
 def get_dashboards(project):
     validate_config(project, "integrations", "grafana")
-    fl = json.load(get_json_config(project))
+    data = get_project_config(project)
     output = []
-    for item in fl["integrations"]["grafana"]:
+    for item in data["integrations"]["grafana"]:
         if (item["dashboards"]):
             for id in item["dashboards"]:
                 output.append(id)
@@ -259,13 +288,42 @@ def get_output_configs(project):
 
 def save_flow_config(project, flow):
     validate_config(project, "flows")
-    fl = json.load(get_json_config(project))
-    fl["flows"] = save_dict(flow, fl["flows"], get_config_names(project, "flows"))
-    save_new_config(project, fl)
+    data = get_project_config(project)
+    data["flows"] = save_dict(flow, data["flows"], get_config_names(project, "flows"))
+    save_new_config(project, data)
 
 def get_flow_values(project, flow):
     output = md.flow_model.parse_obj(get_json_values(project, "flows", flow))
     return output.dict()
+
+####################### NFRS CONFIG:         
+
+def get_nfr(project, name):
+    validate_config(project, "nfrs")
+    data = get_project_config(project)
+    for nfr in data["nfrs"]:
+        if nfr["name"] == name:
+            return nfr
+
+def get_nfrs(project):
+    validate_config(project, "nfrs")
+    data = get_project_config(project)
+    return data["nfrs"]
+
+def save_nfrs(project, nfrs):
+    validate_config(project, "nfrs")
+    data = get_project_config(project)
+    data["nfrs"] = save_dict(nfrs, data["nfrs"], get_config_names(project, "nfrs"))
+    save_new_config(project, data)
+
+def delete_nfr(project, name):
+    validate_config(project, "nfrs")
+    data = get_project_config(project)
+    for idx, obj in enumerate(data["nfrs"]):
+        if obj["name"] == name:
+            data["nfrs"].pop(idx)
+            break      
+    save_new_config(project, data)
 
 ####################### TEMPLATE CONFIG: 
 
@@ -273,49 +331,49 @@ def get_template_values(project, template):
     output = md.template_model.parse_obj(get_json_values(project, "templates", template))
     return output.dict()
 
-def save_template(project, data):
-    data = md.template_model.parse_obj(data)
+def save_template(project, template):
+    template = md.template_model.parse_obj(template)
     validate_config(project, "templates")
-    fl = json.load(get_json_config(project))
-    fl["templates"] = save_dict(data.dict(), fl["templates"], get_config_names(project, "templates"))
-    save_new_config(project, fl)
+    data = get_project_config(project)
+    data["templates"] = save_dict(template.dict(), data["templates"], get_config_names(project, "templates"))
+    save_new_config(project, data)
     
 ####################### GRAPHS:  
 
 def get_graph(project, name):
     validate_config(project, "graphs")
-    fl = json.load(get_json_config(project))
-    for graph in fl["graphs"]:
+    data = get_project_config(project)
+    for graph in data["graphs"]:
         if graph["name"] == name:
             return graph
 
 def check_graph(project, name):
     validate_config(project, "graphs")
-    fl = json.load(get_json_config(project))
-    for graph in fl["graphs"]:
+    data = get_project_config(project)
+    for graph in data["graphs"]:
         if graph["name"] == name:
             return True
     return False
 
 def get_graphs(project):
     validate_config(project, "graphs")
-    fl = json.load(get_json_config(project))
-    return fl["graphs"]
+    data = get_project_config(project)
+    return data["graphs"]
 
 def save_graph(project, form):
     validate_config(project, "graphs")
-    fl = json.load(get_json_config(project))
-    fl["graphs"] = save_dict(form, fl["graphs"], get_config_names(project, "graphs"))
-    save_new_config(project, fl)
+    data = get_project_config(project)
+    data["graphs"] = save_dict(form, data["graphs"], get_config_names(project, "graphs"))
+    save_new_config(project, data)
 
 def delete_graph(project, graph_name):
     validate_config(project, "graphs")
-    fl = json.load(get_json_config(project))
-    for idx, obj in enumerate(fl["graphs"]):
+    data = get_project_config(project)
+    for idx, obj in enumerate(data["graphs"]):
         if obj["name"] == graph_name:
-            fl["graphs"].pop(idx)
+            data["graphs"].pop(idx)
             break      
-    save_new_config(project, fl)
+    save_new_config(project, data)
 
 ####################### OTHER:  
 def sort_tests(tests):

@@ -34,7 +34,7 @@ def integrations():
 # Route for adding or updating InfluxDB integration
 @app.route('/influxdb', methods=['GET', 'POST'])
 def add_influxdb():
-    try:
+    # try:
         # Declare the Influxdb form
         form = InfluxDBForm(request.form)
         # Get InfluxDB config parameter if provided
@@ -49,9 +49,9 @@ def add_influxdb():
             influxdb_config = request.form.to_dict()["name"]
             flash("Integration added.")
         return render_template('integrations/influxdb.html', form=form, influxdb_config=influxdb_config)
-    except Exception as er:
-        flash("ERROR: " + str(er))
-        return redirect(url_for('integrations'))
+    # except Exception as er:
+    #     flash("ERROR: " + str(er))
+    #     return redirect(url_for('integrations'))
 
 # Route for deleting InfluxDB integration
 @app.route('/delete/influxdb', methods=['GET'])

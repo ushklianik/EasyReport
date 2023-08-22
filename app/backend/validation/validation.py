@@ -1,91 +1,29 @@
 import json
 from os.path import isfile, getsize
+from app.backend import pkg
 from app.backend.integrations.influxdb.influxdb import influxdb
 from app.backend.integrations.influxdb.backend_listener import custom
 
 class NFR:
     def __init__(self, project):
         self.project = project
-        self.path_to_nfrs = f"./app/projects/{project}/nfrs/nfrs.json"
+        self.path_to_nfrs = f"./app/config/config.json"
         self.comparison = {}
 
     def save_nfrs(self, nfrs):
-        target = []
+        pkg.save_nfrs(self.project, nfrs)
 
-        # Check if NFR file exists, if not, create a new one
-        if not isfile(self.path_to_nfrs) or getsize(self.path_to_nfrs) == 0:
-            with open(self.path_to_nfrs, "w") as f:
-                f.write('[]')
-
-        # Get current NFRs
-        with open(self.path_to_nfrs, 'r') as fp:
-            target = json.load(fp)
-
-        # Add name of NFR
-        for nfr in nfrs['rows']:
-            print("row" + str(nfr))
-            name = self.generate_name(nfr)
-            nfr['name'] = name
-
-        # If NFRs already exist, update only the edited NFR
-        if len(target) != 0:
-            for nfr_current in target:
-                if nfr_current['test_name'] == nfrs['test_name']:
-                    nfr_current['rows'] = nfrs['rows']
-                    break
-        else:
-            # Add new NFR
-            target.append(nfrs)
-
-        with open(self.path_to_nfrs, 'w') as json_file:
-            json.dump(target, json_file, indent=4, separators=(',', ': '))
-
-    def delete_nfrs(self, test_name):
-        target = []
-
-        # Check if NFR file exists, if not, create a new one
-        if not isfile(self.path_to_nfrs) or getsize(self.path_to_nfrs) == 0:
-            with open(self.path_to_nfrs, "w") as f:
-                f.write('[]')
-
-        # Get current NFRs
-        with open(self.path_to_nfrs, 'r') as fp:
-            target = json.load(fp)
-
-        # Filter out records with the specified test_name
-        new_json = [record for record in target if record['test_name'] != test_name]
-        
-        with open(self.path_to_nfrs, 'w') as json_file:
-            json.dump(new_json, json_file, indent=4, separators=(',', ': '))
+    def delete_nfrs(self, name):
+        pkg.delete_nfr(self.project, name)
         
 
     # Method returns NFRs for specific application
-    def get_nfr(self, test_name):
-        # Check if NFR file exists, if not, return a warning message
-        if not isfile(self.path_to_nfrs) or getsize(self.path_to_nfrs) == 0:
-            with open(self.path_to_nfrs, "w") as f:
-                f.write('[]')
-            return {"status": "error", "message": "No nfrs"}
-        else:
-            # Return NFRs from file for the specific application
-            with open(self.path_to_nfrs, 'r') as fp:
-                nfrs = json.load(fp)
-                for nfr in nfrs:
-                    if nfr['test_name'] == test_name:
-                        return nfr
-                return {"status": "error", "message": "No such app name"}
+    def get_nfr(self, name):
+        return pkg.get_nfr(self.project, name)
 
     # Method reqturns all NFRs for all applications
     def get_nfrs(self):
-        if not isfile(self.path_to_nfrs) or getsize(self.path_to_nfrs) == 0:
-            with open(self.path_to_nfrs, "w") as f:
-                f.write('[]')
-            return {"status": "error", "message": "No nfrs"}
-        else:
-            # Return NFRs from file
-            with open(self.path_to_nfrs, 'r') as fp:
-                nfrs = json.load(fp)
-                return nfrs
+        return pkg.get_nfrs(self.project)
 
 
     # Method accepts test value, operation and threshold

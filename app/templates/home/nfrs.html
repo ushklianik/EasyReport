@@ -43,7 +43,7 @@
                                 <tbody class="list">
                                     {% for nfrs_item in nfrs_list %}
                                     <tr>
-                                        <td class="name">{{ nfrs_item.test_name }}</td>
+                                        <td class="name">{{ nfrs_item.name }}</td>
                                         <td class="nfrs">
                                             {% for nfr in nfrs_item.rows %}
                                                 <div>
@@ -52,8 +52,8 @@
                                             {% endfor %}
                                         </td>
                                         <td class="actions">
-                                            <a class="btn btn-secondary" href="/nfr?test_name={{ nfrs_item.test_name }}">Edit</a>
-                                            <a class="btn btn-danger" href="/delete/nfr?test_name={{ nfrs_item.test_name }}">Delete</a>
+                                            <a class="btn btn-secondary" href="/nfr?test_name={{ nfrs_item.name }}">Edit</a>
+                                            <a class="btn btn-danger" href="/delete/nfr?test_name={{ nfrs_item.name }}">Delete</a>
                                         </td>
                                     </tr>
                                     {% endfor %}
