@@ -145,7 +145,7 @@
           
             function getNFRs() {
               const formData = {};
-              formData.test_name = document.querySelector('[name="test_name"]').value;
+              formData.name = document.querySelector('[name="test_name"]').value;
               const nfrs = document.querySelectorAll('.nfr-row');
               const data = Array.from(nfrs).map(element => ({
                 scope: element.querySelector('.scope-nfr-field').value,
@@ -161,11 +161,11 @@
             }
           
             const nfrsPanel = document.getElementById("nfrs-panel");
-            const test_name = document.getElementById("test_name");
+            const name = document.getElementById("test_name");
             const nfrsJson = JSON.parse('{{ nfrs | tojson }}');
 
-            if (nfrsJson && nfrsJson.test_name != null) {
-                test_name.value = nfrsJson.test_name;
+            if (nfrsJson && nfrsJson.name != null) {
+                name.value = nfrsJson.name;
                 for (const row of nfrsJson.rows) {
                     addNfrRow();
                     const newRow = document.querySelector('.nfr-row:last-child');

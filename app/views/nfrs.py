@@ -35,6 +35,7 @@ def get_nfr():
         elif request.args.get('test_name') is not None:
             nfr_obj = NFR(project)
             nfrs    = nfr_obj.get_nfr(request.args.get('test_name'))
+            print(nfrs)
     except Exception:
         flash("ERROR: " + str(traceback.format_exc()))
     return render_template('home/nfr.html', nfrs=nfrs)
