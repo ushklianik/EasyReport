@@ -19,7 +19,10 @@ def save_new_config(project, data):
     # Load existing configuration if it exists
     if os.path.exists(path_to_config):
         with open(path_to_config, 'r') as json_file:
-            config = json.load(json_file)
+            if os.path.getsize(path_to_config) != 0:
+                config = json.load(json_file)
+            else:
+                config = []
     else:
         config = []
     # Update or add the project's data
@@ -76,17 +79,21 @@ def get_project_stats(project):
     result["graphs"]       = 0
     result["nfrs"]         = 0
     result["templates"]    = 0
-    validate_config(project, "integrations")
+    validate_config(project, "integrations", "influxdb")
     data = get_project_config(project)
     for integration in data["integrations"]:
         result["integrations"] += len(data["integrations"][integration])
     validate_config(project, "flows")
+    data = get_project_config(project)
     result["flows"] = len(data["flows"])
     validate_config(project, "graphs")
+    data = get_project_config(project)
     result["graphs"] = len(data["graphs"])
     validate_config(project, "templates")
+    data = get_project_config(project)
     result["templates"] = len(data["templates"])
     validate_config(project, "nfrs")
+    data = get_project_config(project)
     result["nfrs"] = len(data["nfrs"])
     return result
 
@@ -386,3 +393,6 @@ def sort_tests(tests):
             test["endTime"] = datetime.strftime(test["endTime"], "%Y-%m-%d %I:%M:%S %p")
     tests.sort(key=start_time, reverse=True)
     return tests
+
+def save_project(project):
+    save_new_config(project, {})
