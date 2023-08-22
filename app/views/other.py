@@ -9,7 +9,7 @@ from app import app
 
 # Route for setting the current project
 @app.route('/set-project', methods=['GET'])
-def setProject():
+def set_project():
     try:
         # Get current project
         project = request.args.get('project')
@@ -24,10 +24,20 @@ def setProject():
 
 # Route for getting all available projects
 @app.route('/get-projects', methods=['GET'])
-def getProjects():
+def get_projects():
     try:
         # Get all projects
         projects = pkg.get_projects()
     except Exception as er:
         flash("ERROR: " + str(er))
     return {'projects': projects}
+
+@app.route('/save-project', methods=['GET'])
+def save_project():
+    try:
+        project = request.args.get('project_name')
+        pkg.save_project(project) 
+    except Exception as er:
+        flash("ERROR: " + str(er))
+        return str(er)
+    return "Saved."

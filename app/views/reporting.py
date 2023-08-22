@@ -109,7 +109,7 @@ def delete_flow():
     
 @app.route('/tests', methods=['GET'])
 def get_tests():
-    try:
+    # try:
         # Check if user is logged in
         if not current_user.is_authenticated:
             return redirect(url_for('login'))
@@ -118,9 +118,9 @@ def get_tests():
         influxdb_names = pkg.get_integration_config_names(project, "influxdb")
         templates = pkg.get_config_names(project, "templates")
         return render_template('home/tests.html', influxdb_names=influxdb_names, templates = templates)
-    except Exception as er:
-        flash("ERROR: " + str(traceback.format_exc()))
-        return redirect(url_for("index"))
+    # except Exception as er:
+    #     flash("ERROR: " + str(traceback.format_exc()))
+    #     return redirect(url_for("index"))
     
 @app.route('/load_tests', methods=['GET'])
 def load_tests():
