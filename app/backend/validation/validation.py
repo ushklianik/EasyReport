@@ -3,11 +3,12 @@ from os.path import isfile, getsize
 from app.backend import pkg
 from app.backend.integrations.influxdb.influxdb import influxdb
 from app.backend.integrations.influxdb.backend_listener import custom
+from app import config_path
 
 class NFR:
     def __init__(self, project):
         self.project = project
-        self.path_to_nfrs = f"./app/config/config.json"
+        self.path_to_nfrs = config_path
         self.comparison = {}
 
     def save_nfrs(self, nfrs):

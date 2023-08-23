@@ -4,7 +4,6 @@
 {% block stylesheets %}
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 <link type="text/css" href="/static/assets/css/main.css" rel="stylesheet">
-<link type="text/css" href="/static/assets/css/login.css" rel="stylesheet">
 {% endblock stylesheets %}
 {% block content %}
     <main>
@@ -42,7 +41,7 @@
                     </div>
                     <br />
                     <div class="d-grid">
-                        <button type="submit" name="register" class="btn-warning">Sign UP</button>
+                        <button type="submit" name="register" class="btn btn-primary">Sign UP</button>
                     </div>
                     <br />
                     <a href="{{ url_for('login') }}">Login</a>

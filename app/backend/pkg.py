@@ -5,6 +5,7 @@ from datetime import datetime
 import json
 from app.models import Credentials
 import app.backend.pydantic_models as md
+from app import config_path
 
 def get_files_in_dir(path):
     listOfValues = os.listdir(path)
@@ -15,7 +16,7 @@ def get_files_in_dir(path):
     return output
 
 def save_new_config(project, data):
-    path_to_config = "./app/config/config.json"
+    path_to_config = config_path
     # Load existing configuration if it exists
     if os.path.exists(path_to_config):
         with open(path_to_config, 'r') as json_file:
@@ -37,7 +38,7 @@ def save_new_config(project, data):
         json.dump(config, json_file, indent=4, separators=(',', ': '))
 
 def get_json_config():
-    path_to_config = "./app/config/config.json"
+    path_to_config = config_path
     if pt.isfile(path_to_config) is False or pt.getsize(path_to_config) == 0:
         return []
     with open(path_to_config, 'r') as json_file:
