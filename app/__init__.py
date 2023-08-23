@@ -40,9 +40,13 @@ lm = LoginManager()  # flask-loginmanager
 lm.init_app(app)  # init the login manager
 
 # Setup database
+database_directory = os.path.join(basedir, "data")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+database_directory+'/database.db'
 @app.before_first_request
 def initialize_database():
     db.create_all()
+
+config_path = "./app/data/config.json"
 
 # Import routing, models and Start the App
 from app import models
