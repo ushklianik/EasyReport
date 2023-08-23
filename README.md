@@ -1,5 +1,30 @@
-# reporter
+# PerForge
 
+## Build PerForge docker image and push it to Docker Hub
+
+> 👉 **Step #1** - Log in to the Docker Hub on your local machine
+
+```bash
+$ docker login
+```
+
+<br />
+
+> 👉 **Step #2** - In the same directory as your Dockerfile, run the following command to build the Docker image and tag it
+
+```bash
+$ docker build -t your_docker_hub_username/image_name:tag .
+```
+
+<br />
+
+> 👉 **Step #3** - Push it to Docker Hub
+
+```bash
+$ docker push your_docker_hub_username/image_name:tag
+```
+
+<br />
 
 ## Build from sources
 
