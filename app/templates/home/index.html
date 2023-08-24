@@ -73,11 +73,12 @@
                <div class="start-section ms-4">
                   {% for project in projects %}
                      <div class="card card-project center-section">
-                        <a href="/set-project?project={{ project }}">{{ project }}</a>
+                        <a class="mt-3-5" href="/set-project?project={{ project }}">{{ project }}</a>
+                        <a class="badge badge-primary mt-2 fs--2" href="/delete-project?project={{ project }}">remove</a>
                      </div>
                   {% endfor %}
                   <div class="card card-project center-section">
-                     <a>new</a>
+                     <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#projectModal">new project</button>
                   </div>
                </div>
                <div class="start-section ms-4 mt-3">

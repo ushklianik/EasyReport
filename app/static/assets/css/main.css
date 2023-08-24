@@ -70,7 +70,7 @@ a {
     font-family: var(--bs-font-sans-serif);
 }
 a:hover {
-    color: var(--bs-gray-100);
+    color: var(--bs-blue);
     cursor: pointer; }
 
 body{
@@ -648,6 +648,10 @@ input:focus, select:focus {
     margin-top: 16px !important;
 }
 
+.mt-3-5 {
+    margin-top: 15% !important;
+}
+
 .mb-5 {
     margin-bottom: 2rem !important;
 }
@@ -978,6 +982,10 @@ th {
 
 .fs-2 {
     font-size: 1.5625rem !important;
+}
+
+.fs--2 {
+    font-size: .7rem !important;
 }
 
 .fs--1 {
