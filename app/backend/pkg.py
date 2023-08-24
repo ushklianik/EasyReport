@@ -15,7 +15,13 @@ def get_files_in_dir(path):
             output.append(elem)
     return output
 
-def save_new_config(project, data):
+def save_new_config(data):
+    path_to_config = config_path
+    # Save the updated configuration
+    with open(path_to_config, 'w') as json_file:
+        json.dump(data, json_file, indent=4, separators=(',', ': '))
+
+def save_new_data(project, data):
     path_to_config = config_path
     # Load existing configuration if it exists
     if os.path.exists(path_to_config):
@@ -64,7 +70,7 @@ def validate_config(project, key1, key2 = None):
         else:
             if key2 not in data[key1]:
                 data[key1][key2] = []
-    save_new_config(project, data)
+    save_new_data(project, data)
 
 def get_projects():
     config = get_json_config()
@@ -130,7 +136,7 @@ def delete_config(project, config):
                     data[key_obj["list_name"]][key_obj["key"]].pop(idx)
                     break
     # Save the updated configuration file
-    save_new_config(project, data)
+    save_new_data(project, data)
 
 def get_integration_config_names(project, integration_name):
     return get_config_names(project, "integrations", integration_name)
@@ -188,7 +194,7 @@ def save_integration(project, newdata, integration_type):
     validate_config(project, "integrations", integration_type)
     data = get_project_config(project)
     data["integrations"][integration_type] = save_dict(newdata, data["integrations"][integration_type], get_integration_config_names(project, integration_type))
-    save_new_config(project, data)
+    save_new_data(project, data)
 
 def get_default_integration(project, integration_type):
     validate_config(project, "integrations", integration_type)
@@ -298,7 +304,7 @@ def save_flow_config(project, flow):
     validate_config(project, "flows")
     data = get_project_config(project)
     data["flows"] = save_dict(flow, data["flows"], get_config_names(project, "flows"))
-    save_new_config(project, data)
+    save_new_data(project, data)
 
 def get_flow_values(project, flow):
     output = md.flow_model.parse_obj(get_json_values(project, "flows", flow))
@@ -322,7 +328,7 @@ def save_nfrs(project, nfrs):
     validate_config(project, "nfrs")
     data = get_project_config(project)
     data["nfrs"] = save_dict(nfrs, data["nfrs"], get_config_names(project, "nfrs"))
-    save_new_config(project, data)
+    save_new_data(project, data)
 
 def delete_nfr(project, name):
     validate_config(project, "nfrs")
@@ -331,7 +337,7 @@ def delete_nfr(project, name):
         if obj["name"] == name:
             data["nfrs"].pop(idx)
             break      
-    save_new_config(project, data)
+    save_new_data(project, data)
 
 ####################### TEMPLATE CONFIG: 
 
@@ -344,7 +350,7 @@ def save_template(project, template):
     validate_config(project, "templates")
     data = get_project_config(project)
     data["templates"] = save_dict(template.dict(), data["templates"], get_config_names(project, "templates"))
-    save_new_config(project, data)
+    save_new_data(project, data)
     
 ####################### GRAPHS:  
 
@@ -372,7 +378,7 @@ def save_graph(project, form):
     validate_config(project, "graphs")
     data = get_project_config(project)
     data["graphs"] = save_dict(form, data["graphs"], get_config_names(project, "graphs"))
-    save_new_config(project, data)
+    save_new_data(project, data)
 
 def delete_graph(project, graph_name):
     validate_config(project, "graphs")
@@ -381,7 +387,7 @@ def delete_graph(project, graph_name):
         if obj["name"] == graph_name:
             data["graphs"].pop(idx)
             break      
-    save_new_config(project, data)
+    save_new_data(project, data)
 
 ####################### OTHER:  
 def sort_tests(tests):
@@ -396,4 +402,14 @@ def sort_tests(tests):
     return tests
 
 def save_project(project):
-    save_new_config(project, {})
+    save_new_data(project, {})
+
+def delete_project(project):
+    data = get_json_config()
+    for idx, obj in enumerate(data):
+        if obj["name"] == project:
+            data.pop(idx)
+            break      
+    save_new_config(data)
+    
+        

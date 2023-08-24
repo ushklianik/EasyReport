@@ -9,6 +9,8 @@ from app.models  import Users
 from app.forms   import LoginForm, RegisterForm
 from app.backend import pkg
 
+import traceback
+
 
 # provide login manager with load_user callback
 @lm.user_loader
@@ -83,18 +85,31 @@ def login():
     except Exception as er:
         flash("ERROR: " + str(er))
         return redirect(url_for('login'))
+    
+# App main route + generic routing
+@app.route('/choose-project', methods=['GET'])
+def choose_project():
+    try:    
+        projects = pkg.get_projects()
+        return render_template('home/choose-project.html', projects=projects)
+    except Exception as er:
+        flash("ERROR: " + str(traceback.format_exc()))
+    return redirect(url_for('index'))
 
 # App main route + generic routing
 @app.route('/', defaults={'path': 'index.html'})
 @app.route('/<path>')
 def index(path):
-    try:    
+    # try:    
         project = request.cookies.get('project')
-        projects = pkg.get_projects()
-        project_stats = pkg.get_project_stats(project)
-        return render_template( 'home/' + path, projects = projects, project_stats=project_stats)
-    except TemplateNotFound:
-        return render_template('home/page-404.html'), 404
-    except Exception as er:
-        flash("ERROR: " + str(er))
-        return render_template('home/page-500.html'), 500
+        if project != None:
+            projects = pkg.get_projects()
+            project_stats = pkg.get_project_stats(project)
+            return render_template( 'home/' + path, projects = projects, project_stats=project_stats)
+        else:
+            return redirect(url_for('choose_project'))
+    # except TemplateNotFound:
+    #     return render_template('home/page-404.html'), 404
+    # except Exception as er:
+    #     flash("ERROR: " + str(er))
+    #     return render_template('home/page-500.html'), 500

@@ -41,3 +41,12 @@ def save_project():
         flash("ERROR: " + str(er))
         return str(er)
     return "Saved."
+
+@app.route('/delete-project', methods=['GET'])
+def delete_project():
+    try:
+        project = request.args.get('project')
+        pkg.delete_project(project) 
+    except Exception as er:
+        flash("ERROR: " + str(er))
+    return redirect(url_for("index"))
