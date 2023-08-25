@@ -87,5 +87,6 @@ class AtlassianJiraForm(FlaskForm):
     token      = StringField('Password', validators=[DataRequired()])
     org_url    = StringField('jiraOrganizationUrl', validators=[DataRequired()])
     project_id = StringField('Project', validators=[DataRequired()])
-    epic       = StringField('Epic')
+    epic_field = StringField('EpicField')
+    epic_name  = StringField('EpicName')
     is_default = SelectField('Default', choices=[('true', 'True'), ('false', 'False')], default='false')
