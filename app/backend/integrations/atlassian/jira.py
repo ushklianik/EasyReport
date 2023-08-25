@@ -1,10 +1,10 @@
 from os import path
 from app.backend import pkg
-from app.backend.integrations.integration import integration
-from jira import JIRA
 import os
 import logging
-
+from jira import JIRA
+from app.backend.integrations.integration import integration
+import io
 
 class jira(integration):
     def __init__(self, project, name = None):
@@ -27,7 +27,8 @@ class jira(integration):
                     self.token            = config["token"]
                     self.org_url          = config["org_url"]
                     self.project_id       = config["project_id"]
-                    self.epic             = config["epic"]
+                    self.epic_field       = config["epic_field"]
+                    self.epic_name        = config["epic_name"]
                     self.email            = config["email"]
                     self.auth_jira        = JIRA(
                         basic_auth=(self.email, self.token),
@@ -38,23 +39,25 @@ class jira(integration):
 
     def put_page_to_jira(self, title):
         issue_dict = {
-            'project': {'key': self.project},
+            'project': {'key': self.project_id},
             'summary': title,
             'issuetype': {'name': 'Task'},
-            'customfield_14500': self.epic
+            self.epic_field: self.epic_name
         }
         try:
-            jira_issue = self.auth_jira.create_issue(fields=issue_dict)
+            jira_issue = self.auth_jira.create_issue(fields=issue_dict, json=True)
             return jira_issue
         except Exception as er:
             logging.warning(er)
             return {"status":"error", "message":er}
 
-    def put_image_to_jira(self, issue, image, filename):
+    def put_image_to_jira(self, issue, image_bytes, filename, test_id):
+        filename = test_id+"_"+filename
         filename = filename.replace(" ", "-") + ".png"
+        attachment = io.BytesIO(image_bytes)
         for i in range(3):
             try:
-                self.auth_jira.add_attachment(issue, image, filename)
+                filename = self.auth_jira.add_attachment(issue, attachment, filename)
                 return filename
             except Exception as er:
                 print(er)
@@ -63,4 +66,4 @@ class jira(integration):
 
     def update_jira_page(self, jira_issue, description):
         jira_issue.update(
-            fields={"description": description}, json=True)
+            fields={"description": description})
