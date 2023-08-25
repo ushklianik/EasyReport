@@ -26,6 +26,7 @@ class InfluxDBForm(FlaskForm):
     timeout     = StringField('Timeout', validators=[DataRequired()])
     bucket      = StringField('Bucket', validators=[DataRequired()])
     measurement = StringField('Measurement', validators=[DataRequired()])
+    listener    = SelectField('Backend listener', choices=[('standart', 'Standart'), ('custom', 'Custom')], default='standart')
     is_default  = SelectField('Default', choices=[('true', 'True'), ('false', 'False')], default='false')
 
 

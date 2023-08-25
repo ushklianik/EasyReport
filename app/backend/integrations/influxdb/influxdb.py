@@ -2,6 +2,7 @@ from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 from app.backend import pkg
 from app.backend.integrations.influxdb.backend_listener import custom
+from app.backend.integrations.influxdb.backend_listener import standart
 from app.backend.integrations.integration import integration
 import logging
 import json
@@ -35,6 +36,7 @@ class influxdb(integration):
                     self.token       = config["token"]
                     self.timeout     = config["timeout"]
                     self.bucket      = config["bucket"]
+                    self.listener    = config["listener"]
                     self.measurement = config["measurement"]
 
     def connect_to_influxdb(self):
@@ -56,7 +58,11 @@ class influxdb(integration):
     def get_test_log(self):
         result = []
         try:
-            tables = self.influxdb_connection.query_api().query(custom.get_test_log_query(self.bucket))
+            if self.listener == "custom":
+                query = custom.get_test_log_query(self.bucket)
+            else:
+                query = standart.get_test_log_query(self.bucket)   
+            tables = self.influxdb_connection.query_api().query(query)
             for table in tables:
                 for row in table.records:
                     del row.values["result"]

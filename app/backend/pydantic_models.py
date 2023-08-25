@@ -25,6 +25,7 @@ class influxdb_model(BaseModel):
     timeout:          str
     bucket:           str
     measurement:      str
+    listener:         str
     is_default:       str
 
 class atlassian_jira_model(BaseModel):
