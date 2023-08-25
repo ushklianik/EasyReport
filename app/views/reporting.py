@@ -222,6 +222,10 @@ def generate_report():
                 awr    = atlassian_wiki_report(project, template)
                 result = awr.generate_report(data["tests"])
                 del(awr)
+            elif action == "atlassian_jira_report":
+                ajr    = atlassian_jira_report(project, template)
+                result = ajr.generate_report(data["tests"])
+                del(ajr)
             return result
     # except Exception as er:
     #     flash("ERROR: " + str(er))

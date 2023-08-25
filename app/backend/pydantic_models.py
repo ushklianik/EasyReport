@@ -33,9 +33,9 @@ class atlassian_jira_model(BaseModel):
     token:            str
     org_url:          str
     project_id:       str
-    epic:             str
+    epic_field:       str
+    epic_name:        str
     is_default:       str
-    
 
 class atlassian_wiki_model(BaseModel):
     name:             str
