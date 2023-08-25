@@ -1,6 +1,6 @@
 # PerForge
 
-## Build PerForge docker image and push it to Docker Hub
+## Build PerForge-app docker image and push it to Docker Hub
 
 > 👉 **Step #1** - Log in to the Docker Hub on your local machine
 
@@ -10,10 +10,10 @@ $ docker login
 
 <br />
 
-> 👉 **Step #2** - In the same directory as your Dockerfile, run the following command to build the Docker image and tag it
+> 👉 **Step #2** - From the root folder run the following command to build the Docker image and tag it
 
 ```bash
-$ docker build -t your_docker_hub_username/image_name:tag .
+$ docker build -t perforge/perforge-app:TAG .
 ```
 
 <br />
@@ -21,7 +21,33 @@ $ docker build -t your_docker_hub_username/image_name:tag .
 > 👉 **Step #3** - Push it to Docker Hub
 
 ```bash
-$ docker push your_docker_hub_username/image_name:tag
+$ docker push perforge/perforge-app:TAG
+```
+
+<br />
+
+## Build Perforge-grafana docker image and push it to Docker Hub
+
+> 👉 **Step #1** - Log in to the Docker Hub on your local machine
+
+```bash
+$ docker login
+```
+
+<br />
+
+> 👉 **Step #2** - From the ./grafana_build folder run the following command to build the Docker image and tag it
+
+```bash
+$ docker build -t perforge/perforge-grafana:TAG .
+```
+
+<br />
+
+> 👉 **Step #3** - Push it to Docker Hub
+
+```bash
+$ docker push perforge/perforge-grafana:TAG
 ```
 
 <br />
