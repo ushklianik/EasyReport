@@ -1,5 +1,5 @@
 {% extends "layouts/base-fullscreen.html" %}
-{% block title %} Grafana {% endblock %} 
+{% block title %} SMTP Mail {% endblock %} 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <link type="text/css" href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
@@ -16,42 +16,57 @@
                     <div class="card mb-3 margin-all-10 width-700" data-component-card="data-component-card">
                         <div class="card-header">
                             <div class="justify-content-between align-items-center">
-                            <h4 class="mb-0">Add Grafana integration</h4>
+                            <h4 class="mb-0">Add SMTP Mail integration</h4>
                             </div>
                         </div>
                         <div class="card-body">
                             <form id="configForm">
                                 <div class="center-section">
-                                    <label class="input-label mt-2" for="name">Name:</label>
+                                    <label class="input-label mt-2" for="name">Name</label>
                                     <input class="form-control" type="text" id="name" name="name" required>
                             
-                                    <label class="input-label mt-2" for="server">Server:</label>
+                                    <label class="input-label mt-2" for="server">Server</label>
                                     <input class="form-control" type="text" id="server" name="server" required>
+
+                                    <label class="input-label mt-2" for="port">Port</label>
+                                    <input class="form-control" type="number" id="port" name="port" required>
+
+                                    <label class="input-label mt-2" for="use_ssl">UseSsl</label>
+                                    <select class="form-control" id="use_ssl" name="use_ssl">
+                                        <option value="True">True</option>
+                                        <option value="False">False</option>
+                                    </select>
+
+                                    <label class="input-label mt-2" for="use_tls">UseTls</label>
+                                    <select class="form-control" id="use_tls" name="use_tls">
+                                        <option value="True">True</option>
+                                        <option value="False">False</option>
+                                    </select>
+
+                                    <label class="input-label mt-2" for="username">Username</label>
+                                    <input class="form-control" type="text" id="username" name="username" required>
                             
-                                    <label class="input-label mt-2" for="token">Token:</label>
+                                    <label class="input-label mt-2" for="token">Password</label>
                                     <div class="input-group">
                                         <input class="form-control" type="password" id="token" name="token" required>
                                         <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
                                     </div>
-                            
-                                    <label class="input-label mt-2" for="org_id">Organization ID:</label>
-                                    <input class="form-control" type="text" id="org_id" name="org_id" required>
 
-                                    <label class="input-label mt-2" for="is_default">Is Default:</label>
+                                    <label class="input-label mt-2" for="is_default">Is Default</label>
                                     <select class="form-control" id="is_default" name="is_default">
                                         <option value="true">True</option>
                                         <option value="false">False</option>
                                     </select>
                                     
-                                    <label class="input-label mt-2" for="dashboards">Dashboards:</label>
-                                    <div id="dashboardContainer">
-                                        <input type="text" class="form-control dashboardInput" name="dashboards[]" required>
+                                    <label class="input-label mt-2" for="recipients">Recipients</label>
+                                    <div id="recipientContainer">
+                                        <input type="text" class="form-control recipientInput" name="recipients[]" required>
                                     </div>
                                     <div>
-                                        <button class="btn btn-primary mt-5" type="button" id="addDashboard">Add Dashboard</button>
+                                        <button class="btn btn-primary mt-5" type="button" id="addRecipient">Add Recipient</button>
                                         <button class="btn btn-primary mt-5" type="submit">Save</button>
-                                        {% if grafana_config %}
-                                            <a href="/delete/grafana?grafana_config={{ grafana_config }}" class="btn btn-secondary ms-2 mt-5">Delete</a>
+                                        {% if smtp_mail_config %}
+                                            <a href="/delete/smtp-mail?smtp_mail_config={{ smtp_mail_config }}" class="btn btn-secondary ms-2 mt-5">Delete</a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -69,7 +84,7 @@
         $(document).ready(function() {
             // Check if 'config' parameter is present in the URL
             const urlParams = new URLSearchParams(window.location.search);
-            const config = urlParams.get('grafana_config');
+            const config = urlParams.get('smtp_mail_config');
 
             if (config) {
                 // Load configuration from JSON and display the values
@@ -83,12 +98,12 @@
                 // Serialize form data to JSON object
                 var configData = {};
                 $.each($(this).serializeArray(), function(index, field) {
-                    if (field.name === 'dashboards[]') {
-                        // Handle dashboards field as an array
-                        if (!configData['dashboards']) {
-                            configData['dashboards'] = [];
+                    if (field.name === 'recipients[]') {
+                        // Handle recipients field as an array
+                        if (!configData['recipients']) {
+                            configData['recipients'] = [];
                         }
-                        configData['dashboards'].push(field.value);
+                        configData['recipients'].push(field.value);
                     } else {
                         configData[field.name] = field.value;
                     }
@@ -98,17 +113,17 @@
                 saveConfig(JSON.stringify(configData));
             });
 
-            // Handle adding a new dashboard input field
-            $('#addDashboard').click(function() {
-                var dashboardInput = '<div class="flex m10-top">' +
-                                        '<input type="text" class="form-control dashboardInput" name="dashboards[]" required> ' +
-                                        '<button type="button" class="btn btn-secondary ms-2 deleteDashboard">Delete</button>' +
+            // Handle adding a new recipient input field
+            $('#addRecipient').click(function() {
+                var recipientInput = '<div class="flex m10-top">' +
+                                        '<input type="text" class="form-control recipientInput" name="recipients[]" required> ' +
+                                        '<button type="button" class="btn btn-secondary ms-2 deleteRecipient">Delete</button>' +
                                      '</div>';
-                $('#dashboardContainer').append(dashboardInput);
+                $('#recipientContainer').append(recipientInput);
             });
 
-            // Handle deleting a dashboard input field
-            $(document).on('click', '.deleteDashboard', function() {
+            // Handle deleting a recipient input field
+            $(document).on('click', '.deleteRecipient', function() {
                 $(this).parent().remove();
             });
 
@@ -116,13 +131,13 @@
                 // Send the configuration JSON to the backend
                 $.ajax({
                     type: 'POST',
-                    url: '/grafana',
+                    url: '/smtp-mail',
                     data: configData,
                     contentType: 'application/json',
                     success: function(response) {
                         // alert('Configuration saved successfully!');
-                        if (response.includes("grafana_config")) {
-                            window.location.replace("/grafana?"+response);
+                        if (response.includes("smtp_mail_config")) {
+                            window.location.replace("/smtp-mail?"+response);
                         }
                     },
                     error: function(error) {
@@ -135,7 +150,7 @@
                 // Load the configuration JSON from the backend
                 $.ajax({
                     type: 'GET',
-                    url: '/grafana-config?grafana_config='+config,
+                    url: '/smtp-mail-config?smtp_mail_config='+config,
                     contentType: 'application/json',
                     success: function(response) {
                         displayConfig(response);
@@ -150,26 +165,29 @@
                 // Set the loaded configuration values in the corresponding input fields
                 $('#name').val(configData.name);
                 $('#server').val(configData.server);
+                $('#port').val(configData.port);
+                $('#use_ssl').val(configData.use_ssl);
+                $('#use_tls').val(configData.use_tls);
+                $('#username').val(configData.username);
                 $('#token').val(configData.token);
-                $('#org_id').val(configData.org_id);
                 $('#is_default').val(configData.is_default);
-                // Handle dashboards field as an array
-                if (configData.dashboards && configData.dashboards.length > 0) {
-                    // Clear existing dashboard inputs except the first one
-                    $('.dashboardInput:not(:first)').remove();
-                    // Set the values for the existing and new dashboard inputs
-                    for (var i = 0; i < configData.dashboards.length; i++) {
-                        var dashboardValue = configData.dashboards[i];
+                // Handle recipients field as an array
+                if (configData.recipients && configData.recipients.length > 0) {
+                    // Clear existing recipient inputs except the first one
+                    $('.recipientInput:not(:first)').remove();
+                    // Set the values for the existing and new recipient inputs
+                    for (var i = 0; i < configData.recipients.length; i++) {
+                        var recipientValue = configData.recipients[i];
                         if (i === 0) {
-                            // Set value for the first dashboard input
-                            $('.dashboardInput:first').val(dashboardValue);
+                            // Set value for the first recipient input
+                            $('.recipientInput:first').val(recipientValue);
                         } else {
-                            // Create new dashboard input fields for the remaining values
-                            var dashboardInput = '<div class="flex m10-top">' +
-                                                    '<input type="text" class="form-control dashboardInput" name="dashboards[]" value="' + dashboardValue + '" required> ' +
-                                                    '<button type="button" class="btn-warning deleteDashboard">Delete</button>' +
+                            // Create new recipient input fields for the remaining values
+                            var recipientInput = '<div class="flex m10-top">' +
+                                                    '<input type="text" class="form-control recipientInput" name="recipients[]" value="' + recipientValue + '" required> ' +
+                                                    '<button type="button" class="btn-warning deleteRecipient">Delete</button>' +
                                                 '</div>';
-                            $('#dashboardContainer').append(dashboardInput);
+                            $('#recipientContainer').append(recipientInput);
                         }
                     }
                 }

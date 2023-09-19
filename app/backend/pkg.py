@@ -112,6 +112,7 @@ def delete_config(project, config):
         {"list_name": "integrations", "key": "azure"},
         {"list_name": "integrations", "key": "atlassian_wiki"},
         {"list_name": "integrations", "key": "atlassian_jira"},
+        {"list_name": "integrations", "key": "smtp_mail"},
         {"list_name": "flows"},
         {"list_name": "templates"}
     ]
@@ -154,8 +155,9 @@ def get_config_names(project, key1, key2 = None):
     return result
 
 def check_if_token(value):
-    if "token_in_sql:" in value:
-        value = Credentials.get(value)
+    if isinstance(value, str):
+        if "token_in_sql:" in value:
+            value = Credentials.get(value)
     return value
 
 def get_integration_values(project, integration_name, config_name):
@@ -262,7 +264,7 @@ def save_azure(project, data):
 
 def get_default_azure(project):
     return get_default_integration(project, "azure")
-        
+
 ####################### ATLASSIAN WIKI:
 
 def get_atlassian_wiki_config_values(project, atlassian_wiki_config):
@@ -277,7 +279,7 @@ def get_default_atlassian_wiki(project):
     return get_default_integration(project, "atlassian_wiki")
 
 ####################### ATLASSIAN JIRA:
-        
+
 def get_atlassian_jira_config_values(project, atlassian_jira_config):
     output = md.atlassian_jira_model.parse_obj(get_integration_values(project, "atlassian_jira", atlassian_jira_config))
     return MultiDict(output.dict())
@@ -288,17 +290,40 @@ def save_atlassian_jira(project, data):
 
 def get_default_atlassian_jira(project):
     return get_default_integration(project, "atlassian_jira")
-        
+
+####################### SMTP MAIL:
+
+def get_smtp_mail_config_values(project, smtp_mail_config):
+    output = md.smtp_mail_model.parse_obj(get_integration_values(project, "smtp_mail", smtp_mail_config))
+    return output.dict()
+
+def save_smtp_mail(project, data):
+    data = md.smtp_mail_model.parse_obj(data)
+    save_integration(project, data.dict(), "smtp_mail")
+
+def get_default_smtp_mail(project):
+    return get_default_integration(project, "smtp_mail")
+
+def get_recipients(project):
+    validate_config(project, "integrations", "smtp_mail")
+    data = get_project_config(project)
+    output = []
+    for item in data["integrations"]["smtp_mail"]:
+        if (item["recipients"]):
+            for id in item["recipients"]:
+                output.append(id)
+    return output
+
 ####################### OUTPUT:
 
 def get_output_configs(project):
     result=[]
-    types = ["azure", "atlassian_wiki", "atlassian_jira"]
+    types = ["azure", "atlassian_wiki", "atlassian_jira", "smtp_mail"]
     for type in types:
         result += get_config_names(project, "integrations", type)
     return result
 
-####################### FLOW CONFIG:         
+####################### FLOW CONFIG:
 
 def save_flow_config(project, flow):
     validate_config(project, "flows")
@@ -310,7 +335,7 @@ def get_flow_values(project, flow):
     output = md.flow_model.parse_obj(get_json_values(project, "flows", flow))
     return output.dict()
 
-####################### NFRS CONFIG:         
+####################### NFRS CONFIG:
 
 def get_nfr(project, name):
     validate_config(project, "nfrs")
@@ -336,7 +361,7 @@ def delete_nfr(project, name):
     for idx, obj in enumerate(data["nfrs"]):
         if obj["name"] == name:
             data["nfrs"].pop(idx)
-            break      
+            break
     save_new_data(project, data)
 
 ####################### TEMPLATE CONFIG: 
@@ -351,8 +376,8 @@ def save_template(project, template):
     data = get_project_config(project)
     data["templates"] = save_dict(template.dict(), data["templates"], get_config_names(project, "templates"))
     save_new_data(project, data)
-    
-####################### GRAPHS:  
+
+####################### GRAPHS:
 
 def get_graph(project, name):
     validate_config(project, "graphs")
@@ -386,10 +411,10 @@ def delete_graph(project, graph_name):
     for idx, obj in enumerate(data["graphs"]):
         if obj["name"] == graph_name:
             data["graphs"].pop(idx)
-            break      
+            break
     save_new_data(project, data)
 
-####################### OTHER:  
+####################### OTHER:
 def sort_tests(tests):
     def start_time(e): return e['startTime']
     if len(tests) != 0:
@@ -409,7 +434,5 @@ def delete_project(project):
     for idx, obj in enumerate(data):
         if obj["name"] == project:
             data.pop(idx)
-            break      
+            break
     save_new_config(data)
-    
-        

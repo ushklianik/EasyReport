@@ -21,11 +21,11 @@ class azureport(reporting_base):
         graph = '''![image.png](/.attachments/''' + str(fileName) + ''')'''
         graph = graph + '''\n'''
         graph = graph + '''\n'''
-        return graph  
+        return graph
 
     def generate_path(self):
         title = self.output_obj.get_path() + self.replace_variables(self.title)
-        return title   
+        return title
     
     def generate_report(self, tests):
         if len(tests) == 2: 
@@ -39,7 +39,7 @@ class azureport(reporting_base):
         self.output_obj.create_or_update_page(path, self.report_body)
         return self.report_body
 
-    def generate(self, current_run_id, baseline_run_id = None):     
+    def generate(self, current_run_id, baseline_run_id = None):
         self.collect_data(current_run_id, baseline_run_id)
         report_body = ""
         for obj in self.data:

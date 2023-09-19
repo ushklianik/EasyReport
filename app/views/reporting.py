@@ -12,6 +12,7 @@ from app.backend.reporting.perforge_html        import html_report
 from app.backend.reporting.azure_wiki           import azureport
 from app.backend.reporting.atlassian_wiki       import atlassian_wiki_report
 from app.backend.reporting.atlassian_jira       import atlassian_jira_report
+from app.backend.reporting.smtp_mail            import smtp_mail_report
 from app.forms                                  import FlowConfigForm, TemplateConfigForm
 
 import traceback
@@ -85,7 +86,6 @@ def save_flow():
         # Declare the Influxdb form
         form    = FlowConfigForm(request.form)
         if form.validate_on_submit():
-            print(request.form.to_dict())
             pkg.save_flow_config(project, request.form.to_dict())
             flash("Flow config added.")
         return redirect(url_for("get_reporting"))
@@ -203,7 +203,7 @@ def generate_atlassian_jira_report():
     except Exception as er:
         flash("ERROR: " + str(er))
         return redirect(url_for("index"))
-    
+
 # Route for generating a report
 @app.route('/generate', methods=['GET','POST'])
 def generate_report():
@@ -226,6 +226,10 @@ def generate_report():
                 ajr    = atlassian_jira_report(project, template)
                 result = ajr.generate_report(data["tests"])
                 del(ajr)
+            elif action == "smtp_mail_report":
+                smr    = smtp_mail_report(project, template)
+                result = smr.generate_report(data["tests"])
+                del(smr)
             return result
     # except Exception as er:
     #     flash("ERROR: " + str(er))

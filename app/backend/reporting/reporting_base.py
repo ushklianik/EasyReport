@@ -56,16 +56,16 @@ class reporting_base:
         self.parameters["current_vusers"]            = self.influxdb_obj.get_max_active_users(current_run_id, self.current_start_time, self.current_end_time)
         
         if baseline_run_id != None:
-            self.current_start_time                  = self.influxdb_obj.get_start_time(baseline_run_id)
+            self.baseline_start_time                 = self.influxdb_obj.get_start_time(baseline_run_id)
             self.baseline_end_time                   = self.influxdb_obj.get_end_time(baseline_run_id)
-            self.baseline_end_time                   = self.influxdb_obj.get_start_tmp(baseline_run_id)
-            self.baseline_end_time                   = self.influxdb_obj.get_end_tmp(baseline_run_id)
+            self.baseline_start_timestamp            = self.influxdb_obj.get_start_tmp(baseline_run_id)
+            self.baseline_end_timestamp              = self.influxdb_obj.get_end_tmp(baseline_run_id)
 
             self.parameters["baseline_start_time"]   = self.influxdb_obj.get_human_start_time(baseline_run_id)
             self.parameters["baseline_end_time"]     = self.influxdb_obj.get_human_end_time(baseline_run_id)
-            self.parameters["baseline_grafana_link"] = self.grafana_obj.get_grafana_test_link(self.baseline_end_time, self.baseline_end_time, self.test_name, baseline_run_id)
-            self.parameters["baseline_duration"]     = str(int((self.baseline_end_time - self.baseline_end_time)/1000))
-            self.parameters["baseline_vusers"]       = self.influxdb_obj.get_max_active_users(baseline_run_id, self.current_start_time, self.baseline_end_time)
+            self.parameters["baseline_grafana_link"] = self.grafana_obj.get_grafana_test_link(self.baseline_start_timestamp, self.baseline_nd_timestamp, self.test_name, baseline_run_id)
+            self.parameters["baseline_duration"]     = str(int((self.baseline_end_timestamp - self.baseline_start_timestamp)/1000))
+            self.parameters["baseline_vusers"]       = self.influxdb_obj.get_max_active_users(baseline_run_id, self.baseline_start_time, self.baseline_end_time)
 
         self.status = "Collected data from InfluxDB"
         self.progress = 25

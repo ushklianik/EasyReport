@@ -46,11 +46,22 @@ class atlassian_wiki_model(BaseModel):
     space_key:        str
     is_default:       str
 
+class smtp_mail_model(BaseModel):
+    name:             str
+    server:           str
+    port:             int
+    use_ssl:          str
+    use_tls:          str
+    username:         str
+    token:            str
+    is_default:       str
+    recipients:       list
+
 class template_object_model(BaseModel):
     id:               int
     type:             str
     content:          str
-    
+
 class template_model(BaseModel):
     name:             str
     flow:             str
@@ -67,8 +78,8 @@ class nfr(BaseModel):
     scope:            str
     metric:           str
     aggregation:      str
-    operation:        str  
-    threshold:        int      
+    operation:        str
+    threshold:        int
     weight:           str
     name:             str
 
