@@ -45,7 +45,6 @@ class wiki(integration):
                 self.confl.attach_content(content=image, page_id=page_id, name=name, content_type="image/png")
                 return name
             except Exception as er:
-                print(er)
                 logging.warning('ERROR: uploading image to confluence failed')
                 logging.warning(er)  
         

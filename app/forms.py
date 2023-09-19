@@ -2,8 +2,8 @@
 
 from flask_wtf          import FlaskForm
 from flask_wtf.file     import FileField, FileRequired
-from wtforms            import StringField, PasswordField, FieldList, BooleanField, SelectField, TextAreaField
-from wtforms.validators import InputRequired, Email, DataRequired
+from wtforms            import StringField, IntegerField, PasswordField, FieldList, BooleanField, SelectField, TextAreaField
+from wtforms.validators import InputRequired, Email, DataRequired, NumberRange, Email
 
 
 class LoginForm(FlaskForm):
@@ -88,4 +88,15 @@ class AtlassianJiraForm(FlaskForm):
     project_id = StringField('Project', validators=[DataRequired()])
     epic_field = StringField('EpicField')
     epic_name  = StringField('EpicName')
+    is_default = SelectField('Default', choices=[('true', 'True'), ('false', 'False')], default='false')
+
+class SMTPMailForm(FlaskForm):
+    name       = StringField('Name', validators=[DataRequired()])
+    server     = StringField('Server', validators=[DataRequired()])
+    port       = IntegerField('Port', validators=[DataRequired()])
+    use_ssl    = SelectField('Use SSL', choices=[('True', 'True'), ('False', 'False')], default='True')
+    use_tls    = SelectField('Use TLS', choices=[('True', 'True'), ('False', 'False')], default='False')
+    username   = StringField('Username', validators=[DataRequired(), Email()])
+    token      = StringField('Password', validators=[DataRequired()])
+    recipients = FieldList(StringField('Recipient'), min_entries=1, validators=[DataRequired(), Email()])
     is_default = SelectField('Default', choices=[('true', 'True'), ('false', 'False')], default='false')

@@ -3,7 +3,7 @@ from flask import render_template, request, url_for, redirect, flash
 
 # App modules
 from app         import app
-from app.forms   import InfluxDBForm, GrafanaForm, AzureForm, AtlassianWikiForm, AtlassianJiraForm
+from app.forms   import InfluxDBForm, GrafanaForm, AzureForm, AtlassianWikiForm, AtlassianJiraForm, SMTPMailForm
 from app.backend import pkg
 
 import traceback
@@ -20,12 +20,14 @@ def integrations():
         azure_configs          = pkg.get_integration_config_names(project, "azure")
         atlassian_wiki_configs = pkg.get_integration_config_names(project, "atlassian_wiki")
         atlassian_jira_configs = pkg.get_integration_config_names(project, "atlassian_jira")
+        smtp_mail_configs    = pkg.get_integration_config_names(project, "smtp_mail")
         return render_template('home/integrations.html',
                                influxdb_configs=influxdb_configs,
                                grafana_configs=grafana_configs,
                                azure_configs=azure_configs,
                                atlassian_wiki_configs=atlassian_wiki_configs,
-                               atlassian_jira_configs=atlassian_jira_configs
+                               atlassian_jira_configs=atlassian_jira_configs,
+                               smtp_mail_configs=smtp_mail_configs
                                )
     except Exception as er:
         flash("ERROR: " + str(er))
@@ -97,7 +99,6 @@ def get_grafana_config():
         grafana_config = request.args.get('grafana_config')
         if grafana_config is not None:
             output = pkg.get_grafana_config_values(project, grafana_config)
-            print(output)
         return output
     except Exception as er:
         flash("ERROR: " + str(er))
@@ -226,6 +227,54 @@ def delete_atlassian_jira():
         project = request.cookies.get('project')
         if atlassian_jira_config is not None:
             pkg.delete_config(project, atlassian_jira_config)
+            flash("Integration deleted.")
+    except Exception as er:
+        flash("ERROR: " + str(er))
+    return redirect(url_for('integrations'))
+
+# Route for adding or updating SMTP Mail integration
+@app.route('/smtp-mail', methods=['GET', 'POST'])
+def add_smtp_mail():
+    try:
+        # Get current project
+        project = request.cookies.get('project')
+        # Get SMTP Mail config parameter if provided
+        smtp_mail_config = request.args.get('smtp_mail_config')
+        if request.method == 'POST':
+            pkg.save_smtp_mail(project, request.get_json())
+            smtp_mail_config = request.get_json()["name"]
+            flash("Integration added.")
+            return "smtp_mail_config=" + smtp_mail_config
+        return render_template('integrations/smtp-mail.html', smtp_mail_config=smtp_mail_config)
+    except Exception as er:
+        flash("ERROR: " + str(er))
+        return redirect(url_for('integrations'))
+
+# Route for getting SMTP Mail config
+@app.route('/smtp-mail-config', methods=['GET'])
+def get_smtp_mail_config():
+    try:
+        output = "no data"
+        # Get current project
+        project = request.cookies.get('project')
+        # Get SMTP Mail config parameter if provided
+        smtp_mail_config = request.args.get('smtp_mail_config')
+        if smtp_mail_config is not None:
+            output = pkg.get_smtp_mail_config_values(project, smtp_mail_config)
+        return output
+    except Exception as er:
+        flash("ERROR: " + str(er))
+
+# Route for deleting SMTP Mail integration
+@app.route('/delete/smtp-mail', methods=['GET'])
+def delete_smtp_mail_config():
+    try:
+        # Get SMTP Mail config parameter if provided
+        smtp_mail_config = request.args.get('smtp_mail_config')
+        # Get current project
+        project = request.cookies.get('project')
+        if smtp_mail_config is not None:
+            pkg.delete_config(project, smtp_mail_config)
             flash("Integration deleted.")
     except Exception as er:
         flash("ERROR: " + str(er))

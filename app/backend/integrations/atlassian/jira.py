@@ -60,7 +60,6 @@ class jira(integration):
                 filename = self.auth_jira.add_attachment(issue, attachment, filename)
                 return filename
             except Exception as er:
-                print(er)
                 logging.warning('ERROR: uploading image to Jira failed')
                 logging.warning(er)
 
