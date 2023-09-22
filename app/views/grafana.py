@@ -24,21 +24,6 @@ def gen_az_report():
     resp.headers['access-control-allow-credentials'] = 'true'
     return resp
 
-# Route for setting baseline
-@app.route('/set-baseline', methods=['GET'])
-def set_baseline():
-    infludx_obj = influxdb("default")
-    grafana_obj = grafana("default")
-    infludx_obj.connect_to_influxdb()
-    if request.args.get('user') == "admin":
-        infludx_obj.add_or_update_test(run_id=request.args.get('run_id'), status=request.args.get('status'), build=request.args.get('build'), testName=request.args.get('testName'))
-    resp = make_response("Done")
-    resp.headers['Access-Control-Allow-Origin'] = grafana_obj.server
-    resp.headers['access-control-allow-methods'] = '*'
-    resp.headers['access-control-allow-credentials'] = 'true'
-    infludx_obj.close_influxdb_connection()
-    return resp
-
 # Route for deleting InfluxDB data
 @app.route('/delete-influxdata', methods=['GET'])
 def influx_data_delete():

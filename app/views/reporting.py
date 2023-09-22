@@ -136,6 +136,7 @@ def load_tests():
         tests = influxdb_obj.get_test_log()
         if(tests):
             tests = pkg.sort_tests(tests)
+        del(influxdb_obj)
         return jsonify(status="success", tests=tests)
     except Exception:
         flash("ERROR: " + str(traceback.format_exc()))

@@ -1,5 +1,7 @@
-from app.backend.integrations.atlassian.wiki import wiki
+from app.backend.validation.validation import NFR
 
-obj = wiki("default", "conflwiki")
-page = obj.confl.get_page_by_id("17105117", expand="body.storage")
-print(page['body']['storage']['value'])
+obj = NFR("default")
+result = obj.compare_with_nfrs("DEMO", "20230824-1859-DEMO")
+for r in result:
+    print(r)
+# obj.compare_with_nfrs("demo", "20230211-1106-demo")

@@ -76,85 +76,81 @@ class NFR:
 
         return name
     
-    # Method generates flux query to get test data based on NFR definition
-    def generate_flux_query(self, test_name, run_id, start, end, bucket, nfr):
+    def is_float(self, string):
         try:
-            # Flux constructor allows creating a flux query to get test data based on NFR definition
-            constr = custom.flux_constructor(test_name, run_id, start, end, bucket, request_name=nfr["scope"])
-            # Create query
-            query = (
-                constr['source']
-                + constr["range"]
-                + constr["_measurement"][nfr["metric"]]
-                + constr["metric"][nfr["metric"]]
-                + constr["run_id"]
-            )
-            # If scope is a specific request name, use the key "request"
-            if nfr['scope'] not in ['all', 'each']:
-                query += constr["scope"]['request']
-            else:
-                query += constr["scope"][nfr['scope']]
-
-            # If the metric is rps, then add the aggregation window
-            if nfr['metric'] == 'rps':
-                query += constr["aggregation"][nfr['metric']]
-            query += constr["aggregation"][nfr['aggregation']]
-            return query
-
-        except KeyError:
-            # Handle missing keys in the flux_constructor dictionary
-            pass 
+            float(string)
+            return True
+        except ValueError:
+            return False
     
     # Method takes a list of NFRs 
     # Constructs a flux request to the InfluxDB based on the NFRs
     # Takes test data and compares it with the NFRs
-    def compare_with_nfrs(self, test_name, run_id, start, end):
+    def compare_with_nfrs(self, test_name, run_id, start = None, end = None):
         comp_result = []
+        total_weight = 0
+        empty_weight_count = 0
         try:
             # Get NFRs for the specific application
             nfrs = self.get_nfr(test_name)
             # Create InfluxDB connection
             influxdb_obj = influxdb(self.project).connect_to_influxdb()
-            if "status" in nfrs:
-                return nfrs
-            else:
-                # Iterate through NFRs
-                for nfr in nfrs["rows"]:
-                    # Generate flux query to get test data based on NFR definition
-                    query = self.generate_flux_query(test_name, run_id, start, end, influxdb_obj.bucket, nfr)
+            if start == None:
+                start = influxdb_obj.get_start_time(run_id)
+            if end == None:
+                end = influxdb_obj.get_end_time(run_id)
+            # Iterate through NFRs
+            for nfr in nfrs["rows"]:
+                # Generate flux query to get test data based on NFR definition
+                query = influxdb_obj.generate_flux_query(test_name, run_id, start, end, influxdb_obj.bucket, nfr)
 
-                    # Get test data to compare with NFR
-                    results = influxdb_obj.send_query(query)
+                # Get test data to compare with NFR
+                results = influxdb_obj.send_query(query)
+                # If InfluxDB query returns 0 rows
+                if len(results) == 0:
+                    name = self.generate_name(nfr)
+                    comp_result.append({"name": name, "result": "no data"})                
+                # If InfluxDB query returns 1 row
+                elif len(results) == 1:
+                    name = self.generate_name(nfr)
+                    comp_result.append({"name": name, "result": self.compare_value(results[0]['_value'], nfr['operation'],nfr['threshold']),"value": str(results[0]['_value']),"weight": str(nfr['weight'])})
+                # If InfluxDB query returns more than 1 row
+                elif len(results) > 1:
+                    if nfr['weight'].isnumeric():
+                        if nfr['weight'] != "":
+                            nfr['weight'] = float(nfr['weight'])/len(results)
+                    # If one request doesn't meet the threshold, the whole NFR will be failed
+                    for result in results:
+                        nfr["scope"] = result['transaction']
+                        name = self.generate_name(nfr)
+                        comp_result.append({"name": name, "result": self.compare_value(result['_value'], nfr['operation'],nfr['threshold']),"value": str(result['_value']),"weight": str(nfr['weight'])})
+                
+            for result in comp_result:
+                if "weight" in result:
+                    if self.is_float(result["weight"]):
+                        total_weight+=float(result['weight'])
+                    else:
+                        result["weight"] = "0"
+                        empty_weight_count +=1
 
-                    # If InfluxDB query returns 0 rows
-                    if len(results) == 0:
-                        comp_result.append({"name": nfr['name'], "result": "no data"})
-                    # If InfluxDB query returns 1 row
-                    elif len(results) == 1:
-                        comp_result.append(
-                            {"name": nfr['name'], "result": self.compare_value(results[0]['_value'], nfr['operation'],
-                                                                                 nfr['threshold']),
-                             "weight": nfr['weight']})
-                    # If InfluxDB query returns more than 1 row
-                    elif len(results) > 1:
-                        status = "PASSED"
-                        # If one request doesn't meet the threshold, the whole NFR will be failed
-                        for result in results:
-                            if self.compare_value(result['_value'], nfr['operation'], nfr['threshold']) == "FAILED":
-                                status = "FAILED"
-                                break
-                        comp_result.append({"name": nfr['name'], "result": status, "weight": nfr['weight']})
+            for result in comp_result:
+                if "weight" in result:
+                    if result["weight"] == "0":
+                        if (100-total_weight) > 0:
+                            result['weight'] = str((100-total_weight)/empty_weight_count)
+
             return comp_result
 
         except Exception:
             # Handle exceptions here
             pass
 
-    def calculate_apdex(comp_result):
+    def calculate_apdex(self, test_name, run_id, start = None, end = None):
+        comp_result = self.compare_with_nfrs(test_name, run_id, start, end)
         try:
             passed = 0
             failed = 0
-            if "status" not in comp_result:
+            if len(comp_result) > 0:
                 for result in comp_result:
                     if result["result"] == "PASSED":
                         passed += float(result["weight"])

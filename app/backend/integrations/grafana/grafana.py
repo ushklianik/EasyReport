@@ -65,10 +65,11 @@ class grafana(integration):
                 url = url+"&var-runId="+run_id
             try:   
                 response = requests.get(url=url, headers={ 'Authorization': 'Bearer ' + self.token}, timeout=180)
+                print(response.content)
                 if response.status_code == 200:
                     image = response.content
                 else:
-                    logging.info('ERROR: downloading image from Grafana failed, metric: ' + graph_name)
+                    logging.info('ERROR: ' + response.content)
             except Exception as er:
                 logging.warning('ERROR: downloading image from Grafana failed')
                 logging.warning(er)

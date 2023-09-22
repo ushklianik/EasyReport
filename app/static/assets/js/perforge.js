@@ -492,7 +492,7 @@
           selectedRows["tests"] = transformedList;
           selectedRows["selectedAction"] = selectedAction.value;
           selectedRows["template"] = selectedTemplate.value;
-          sendPostRequest('/generate',JSON.stringify(selectedRows)).then(function (){
+          sendPostRequest('/generate',JSON.stringify(selectedRows)).finally(function (){
             spinner.style.display = "none";
             spinnerText.style.display = "";
           });
