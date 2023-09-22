@@ -1,6 +1,7 @@
 from app.backend import pkg
 from app.backend.integrations.grafana.grafana import grafana
 from app.backend.integrations.influxdb.influxdb import influxdb
+from app.backend.validation.validation import NFR
 import re
 
 class reporting_base:
@@ -13,6 +14,7 @@ class reporting_base:
         self.influxdb_obj   = influxdb(project=self.project, name=self.influxdb).connect_to_influxdb()
         self.progress       = 0
         self.status         = "Not started"
+        self.validation_obj = NFR(project)
 
     def __del__(self):
         self.influxdb_obj.close_influxdb_connection()
@@ -23,6 +25,9 @@ class reporting_base:
         self.title   = template_obj["title"]
         self.data    = template_obj["data"]
         self.set_flow(flow_name)
+
+    def add_appdex(self):
+        return self.validation_obj.calculate_apdex(self.test_name, self.current_run_id)
 
     def get_template_data(self, template):
         template_obj = pkg.get_template_values(self.project, template)
@@ -38,9 +43,13 @@ class reporting_base:
         variables = re.findall(r"\$\{(.*?)\}", text)
         for var in variables:
             text = text.replace("${"+var+"}", str(self.parameters[var]))
+            if var == "appdex":
+                text = text.replace("${"+"appdex"+"}", str(self.add_appdex()))
         return text
 
     def collect_data(self, current_run_id, baseline_run_id = None):
+        self.current_run_id             = current_run_id
+        self.baseline_run_id            = baseline_run_id
         self.current_start_time         = self.influxdb_obj.get_start_time(current_run_id)
         self.current_end_time           = self.influxdb_obj.get_end_time(current_run_id)
         self.current_start_timestamp    = self.influxdb_obj.get_start_tmp(current_run_id)
