@@ -215,6 +215,8 @@ def flux_constructor(app_name, run_id, start, stop, bucket, request_name = ''):
   constr["aggregation"]                   = {}
   constr["aggregation"]['avg']            = '|> mean()\n'
   constr["aggregation"]['median']         = '|> median()\n'
+  constr["aggregation"]['75%-tile']       = '|> toFloat()\n' + \
+                                            '|> quantile(q: 0.75)\n'
   constr["aggregation"]['90%-tile']       = '|> toFloat()\n' + \
                                             '|> quantile(q: 0.90)\n'
   constr["aggregation"]['95%-tile']       = '|> toFloat()\n' + \

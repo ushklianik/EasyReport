@@ -112,27 +112,36 @@
         <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             $(document).ready(function(){
-                var influxdb_name = $("#influxdbName").val();
-                perforge.utils
-                    .sendGetRequest('/load_tests?influxdb_name=' + influxdb_name)
-                    .then((data) => {
-                        if(data.status === 'success'){
-                            updateTable(data.tests);
-                        }else{
+                
+                const influxdb_select = document.getElementById("influxdbName");
+                influxdb_select.addEventListener("change", loadData);
+
+                loadData();
+
+                function loadData(){
+                    var influxdb_name = $("#influxdbName").val();
+                    $("#spinner").show()
+                    perforge.utils
+                        .sendGetRequest('/load_tests?influxdb_name=' + influxdb_name)
+                        .then((data) => {
+                            if(data.status === 'success'){
+                                updateTable(data.tests);
+                            }else{
+                                const badmsg = document.getElementById("bad-msg");
+                                badmsg.style.display = "flex";
+                                const msg = badmsg.querySelector("#msg");
+                                msg.textContent = data.message;
+                            }
+                            $("#spinner").hide();
+                        })
+                        .catch((error) => {
                             const badmsg = document.getElementById("bad-msg");
                             badmsg.style.display = "flex";
                             const msg = badmsg.querySelector("#msg");
-                            msg.textContent = data.message;
-                        }
-                        $("#spinner").hide();
-                    })
-                    .catch((error) => {
-                        const badmsg = document.getElementById("bad-msg");
-                        badmsg.style.display = "flex";
-                        const msg = badmsg.querySelector("#msg");
-                        msg.textContent = error;
-                        $("#spinner").hide();
-                    });
+                            msg.textContent = error;
+                            $("#spinner").hide();
+                        });
+                }
     
                 function updateTable(tests){
                     $("#table-id").attr('data-list', '{"valueNames":["runId", "testName", "duration", "maxThreads", "startTime", "endTime"], "page": 5, "pagination": true}');

@@ -25,7 +25,8 @@ class InfluxDBForm(FlaskForm):
     token       = StringField('Token', validators=[DataRequired()])
     timeout     = StringField('Timeout', validators=[DataRequired()])
     bucket      = StringField('Bucket', validators=[DataRequired()])
-    measurement = StringField('Measurement', validators=[DataRequired()])
+    listener    = SelectField('Backend listener', choices=[('org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient', 'org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient'), 
+                                                           ('mderevyankoaqa', 'mderevyankoaqa')], default='InfluxdbBackendListenerClient')
     is_default  = SelectField('Default', choices=[('true', 'True'), ('false', 'False')], default='false')
 
 
