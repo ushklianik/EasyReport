@@ -142,7 +142,6 @@ class NFR:
             return comp_result
 
         except Exception:
-            # Handle exceptions here
             pass
 
     def calculate_apdex(self, test_name, run_id, start = None, end = None):
@@ -162,7 +161,6 @@ class NFR:
             return int(apdex)
 
         except ZeroDivisionError:
-            # Handle division by zero error
             pass
 
 
