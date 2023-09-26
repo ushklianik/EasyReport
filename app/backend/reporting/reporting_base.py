@@ -6,12 +6,8 @@ import re
 
 class reporting_base:
 
-    def __init__(self, project, template):
+    def __init__(self, project):
         self.project        = project
-        self.template    = template
-        self.set_template()
-        self.grafana_obj    = grafana(project=self.project, name=self.grafana)
-        self.influxdb_obj   = influxdb(project=self.project, name=self.influxdb).connect_to_influxdb()
         self.progress       = 0
         self.status         = "Not started"
         self.validation_obj = NFR(project)
@@ -19,12 +15,19 @@ class reporting_base:
     def __del__(self):
         self.influxdb_obj.close_influxdb_connection()
 
-    def set_template(self):
-        template_obj = pkg.get_template_values(self.project, self.template)
+    def set_template(self, template):
+        template_obj = pkg.get_template_values(self.project, template)
         flow_name    = template_obj["flow"]
         self.title   = template_obj["title"]
         self.data    = template_obj["data"]
         self.set_flow(flow_name)
+        self.grafana_obj    = grafana(project=self.project, name=self.grafana)
+        self.influxdb_obj   = influxdb(project=self.project, name=self.influxdb).connect_to_influxdb()
+
+    def set_template_group(self, template_group):
+        template_group_obj     = pkg.get_template_group_values(self.project, template_group)
+        self.group_title             = template_group_obj["title"]
+        self.template_order    = template_group_obj["data"]
 
     def add_appdex(self):
         return self.validation_obj.calculate_apdex(self.test_name, self.current_run_id)
@@ -72,7 +75,7 @@ class reporting_base:
 
             self.parameters["baseline_start_time"]   = self.influxdb_obj.get_human_start_time(baseline_run_id)
             self.parameters["baseline_end_time"]     = self.influxdb_obj.get_human_end_time(baseline_run_id)
-            self.parameters["baseline_grafana_link"] = self.grafana_obj.get_grafana_test_link(self.baseline_start_timestamp, self.baseline_nd_timestamp, self.test_name, baseline_run_id)
+            self.parameters["baseline_grafana_link"] = self.grafana_obj.get_grafana_test_link(self.baseline_start_timestamp, self.baseline_end_timestamp, self.test_name, baseline_run_id)
             self.parameters["baseline_duration"]     = str(int((self.baseline_end_timestamp - self.baseline_start_timestamp)/1000))
             self.parameters["baseline_vusers"]       = self.influxdb_obj.get_max_active_users(baseline_run_id, self.baseline_start_time, self.baseline_end_time)
 

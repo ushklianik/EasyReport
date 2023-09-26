@@ -4,11 +4,19 @@ import re
 
 class azureport(reporting_base):
 
-    def __init__(self, project, template):
-        super().__init__(project, template)
-        self.output_obj     = azure(project=self.project, name=self.output)
+    def __init__(self, project):
+        super().__init__(project)
         self.report_body = ""
 
+    def set_template(self, template):
+        super().set_template(template)
+        self.output_obj     = azure(project=self.project, name=self.output)
+
+    def add_group_text(self, text):
+        text += '''\n'''
+        text += '''\n'''
+        return text
+    
     def add_text(self, text):
         text = self.replace_variables(text)
         text += '''\n'''
@@ -22,20 +30,36 @@ class azureport(reporting_base):
         graph = graph + '''\n'''
         graph = graph + '''\n'''
         return graph
+    
 
-    def generate_path(self):
-        title = self.output_obj.get_path() + self.replace_variables(self.title)
+    def generate_path(self, isgroup):
+        if isgroup: title = self.output_obj.get_path() + self.group_title
+        else: title = self.output_obj.get_path() + self.replace_variables(self.title)
         return title
     
-    def generate_report(self, tests):
-        if len(tests) == 2: 
-            self.report_body += self.generate(tests[0], tests[-1])
-        elif(len(tests) == 0):
-            return "Please provide for which tests you need to make a report"
+    def generate_report(self, tests, template_group=None):
+        path = None
+        def process_test(test, isgroup):
+            nonlocal path
+            template_id = test.get('template_id')
+            if template_id:
+                self.set_template(template_id)
+                run_id = test.get('runId')
+                baseline_run_id = test.get('baseline_run_id')
+                self.report_body += self.generate(run_id, baseline_run_id)
+                if not path: path = self.generate_path(isgroup)
+        if template_group:
+            self.set_template_group(template_group)
+            for obj in self.template_order:
+                if obj["type"] == "text":
+                    self.report_body += self.add_group_text(obj["content"])
+                elif obj["type"] == "template":
+                    for test in tests:
+                        if obj.get('content') == test.get('template_id'):
+                            process_test(test, True)
         else:
             for test in tests:
-                self.report_body += self.generate(test)
-        path = self.generate_path()
+                process_test(test, False)
         self.output_obj.create_or_update_page(path, self.report_body)
         return self.report_body
 
@@ -47,10 +71,4 @@ class azureport(reporting_base):
                 report_body += self.add_text(obj["content"])
             elif obj["type"] == "graph":
                 report_body += self.add_graph(obj["content"], current_run_id, baseline_run_id)
-            elif obj["type"] == "template":
-                for sub_obj in self.get_template_data(obj["content"]):
-                    if sub_obj["type"] == "text":
-                        report_body += self.add_text(sub_obj["content"])
-                    elif sub_obj["type"] == "graph":
-                        report_body += self.add_graph(sub_obj["content"], current_run_id, baseline_run_id)
         return report_body

@@ -37,10 +37,10 @@
                                         <option value="smtp_mail_report">Google Mail report</option>
                                         <option value="delete">Delete</option>
                                     </select>
-                                    <select class="form-select ms-2" id="templateName">
-                                        <option selected="selected">Choose template</option>
-                                        {% for template in templates %}
-                                                <option value="{{ template }}">{{ template }}</option>
+                                    <select class="form-select ms-2" id="templateGroupName">
+                                        <option selected="selected">Choose template group</option>
+                                        {% for template_group in template_groups %}
+                                                <option value="{{ template_group }}">{{ template_group }}</option>
                                         {% endfor %}
                                     </select>
                                     <select class="form-select ms-2" id="influxdbName">
@@ -64,16 +64,20 @@
                                                 </div>
                                             </th>
                                             <th class="sort" data-sort="runId">Run Id</th>
+                                            <th>Template</th>
                                             <th class="sort" data-sort="testName">Report flow</th>
-                                            <th class="sort" data-sort="duration">Duration</th>
+                                            <th class="sort" data-sort="duration">Duration (sec)</th>
                                             <th class="sort" data-sort="maxThreads">Uesrs</th>
                                             <th class="sort" data-sort="startTime">Start time</th>
                                             <th class="sort" data-sort="endTime">End time</th>
+                                            <th>Compare</th>
                                             <th class="sort" data-sort="actions">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody class="list" id="bulk-select-body">
                                         <tr>
+                                            <th></th>
+                                            <th></th>
                                             <th></th>
                                             <th></th>
                                             <th></th>
@@ -116,6 +120,11 @@
                 const influxdb_select = document.getElementById("influxdbName");
                 influxdb_select.addEventListener("change", loadData);
 
+                const templates = JSON.parse('{{ templates | tojson }}');
+                if (!templates){
+                    templates = []
+                }
+
                 loadData();
 
                 function loadData(){
@@ -142,33 +151,90 @@
                             $("#spinner").hide();
                         });
                 }
-    
-                function updateTable(tests){
+
+                function updateTable(tests) {
                     $("#table-id").attr('data-list', '{"valueNames":["runId", "testName", "duration", "maxThreads", "startTime", "endTime"], "page": 5, "pagination": true}');
 
-                    var tableBody = $("#bulk-select-body");
-                    tableBody.empty();
+                    var tableBody = document.getElementById("bulk-select-body");
+                    tableBody.innerHTML = ''; // Clear the table body
 
-                    tests.forEach(function(test){
-                        tableBody.append(
-                            `<tr>
-                                <td>
-                                    <div class="form-check fs-0">
-                                        <input class="form-check-input" type="checkbox" data-bulk-select-row="{'runId':${test.runId},'testName':${test.testName},'duration':${test.duration},'maxThreads':${test.maxThreads},'startTime':${test.startTime},'endTime':${test.endTime}}" />
-                                    </div>
-                                </td>
-                                <td class="runId">${test.runId}</td>
-                                <td class="testName">${test.testName}</td>
-                                <td class="duration">${test.duration}</td>
-                                <td class="maxThreads">${test.maxThreads}</td>
-                                <td class="startTime">${test.startTime}</td>
-                                <td class="endTime">${test.endTime}</td>
-                                <td class="actions">
-                                    <a class="btn btn-danger" href="/grafana-result-dashboard?runId=${test.runId}&testName=${test.testName}&startTimestamp=${test.startTimestamp}&endTimestamp=${test.endTimestamp}">Grafana dashboard</a>
-                                </td>
-                            </tr>`
-                        );
+                    tests.forEach(function(test) {
+                        const row = tableBody.insertRow();
+
+                        // Insert the checkbox column
+                        const checkboxCell = row.insertCell();
+                        const checkboxDiv = document.createElement("div");
+                        checkboxDiv.className = "form-check fs-0";
+                        checkboxDiv.innerHTML = `<input class="form-check-input" type="checkbox" data-bulk-select-row='{"runId":"${test.runId}","testName":"${test.testName}","duration":"${test.duration}","maxThreads":"${test.maxThreads}","startTime":"${test.startTime}","endTime":"${test.endTime}"}' />`;
+                        checkboxCell.appendChild(checkboxDiv);
+
+                        // Insert cells for each column based on your data structure
+                        const runIdCell = row.insertCell();
+                        runIdCell.textContent = test.runId;
+
+                        // Create and insert the Test ID dropdown
+                        const templateIdCell = row.insertCell();
+                        const selectTemplate = document.createElement("select");
+                        selectTemplate.className = "form-select";
+
+                        // Create a default "Choose for comparison" option
+                        const defaultTemplateOption = document.createElement("option");
+                        defaultTemplateOption.value = "no data"; // Set an empty value for the default option
+                        defaultTemplateOption.textContent = "For report generation";
+                        selectTemplate.appendChild(defaultTemplateOption);
+                        selectTemplate.setAttribute("template-test-id", test.runId)
+                        templates.forEach(tmp => {
+                            const option = document.createElement("option");
+                            option.value = tmp;
+                            option.textContent = tmp;
+                            selectTemplate.appendChild(option);
+                        });
+                        templateIdCell.appendChild(selectTemplate);
+
+                        // Insert Test Name (modify as needed)
+                        const testNameCell = row.insertCell();
+                        testNameCell.textContent = test.testName;
+
+                        // Insert Duration (modify as needed)
+                        const durationCell = row.insertCell();
+                        durationCell.textContent = test.duration;
+
+                        // Insert Max Threads (modify as needed)
+                        const maxThreadsCell = row.insertCell();
+                        maxThreadsCell.textContent = test.maxThreads;
+
+                        // Insert Start Time (modify as needed)
+                        const startTimeCell = row.insertCell();
+                        startTimeCell.textContent = test.startTime;
+
+                        // Insert End Time (modify as needed)
+                        const endTimeCell = row.insertCell();
+                        endTimeCell.textContent = test.endTime;
+
+                        // Create and insert the Test ID dropdown
+                        const testIdCell = row.insertCell();
+                        const select = document.createElement("select");
+                        select.className = "form-select";
+
+                        // Create a default "Choose for comparison" option
+                        const defaultOption = document.createElement("option");
+                        defaultOption.value = "no data"; // Set an empty value for the default option
+                        defaultOption.textContent = "For comparison";
+                        select.appendChild(defaultOption);
+                        select.setAttribute("data-test-id", test.runId)
+                        tests.forEach(test => {
+                            const option = document.createElement("option");
+                            option.value = test.runId;
+                            option.textContent = test.runId;
+                            select.appendChild(option);
+                        });
+                        testIdCell.appendChild(select);
+
+                        // Add the Actions column (e.g., Grafana link)
+                        const actionsCell = row.insertCell();
+                        actionsCell.innerHTML = `<a class="btn btn-danger" href="/grafana-result-dashboard?runId=${test.runId}&testName=${test.testName}&startTimestamp=${test.startTimestamp}&endTimestamp=${test.endTimestamp}">Grafana dashboard</a>`;
                     });
+
                     perforge.utils.listInit();
                 }
             });

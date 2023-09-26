@@ -81,22 +81,23 @@ class azure(integration):
 
     def create_or_update_page(self, path, page_content):
         response = self.put_page(path, page_content)
-        for x in range(1,5):
-            if "WikiAncestorPageNotFoundException" in str(response.content):
-                newPage = '/'.join(path.split('/')[:-x])
-                response = self.put_page(newPage, '')
-            else:
-                response = self.put_page(path, page_content)
-                break
-        if "specified in the add operation already exists in the wiki" in str(response.content):
-            try:
-                response = self.get_page(path)
-            except Exception as er:
-                logging.warning('ERROR: getting ETag failed')
-                logging.warning(er)       
-            self.azure_authorization_headers["If-Match"]=str(response.headers["ETag"])
-            try:
-                response = self.put_page(path, page_content)
-            except Exception as er:
-                logging.warning('ERROR: failed to update the page in wiki')
-                logging.warning(er)  
+        if response.status_code != 201:
+            for x in range(1,5):
+                if "WikiAncestorPageNotFoundException" in str(response.content):
+                    newPage = '/'.join(path.split('/')[:-x])
+                    response = self.put_page(newPage, '')
+                else:
+                    response = self.put_page(path, page_content)
+                    break
+            if "specified in the add operation already exists in the wiki" in str(response.content):
+                try:
+                    response = self.get_page(path)
+                except Exception as er:
+                    logging.warning('ERROR: getting ETag failed')
+                    logging.warning(er)       
+                self.azure_authorization_headers["If-Match"]=str(response.headers["ETag"])
+                try:
+                    response = self.put_page(path, page_content)
+                except Exception as er:
+                    logging.warning('ERROR: failed to update the page in wiki')
+                    logging.warning(er)  

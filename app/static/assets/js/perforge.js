@@ -169,9 +169,30 @@
           this.clickBulkCheckbox(),
           this.clickRowCheckbox();
       }
+
       getSelectedRows() {
-          return Array.from(this.bulkSelectRows).filter((e=>e.checked)).map((e=>getData(e, "bulk-select-row")))
-      }
+        const selectedRows = Array.from(this.bulkSelectRows).filter((row) => row.checked).map((row) => {
+            const checkboxData = getData(row, "bulk-select-row");
+            const template_id = document.querySelector(`[template-test-id="${checkboxData.runId}"]`).value;
+            if (template_id !== "no data"){
+              checkboxData["template_id"] = template_id;
+            }else{
+              checkboxData["template_id"] = checkboxData.testName;
+            }
+            const baseline_run_id = document.querySelector(`[data-test-id="${checkboxData.runId}"]`).value;
+            if (baseline_run_id !== "no data"){
+              checkboxData["baseline_run_id"] = baseline_run_id;
+            }
+            delete checkboxData.duration;
+            delete checkboxData.startTime;
+            delete checkboxData.endTime;
+            delete checkboxData.maxThreads;
+            delete checkboxData.testName;
+            return checkboxData;
+        });
+    
+        return selectedRows;
+    }
       attachNodes() {
           const {body: e, actions: t, replacedElement: s} = getData(this.element, "bulk-select");
           this.actions = new DomNode(document.getElementById(t)),
@@ -474,7 +495,7 @@
       //Tests
       const selectedRowsBtn = document.querySelector('[data-selected-rows]');
       const selectedAction = document.getElementById('selectedAction');
-      const selectedTemplate = document.getElementById('templateName');
+      const selectedTemplateGroup = document.getElementById('templateGroupName');
       const spinner = document.getElementById("spinner-apply");
       const spinnerText = document.getElementById("spinner-apply-text");
       if (selectedRowsBtn) {
@@ -484,14 +505,13 @@
 
           spinner.style.display = "inline-block";
           spinnerText.style.display = "none";
-          
-          const transformedList = extractRunIds(bulkSelectInstance.getSelectedRows());
-
+          const transformedList = bulkSelectInstance.getSelectedRows();
           const selectedRows = {}
-
           selectedRows["tests"] = transformedList;
           selectedRows["selectedAction"] = selectedAction.value;
-          selectedRows["template"] = selectedTemplate.value;
+          if (selectedTemplateGroup.value !== "Choose template group"){
+            selectedRows["templateGroup"] = selectedTemplateGroup.value;
+          }
           sendPostRequest('/generate',JSON.stringify(selectedRows)).finally(function (){
             spinner.style.display = "none";
             spinnerText.style.display = "";

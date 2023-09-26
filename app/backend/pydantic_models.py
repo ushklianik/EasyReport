@@ -68,6 +68,11 @@ class template_model(BaseModel):
     title:            str
     data:             list[template_object_model]
 
+class template_group_model(BaseModel):
+    name:             str
+    title:            str
+    data:             list[template_object_model]
+
 class flow_model(BaseModel):
     name:             str
     influxdb:         str

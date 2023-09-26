@@ -13,7 +13,7 @@ from app.backend.reporting.azure_wiki           import azureport
 from app.backend.reporting.atlassian_wiki       import atlassian_wiki_report
 from app.backend.reporting.atlassian_jira       import atlassian_jira_report
 from app.backend.reporting.smtp_mail            import smtp_mail_report
-from app.forms                                  import FlowConfigForm, TemplateConfigForm
+from app.forms                                  import FlowConfigForm
 
 import traceback
 import json
@@ -56,6 +56,42 @@ def delete_template():
         flash("ERROR: " + str(traceback.format_exc()))
     return redirect(url_for("get_reporting"))
 
+# Route for managing flow configuration
+@app.route('/template-group', methods=['GET', 'POST'])
+def template_group():
+    try:
+        # Get current project
+        project   = request.cookies.get('project')
+        templates = pkg.get_config_names(project, "templates")
+        template_group  = request.args.get('template_group')
+        template_group_data = []
+        if template_group is not None:
+            template_group_data = pkg.get_template_group_values(project, template_group)
+        if request.method == "POST":
+            pkg.save_template_group(project, request.get_json())
+            flash("Template group added.")
+            return jsonify({'redirect_url': 'reporting'})
+    except Exception:
+        flash("ERROR: " + str(traceback.format_exc()))
+        return redirect(url_for("get_reporting"))
+    return render_template('home/template-group.html', templates=templates, template_group_data=template_group_data)
+
+
+# Route for deleting flow configuration
+@app.route('/delete-template-group', methods=['GET'])
+def delete_template_group():
+    try:
+        template_group = request.args.get('template_group')
+        # Get current project
+        project = request.cookies.get('project')
+        print(template_group)
+        if template_group is not None:
+            pkg.delete_config(project, template_group)
+            flash("Template group is deleted.")
+    except Exception as er:
+        flash("ERROR: " + str(traceback.format_exc()))
+    return redirect(url_for("get_reporting"))
+
 # Route for displaying all flow configurations
 @app.route('/reporting', methods=['GET', 'POST'])
 def get_reporting():
@@ -72,7 +108,8 @@ def get_reporting():
 
         flows                 = pkg.get_config_names(project, "flows")
         templates             = pkg.get_config_names(project, "templates")
-        return render_template('home/reporting.html', flows=flows, flow=flow, templates=templates)
+        template_groups       = pkg.get_config_names(project, "template_groups")
+        return render_template('home/reporting.html', flows=flows, flow=flow, templates=templates, template_groups=template_groups)
     except Exception:
         flash("ERROR: " + str(traceback.format_exc()))
         return redirect(url_for("index"))
@@ -117,7 +154,8 @@ def get_tests():
         project = request.cookies.get('project')  
         influxdb_names = pkg.get_integration_config_names(project, "influxdb")
         templates = pkg.get_config_names(project, "templates")
-        return render_template('home/tests.html', influxdb_names=influxdb_names, templates = templates)
+        template_groups = pkg.get_config_names(project, "template_groups")
+        return render_template('home/tests.html', influxdb_names=influxdb_names, templates = templates, template_groups = template_groups)
     # except Exception as er:
     #     flash("ERROR: " + str(traceback.format_exc()))
     #     return redirect(url_for("index"))
@@ -157,67 +195,21 @@ def get_report():
         flash("ERROR: " + str(er))
         return redirect(url_for("index"))
 
-# Route for generating Azure wiki report
-@app.route('/generate-az-report', methods=['GET'])
-def generate_azure_wiki_report():
-    try:
-        # Get current project
-        project         = request.cookies.get('project')
-        runId           = request.args.get('runId')
-        baseline_run_id = request.args.get('baseline_run_id')
-        report_name     = request.args.get('report_name')
-        azreport        = azureport(project, report_name)
-        azreport.generate_report(runId, baseline_run_id)
-        return redirect(url_for('getTests'))
-    except Exception as er:
-        flash("ERROR: " + str(traceback.format_exc()))
-        return redirect(url_for("index"))
-
-# Route for generating Atlassian wiki report
-@app.route('/generate-confl-report', methods=['GET'])
-def generate_atlassian_wiki_report():
-    try:
-        # Get current project
-        project         = request.cookies.get('project')
-        runId           = request.args.get('runId')
-        baseline_run_id = request.args.get('baseline_run_id')
-        report_name     = request.args.get('report_name')
-        atlassian_wiki  = atlassian_wiki_report(project, report_name)
-        atlassian_wiki.generate_report(runId, baseline_run_id)
-        return redirect(url_for('getTests'))
-    except Exception as er:
-        flash("ERROR: " + str(er))
-        return redirect(url_for("index"))
-
-# Route for generating Atlassian Jira report
-@app.route('/generate-jira-report', methods=['GET'])
-def generate_atlassian_jira_report():
-    try:
-        # Get current project
-        project         = request.cookies.get('project')
-        runId           = request.args.get('runId')
-        baseline_run_id = request.args.get('baseline_run_id')
-        report_name     = request.args.get('report_name')
-        atlassian_jira  = atlassian_jira_report(project, report_name)
-        atlassian_jira.generate_report(runId, baseline_run_id)
-        return redirect(url_for('getTests'))
-    except Exception as er:
-        flash("ERROR: " + str(er))
-        return redirect(url_for("index"))
-
 # Route for generating a report
 @app.route('/generate', methods=['GET','POST'])
 def generate_report():
     # try:
         project       = request.cookies.get('project')
         if request.method == "POST":
-            data      = request.get_json()
-            template  = data["template"]
-            action    = data["selectedAction"]
-            result    = "Choose what you need"
+            data           = request.get_json()
+            if "templateGroup" in data: template_group = data["templateGroup"]
+            else: template_group = None
+            if "selectedAction" in data: action = data["selectedAction"]
+            else: action = None
+            result = "Wrong action: " + action
             if action == "azure_report":
-                az     = azureport(project, template)
-                result = az.generate_report(data["tests"])
+                az     = azureport(project)
+                result = az.generate_report(data["tests"], template_group)
                 del(az)
             elif action == "atlassian_wiki_report":
                 awr    = atlassian_wiki_report(project, template)

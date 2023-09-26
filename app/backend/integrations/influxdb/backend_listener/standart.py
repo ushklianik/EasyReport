@@ -28,7 +28,7 @@ def get_test_log_query(bucket):
     |> group(columns: ["testTitle", "application"])
 
   join(tables: {d1: join1, d2: endTime}, on: ["testTitle", "application"])
-    |> map(fn: (r) => ({ r with duration: (int(v: r.endTime) - int(v: r.startTime))}))
+    |> map(fn: (r) => ({ r with duration: (int(v: r.endTime)/1000000000 - int(v: r.startTime)/1000000000)}))
     |> keep(columns: ["startTime","endTime","testTitle", "application", "maxThreads", "duration"])
     |> group()
     |> rename(columns: {testTitle: "runId"})
@@ -66,8 +66,32 @@ def get_app_name(testTitle, start, stop, bucket):
   |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
   |> filter(fn: (r) => r["_measurement"] == "events")
   |> filter(fn: (r) => r["testTitle"] == "'''+testTitle+'''")
-  |> keep(columns: ["application"])
-  |> last()'''
+  |> distinct(column: "application")
+  |> keep(columns: ["application"])'''
+
+def get_test_duration(testTitle, start, stop, bucket):
+  return '''data = from(bucket: "'''+bucket+'''")
+  |> range(start: '''+str(start)+''', stop: '''+str(stop)+''')
+  |> filter(fn: (r) => r["_measurement"] == "jmeter")
+  |> filter(fn: (r) => r["_field"] == "maxAT")
+  |> filter(fn: (r) => r["testTitle"] == "'''+testTitle+'''")
+  
+  endTime = data 
+    |> max(column: "_time")
+    |> keep(columns: ["_time", "testTitle"])
+    |> group(columns: ["_time", "testTitle"])
+    |> rename(columns: {_time: "endTime"})
+
+  startTime = data 
+    |> min(column: "_time")
+    |> keep(columns: ["_time", "testTitle"])
+    |> group(columns: ["_time", "testTitle"])
+    |> rename(columns: {_time: "startTime"})
+
+  join(tables: {d1: startTime, d2: endTime}, on: ["testTitle"])
+    |> map(fn: (r) => ({ r with duration: (int(v: r.endTime)/1000000000 - int(v: r.startTime)/1000000000)}))
+    |> keep(columns: ["duration"])
+  '''
 
 ################################################################# NFR requests
   
