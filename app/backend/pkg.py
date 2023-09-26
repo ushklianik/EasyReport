@@ -114,7 +114,8 @@ def delete_config(project, config):
         {"list_name": "integrations", "key": "atlassian_jira"},
         {"list_name": "integrations", "key": "smtp_mail"},
         {"list_name": "flows"},
-        {"list_name": "templates"}
+        {"list_name": "templates"},
+        {"list_name": "template_groups"}
     ]
     # Validate the config type
     for type in integration_types:
@@ -126,7 +127,7 @@ def delete_config(project, config):
     data = get_project_config(project)
     # Iterate over the integration types and remove the config if it exists
     for key_obj in integration_types:
-        if key_obj["list_name"] == "flows" or key_obj["list_name"] == "templates":
+        if key_obj["list_name"] == "flows" or key_obj["list_name"] == "templates" or key_obj["list_name"] == "template_groups":
             for idx, obj in enumerate(data[key_obj["list_name"]]):
                 if obj["name"] == config:
                     data[key_obj["list_name"]].pop(idx)
@@ -375,6 +376,17 @@ def save_template(project, template):
     validate_config(project, "templates")
     data = get_project_config(project)
     data["templates"] = save_dict(template.dict(), data["templates"], get_config_names(project, "templates"))
+    save_new_data(project, data)
+
+def get_template_group_values(project, template_group):
+    output = md.template_group_model.parse_obj(get_json_values(project, "template_groups", template_group))
+    return output.dict()
+
+def save_template_group(project, template_group):
+    template_group = md.template_group_model.parse_obj(template_group)
+    validate_config(project, "template_groups")
+    data = get_project_config(project)
+    data["template_groups"] = save_dict(template_group.dict(), data["template_groups"], get_config_names(project, "template_groups"))
     save_new_data(project, data)
 
 ####################### GRAPHS:

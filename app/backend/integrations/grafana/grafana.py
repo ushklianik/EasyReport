@@ -58,14 +58,13 @@ class grafana(integration):
         if (pkg.check_graph(self.project, graph_name)):
             graph_json = pkg.get_graph(self.project, graph_name)
             graph_json["dash_id"] = self.dash_id_to_render(graph_json["dash_id"])
-            url = self.get_grafana_link(start, stop, test_name, graph_json["dash_id"]) + "&panelId="+graph_json["view_panel"]+"&width="+graph_json["width"]+"&height="+graph_json["height"]
+            url = self.get_grafana_link(start, stop, test_name, graph_json["dash_id"]) + "&panelId="+graph_json["view_panel"]+"&width="+graph_json["width"]+"&height="+graph_json["height"]+"&scale=3"
             if baseline_run_id:
                 url = url+"&var-current_runId="+run_id+"&var-baseline_runId="+baseline_run_id
             else:
                 url = url+"&var-runId="+run_id
             try:   
                 response = requests.get(url=url, headers={ 'Authorization': 'Bearer ' + self.token}, timeout=180)
-                print(response.content)
                 if response.status_code == 200:
                     image = response.content
                 else:

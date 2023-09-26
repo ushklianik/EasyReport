@@ -169,18 +169,22 @@ class influxdb(integration):
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         for flux_table in flux_tables:
             for flux_record in flux_table: 
-                users = flux_record['_value'] 
+                users = round(flux_record['_value'])
         return users  
 
     def get_test_name(self, run_id, start, end):
         if self.listener == "org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient":
             query = standart.get_app_name(run_id, start, end, self.bucket)
+            flux_tables = self.influxdb_connection.query_api().query(query)
+            for flux_table in flux_tables:
+                for flux_record in flux_table: 
+                    appName = flux_record['application']
         else:
             query = custom.get_app_name(run_id, start, end, self.bucket)
-        flux_tables = self.influxdb_connection.query_api().query(query)
-        for flux_table in flux_tables:
-            for flux_record in flux_table: 
-                appName = flux_record['testName']
+            flux_tables = self.influxdb_connection.query_api().query(query)
+            for flux_table in flux_tables:
+                for flux_record in flux_table: 
+                    appName = flux_record['testName']
         return appName
 
     def delete_test_data(self, measurement, run_id, start = None, end = None):
