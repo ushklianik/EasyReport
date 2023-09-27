@@ -13,8 +13,7 @@ class smtp_mail_report(reporting_base):
     def add_text(self, text):
         text = self.replace_variables(text)
         text = f'<p>{text}</p><br>'
-        # text = text.replace('\\"', '"')
-        # text = text.replace('&', '&amp;')
+        text = text.replace('\n', '<br>')
         return text
     
     def add_graph(self, name, current_run_id, baseline_run_id):
@@ -24,7 +23,7 @@ class smtp_mail_report(reporting_base):
             content_id = f"{self.test_name}_{name}_{timestamp}"
             file_name = f"{content_id}.png"
             self.images.append({'file_name':file_name, 'data': image, 'content_id': content_id})
-            graph = f'<img src="cid:{content_id}"><br>'
+            graph = f'<img src="cid:{content_id}" width="900" alt="{content_id}" /><br>'
         else:
             graph = 'Image failed to load, name: '+ name
         return graph
@@ -47,7 +46,7 @@ class smtp_mail_report(reporting_base):
     def generate(self, current_run_id, baseline_run_id = None):
         self.collect_data(current_run_id, baseline_run_id)
         report_body = ""
-        report_body += f'<h1>{self.generate_path()}</h1><br>'
+        report_body += f'<h2>{self.generate_path()}</h2>'
         for obj in self.data:
             if obj["type"] == "text":
                 report_body += self.add_text(obj["content"])
