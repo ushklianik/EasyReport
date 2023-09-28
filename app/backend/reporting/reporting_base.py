@@ -26,7 +26,7 @@ class reporting_base:
 
     def set_template_group(self, template_group):
         template_group_obj     = pkg.get_template_group_values(self.project, template_group)
-        self.group_title             = template_group_obj["title"]
+        self.group_title       = template_group_obj["title"]
         self.template_order    = template_group_obj["data"]
 
     def add_appdex(self):
