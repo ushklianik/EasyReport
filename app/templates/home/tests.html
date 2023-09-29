@@ -165,7 +165,7 @@
                         const checkboxCell = row.insertCell();
                         const checkboxDiv = document.createElement("div");
                         checkboxDiv.className = "form-check fs-0";
-                        checkboxDiv.innerHTML = `<input class="form-check-input" type="checkbox" data-bulk-select-row='{"runId":"${test.runId}","testName":"${test.testName}","duration":"${test.duration}","maxThreads":"${test.maxThreads}","startTime":"${test.startTime}","endTime":"${test.endTime}"}' />`;
+                        checkboxDiv.innerHTML = `<input class="form-check-input" type="checkbox" data-bulk-select-row='{"runId":"${test.runId}","testName":"${test.testName}","duration":"${test.duration}","maxThreads":"${test.maxThreads}","startTime":"${test.startTime}","endTime":"${test.endTime}","template_id":"no data"}' />`;
                         checkboxCell.appendChild(checkboxDiv);
 
                         // Insert cells for each column based on your data structure
@@ -190,6 +190,14 @@
                             selectTemplate.appendChild(option);
                         });
                         templateIdCell.appendChild(selectTemplate);
+
+                        selectTemplate.addEventListener('change', (event) => {
+                            const value = event.target.value;
+                            const checkbox = checkboxDiv.querySelector('input[data-bulk-select-row]');
+                            let checkboxData = JSON.parse(checkbox.getAttribute('data-bulk-select-row'));
+                            checkboxData['template_id'] = value;
+                            checkbox.setAttribute('data-bulk-select-row', JSON.stringify(checkboxData))
+                        });
 
                         // Insert Test Name (modify as needed)
                         const testNameCell = row.insertCell();
@@ -229,6 +237,14 @@
                             select.appendChild(option);
                         });
                         testIdCell.appendChild(select);
+
+                        select.addEventListener('change', (event) => {
+                            const value = event.target.value;
+                            const checkbox = checkboxDiv.querySelector('input[data-bulk-select-row]');
+                            let checkboxData = JSON.parse(checkbox.getAttribute('data-bulk-select-row'));
+                            checkboxData['baseline_run_id'] = value;
+                            checkbox.setAttribute('data-bulk-select-row', JSON.stringify(checkboxData))
+                        });
 
                         // Add the Actions column (e.g., Grafana link)
                         const actionsCell = row.insertCell();

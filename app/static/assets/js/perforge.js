@@ -173,15 +173,8 @@
       getSelectedRows() {
         const selectedRows = Array.from(this.bulkSelectRows).filter((row) => row.checked).map((row) => {
             const checkboxData = getData(row, "bulk-select-row");
-            const template_id = document.querySelector(`[template-test-id="${checkboxData.runId}"]`).value;
-            if (template_id !== "no data"){
-              checkboxData["template_id"] = template_id;
-            }else{
+            if (checkboxData.template_id == "no data"){
               checkboxData["template_id"] = checkboxData.testName;
-            }
-            const baseline_run_id = document.querySelector(`[data-test-id="${checkboxData.runId}"]`).value;
-            if (baseline_run_id !== "no data"){
-              checkboxData["baseline_run_id"] = baseline_run_id;
             }
             delete checkboxData.duration;
             delete checkboxData.startTime;
@@ -198,7 +191,6 @@
           this.actions = new DomNode(document.getElementById(t)),
           this.replacedElement = new DomNode(document.getElementById(s)),
           this.bulkSelectRows = document.getElementById(e).querySelectorAll("[data-bulk-select-row]");
-          console.log(this.bulkSelectRows);
           
       }
       attachRowNodes(e) {
