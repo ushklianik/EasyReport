@@ -1,22 +1,20 @@
-# Flask modules
-from flask import render_template, request, url_for, redirect, flash
-
-# App modules
-from app         import app
-from app.forms   import GraphForm
-from app.backend import pkg
-
 import traceback
+
+from app         import app
+from app.backend import pkg
+from app.forms   import GraphForm
+from flask       import render_template, request, url_for, redirect, flash
+
 
 # Route for getting all graphs
 @app.route('/graphs', methods=['GET'])
 def get_graphs():
     try:
         # Get current project
-        project = request.cookies.get('project')
+        project                         = request.cookies.get('project')
         # Declare the graphs form
-        form_for_graphs = GraphForm(request.form)
-        graphs_list     = pkg.get_graphs(project)
+        form_for_graphs                 = GraphForm(request.form)
+        graphs_list                     = pkg.get_graphs(project)
         form_for_graphs.dash_id.choices = pkg.get_dashboards(project)
         return render_template('home/graphs.html', graphs_list=graphs_list, form_for_graphs=form_for_graphs)
     except Exception as er:

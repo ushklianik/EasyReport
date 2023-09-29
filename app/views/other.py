@@ -1,11 +1,7 @@
-# Python modules
+from app         import app
 from app.backend import pkg
+from flask       import flash, redirect, request, url_for
 
-# Flask modules
-from flask import flash, redirect, request, url_for
-
-# App modules
-from app import app
 
 # Route for setting the current project
 @app.route('/set-project', methods=['GET'])

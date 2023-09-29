@@ -1,11 +1,14 @@
-from os import path
-from app.backend import pkg
 import os
 import logging
-from atlassian import Confluence
-from app.backend.integrations.integration import integration
 
-class wiki(integration):
+from app.backend                          import pkg
+from app.backend.integrations.integration import Integration
+from atlassian                            import Confluence
+from os                                   import path
+
+
+class AtlassianWiki(Integration):
+
     def __init__(self, project, name = None):
         super().__init__(project)
         self.set_config(name)
@@ -37,24 +40,28 @@ class wiki(integration):
                     return {"status":"error", "message":"No such config name"}
 
     def put_image_to_confl(self, image, name, page_id, test_id):
-        name = test_id+"_"+name
-        name = name.replace(" ", "-") + ".png"
+        name = f'{test_id}_{name}.png'
+        name = name.replace(" ", "-")
         for i in range(3):
             try:
-                # response = self.confl.attach_file(filename=image, page_id=pageId, name=name)
                 self.confl.attach_content(content=image, page_id=page_id, name=name, content_type="image/png")
                 return name
             except Exception as er:
                 logging.warning('ERROR: uploading image to confluence failed')
-                logging.warning(er)  
+                logging.warning(er)
         
     def put_page(self, title, content):
-        # try:
+        try:
             response = self.confl.update_or_create(title=title, body=content, parent_id=self.parent_id, representation='storage')
             return response
-        # except Exception as er:
-        #     logging.warning(er) 
-        #     return {"status":"error", "message":er}
+        except Exception as er:
+            logging.warning(er)
+            return {"status":"error", "message":er}
 
-    def create_or_update_page(self, title, content):
-        self.put_page(title, content)
+    def update_page(self, page_id, title, content):
+        try:
+            response = self.confl.update_page(page_id=page_id, title=title, body=content, type='page', representation='storage')
+            return response
+        except Exception as er:
+            logging.warning(er)
+            return {"status":"error", "message":er}

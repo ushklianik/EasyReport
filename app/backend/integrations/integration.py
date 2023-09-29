@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 from app import config_path
 
-class integration(ABC):
+
+class Integration(ABC):
+
     def __init__(self, project):
         self.project     = project
         self.config_path = config_path
@@ -13,6 +15,3 @@ class integration(ABC):
     @abstractmethod
     def __str__(self):
         pass
-        
-
-    

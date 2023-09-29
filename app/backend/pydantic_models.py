@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
-class azure_model(BaseModel):
+
+class AzureModel(BaseModel):
     name:              str
     token:             str
     org_url:           str
@@ -9,7 +10,8 @@ class azure_model(BaseModel):
     path_to_report:    str
     is_default:        str
 
-class grafana_model(BaseModel):
+
+class GrafanaModel(BaseModel):
     name:             str
     server:           str
     org_id:           str
@@ -17,7 +19,8 @@ class grafana_model(BaseModel):
     is_default:       str
     dashboards:       list
 
-class influxdb_model(BaseModel):
+
+class InfluxdbModel(BaseModel):
     name:             str
     url:              str
     org_id:           str
@@ -27,7 +30,8 @@ class influxdb_model(BaseModel):
     listener:         str
     is_default:       str
 
-class atlassian_jira_model(BaseModel):
+
+class AtlassianJiraModel(BaseModel):
     name:             str
     email:            str
     token:            str
@@ -37,7 +41,8 @@ class atlassian_jira_model(BaseModel):
     epic_name:        str
     is_default:       str
 
-class atlassian_wiki_model(BaseModel):
+
+class AtlassianWikiModel(BaseModel):
     name:             str
     username:         str
     token:            str
@@ -46,7 +51,8 @@ class atlassian_wiki_model(BaseModel):
     space_key:        str
     is_default:       str
 
-class smtp_mail_model(BaseModel):
+
+class SmtpMailModel(BaseModel):
     name:             str
     server:           str
     port:             int
@@ -57,29 +63,34 @@ class smtp_mail_model(BaseModel):
     is_default:       str
     recipients:       list
 
-class template_object_model(BaseModel):
+
+class TemplateObjectModel(BaseModel):
     id:               int
     type:             str
     content:          str
 
-class template_model(BaseModel):
+
+class TemplateModel(BaseModel):
     name:             str
     flow:             str
     title:            str
-    data:             list[template_object_model]
+    data:             list[TemplateObjectModel]
 
-class template_group_model(BaseModel):
+
+class TemplateGroupModel(BaseModel):
     name:             str
     title:            str
-    data:             list[template_object_model]
+    data:             list[TemplateObjectModel]
 
-class flow_model(BaseModel):
+
+class FlowModel(BaseModel):
     name:             str
     influxdb:         str
     grafana:          str
     output:           str
 
-class nfr(BaseModel):
+
+class NfrModel(BaseModel):
     scope:            str
     metric:           str
     aggregation:      str
@@ -88,6 +99,7 @@ class nfr(BaseModel):
     weight:           str
     name:             str
 
-class nfr_group(BaseModel):
+
+class NfrGroupModel(BaseModel):
     name:             str
-    rows:             list[nfr]
+    rows:             list[NfrModel]
