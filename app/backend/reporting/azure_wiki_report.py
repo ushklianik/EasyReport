@@ -1,8 +1,8 @@
-from app.backend.integrations.azure.azure import azure
-from app.backend.reporting.reporting_base import reporting_base
-import re
+from app.backend.integrations.main.azure_wiki import AzureWiki
+from app.backend.reporting.reporting_base     import ReportingBase
 
-class azureport(reporting_base):
+
+class AzureWikiReport(ReportingBase):
 
     def __init__(self, project):
         super().__init__(project)
@@ -10,33 +10,30 @@ class azureport(reporting_base):
 
     def set_template(self, template):
         super().set_template(template)
-        self.output_obj     = azure(project=self.project, name=self.output)
+        self.output_obj = AzureWiki(project=self.project, name=self.output)
 
     def add_group_text(self, text):
-        text += '''\n'''
-        text += '''\n'''
+        text += f'\n\n'
         return text
-    
+
     def add_text(self, text):
         text = self.replace_variables(text)
-        text += '''\n'''
-        text += '''\n'''
+        text += f'\n\n'
         return text
-    
+
     def add_graph(self, name, current_run_id, baseline_run_id):
-        image = self.grafana_obj.render_image_encoded(name, self.current_start_timestamp, self.current_end_timestamp, self.test_name, current_run_id, baseline_run_id)
+        image    = self.grafana_obj.render_image_encoded(name, self.current_start_timestamp, self.current_end_timestamp, self.test_name, current_run_id, baseline_run_id)
         fileName = self.output_obj.put_image_to_azure(image, name)
-        graph = '''![image.png](/.attachments/''' + str(fileName) + ''')'''
-        graph = graph + '''\n'''
-        graph = graph + '''\n'''
+        graph    = f'![image.png](/.attachments/{str(fileName)})\n\n'
         return graph
-    
 
     def generate_path(self, isgroup):
-        if isgroup: title = self.output_obj.get_path() + self.group_title
-        else: title = self.output_obj.get_path() + self.replace_variables(self.title)
+        if isgroup:
+            title = f'{self.output_obj.get_path()}{self.group_title}'
+        else:
+            title = f'{self.output_obj.get_path()}{self.replace_variables(self.title)}'
         return title
-    
+
     def generate_report(self, tests, template_group=None):
         path = None
         def process_test(test, isgroup):
@@ -44,10 +41,11 @@ class azureport(reporting_base):
             template_id = test.get('template_id')
             if template_id:
                 self.set_template(template_id)
-                run_id = test.get('runId')
-                baseline_run_id = test.get('baseline_run_id')
+                run_id            = test.get('runId')
+                baseline_run_id   = test.get('baseline_run_id')
                 self.report_body += self.generate(run_id, baseline_run_id)
-                if not path: path = self.generate_path(isgroup)
+                if not path:
+                    path = self.generate_path(isgroup)
         if template_group:
             self.set_template_group(template_group)
             for obj in self.template_order:

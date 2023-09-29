@@ -1,5 +1,3 @@
-# -*- encoding: utf-8 -*-
-
 from flask_wtf          import FlaskForm
 from flask_wtf.file     import FileField, FileRequired
 from wtforms            import StringField, IntegerField, PasswordField, FieldList, BooleanField, SelectField, TextAreaField
@@ -25,8 +23,7 @@ class InfluxDBForm(FlaskForm):
     token       = StringField('Token', validators=[DataRequired()])
     timeout     = StringField('Timeout', validators=[DataRequired()])
     bucket      = StringField('Bucket', validators=[DataRequired()])
-    listener    = SelectField('Backend listener', choices=[('org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient', 'org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient'), 
-                                                           ('mderevyankoaqa', 'mderevyankoaqa')], default='InfluxdbBackendListenerClient')
+    listener    = SelectField('Backend listener', choices=[('org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient', 'org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient'), ('mderevyankoaqa', 'mderevyankoaqa')], default='InfluxdbBackendListenerClient')
     is_default  = SelectField('Default', choices=[('true', 'True'), ('false', 'False')], default='false')
 
 
@@ -83,6 +80,7 @@ class AtlassianJiraForm(FlaskForm):
     epic_field = StringField('EpicField')
     epic_name  = StringField('EpicName')
     is_default = SelectField('Default', choices=[('true', 'True'), ('false', 'False')], default='false')
+
 
 class SMTPMailForm(FlaskForm):
     name       = StringField('Name', validators=[DataRequired()])

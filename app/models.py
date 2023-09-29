@@ -1,15 +1,14 @@
-from datetime    import datetime
 from app         import db
 from flask_login import UserMixin
+from datetime    import datetime
 
 
 class Users(db.Model, UserMixin):
     __tablename__ = 'Users'
-
-    id       = db.Column(db.Integer,     primary_key=True)
-    user     = db.Column(db.String(64),  unique=True)
-    email    = db.Column(db.String(120), unique=True)
-    password = db.Column(db.String(500))
+    id            = db.Column(db.Integer, primary_key=True)
+    user          = db.Column(db.String(64), unique=True)
+    email         = db.Column(db.String(120), unique=True)
+    password      = db.Column(db.String(500))
 
     def __init__(self, user, email, password):
         self.user     = user
@@ -22,19 +21,16 @@ class Users(db.Model, UserMixin):
     def save(self):
         # inject self into db session
         db.session.add(self)
-
         # commit change and save the object
         db.session.commit()
-
         return self
 
 
 class Credentials(db.Model):
     __tablename__ = 'Credentials'
-
-    id    = db.Column(db.Integer,     primary_key=True)
-    key   = db.Column(db.String(120), unique=True)
-    value = db.Column(db.String(500))
+    id            = db.Column(db.Integer, primary_key=True)
+    key           = db.Column(db.String(120), unique=True)
+    value         = db.Column(db.String(500))
 
     def __init__(self, value, key):
         self.key   = f"token_in_sql:{datetime.now().timestamp()}"
@@ -46,11 +42,10 @@ class Credentials(db.Model):
     def save(self):
         # inject self into db session
         db.session.add(self)
-
         # commit change and save the object
         db.session.commit()
-
         return self.key
+
 
     @classmethod
     def get(cls, key):
@@ -59,6 +54,7 @@ class Credentials(db.Model):
             return result.value
         else:
             return "Token not found"
+
 
     @classmethod
     def delete(cls, key):
