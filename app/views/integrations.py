@@ -1,12 +1,10 @@
-# Flask modules
-from flask import render_template, request, url_for, redirect, flash
-
-# App modules
-from app         import app
-from app.forms   import InfluxDBForm, GrafanaForm, AzureForm, AtlassianWikiForm, AtlassianJiraForm, SMTPMailForm
-from app.backend import pkg
-
 import traceback
+
+from app         import app
+from app.backend import pkg
+from app.forms   import InfluxDBForm, GrafanaForm, AzureForm, AtlassianWikiForm, AtlassianJiraForm, SMTPMailForm
+from flask       import render_template, request, url_for, redirect, flash
+
 
 # Route for showing all integrations
 @app.route('/integrations')
@@ -20,7 +18,7 @@ def integrations():
         azure_configs          = pkg.get_integration_config_names(project, "azure")
         atlassian_wiki_configs = pkg.get_integration_config_names(project, "atlassian_wiki")
         atlassian_jira_configs = pkg.get_integration_config_names(project, "atlassian_jira")
-        smtp_mail_configs    = pkg.get_integration_config_names(project, "smtp_mail")
+        smtp_mail_configs      = pkg.get_integration_config_names(project, "smtp_mail")
         return render_template('home/integrations.html',
                                influxdb_configs=influxdb_configs,
                                grafana_configs=grafana_configs,
@@ -38,7 +36,7 @@ def integrations():
 def add_influxdb():
     # try:
         # Declare the Influxdb form
-        form = InfluxDBForm(request.form)
+        form            = InfluxDBForm(request.form)
         # Get InfluxDB config parameter if provided
         influxdb_config = request.args.get('influxdb_config')
         # Get current project
@@ -75,7 +73,7 @@ def delete_influxdb():
 def add_grafana():
     try:
         # Get current project
-        project = request.cookies.get('project')
+        project        = request.cookies.get('project')
         # Get Grafana config parameter if provided
         grafana_config = request.args.get('grafana_config')
         if request.method == 'POST':
@@ -92,9 +90,9 @@ def add_grafana():
 @app.route('/grafana-config', methods=['GET'])
 def get_grafana_config():
     try:
-        output = "no data"
+        output         = "no data"
         # Get current project
-        project = request.cookies.get('project')
+        project        = request.cookies.get('project')
         # Get Grafana config parameter if provided
         grafana_config = request.args.get('grafana_config')
         if grafana_config is not None:
@@ -110,7 +108,7 @@ def delete_grafana_config():
         # Get Grafana config parameter if provided
         grafana_config = request.args.get('grafana_config')
         # Get current project
-        project = request.cookies.get('project')
+        project        = request.cookies.get('project')
         if grafana_config is not None:
             pkg.delete_config(project, grafana_config)
             flash("Integration deleted.")
@@ -123,9 +121,9 @@ def delete_grafana_config():
 def add_azure():
     try:
         # Declare the Azure form
-        form = AzureForm(request.form)
+        form         = AzureForm(request.form)
         # Get current project
-        project = request.cookies.get('project')
+        project      = request.cookies.get('project')
         # Get Azure config parameter if provided
         azure_config = request.args.get('azure_config')
         if azure_config is not None:
@@ -148,7 +146,7 @@ def delete_azure_config():
         # Get Azure config parameter if provided
         azure_config = request.args.get('azure_config')
         # Get current project
-        project = request.cookies.get('project')
+        project      = request.cookies.get('project')
         if azure_config is not None:
             pkg.delete_config(project, azure_config)
             flash("Integration deleted.")
@@ -161,9 +159,9 @@ def delete_azure_config():
 def add_atlassian_wiki():
     try:
         # Declare the Atlassian Wiki form
-        form = AtlassianWikiForm(request.form)
+        form                  = AtlassianWikiForm(request.form)
         # Get current project
-        project = request.cookies.get('project')
+        project               = request.cookies.get('project')
         # Get Atlassian Wiki config parameter if provided
         atlassian_wiki_config = request.args.get('atlassian_wiki_config')
         if atlassian_wiki_config is not None:
@@ -186,7 +184,7 @@ def delete_atlassian_wiki():
         # Get Atlassian Wiki config parameter if provided
         atlassian_wiki_config = request.args.get('atlassian_wiki_config')
         # Get current project
-        project = request.cookies.get('project')
+        project               = request.cookies.get('project')
         if atlassian_wiki_config is not None:
             pkg.delete_config(project, atlassian_wiki_config)
             flash("Integration deleted.")
@@ -199,9 +197,9 @@ def delete_atlassian_wiki():
 def add_atlassian_jira():
     try:
         # Declare the Atlassian Jira form
-        form = AtlassianJiraForm(request.form)
+        form                  = AtlassianJiraForm(request.form)
         # Get current project
-        project = request.cookies.get('project')
+        project               = request.cookies.get('project')
         # Get Atlassian Jira config parameter if provided
         atlassian_jira_config = request.args.get('atlassian_jira_config')
         if atlassian_jira_config is not None:
@@ -224,7 +222,7 @@ def delete_atlassian_jira():
         # Get Atlassian Jira config parameter if provided
         atlassian_jira_config = request.args.get('atlassian_jira_config')
         # Get current project
-        project = request.cookies.get('project')
+        project               = request.cookies.get('project')
         if atlassian_jira_config is not None:
             pkg.delete_config(project, atlassian_jira_config)
             flash("Integration deleted.")
@@ -237,7 +235,7 @@ def delete_atlassian_jira():
 def add_smtp_mail():
     try:
         # Get current project
-        project = request.cookies.get('project')
+        project          = request.cookies.get('project')
         # Get SMTP Mail config parameter if provided
         smtp_mail_config = request.args.get('smtp_mail_config')
         if request.method == 'POST':
@@ -254,9 +252,9 @@ def add_smtp_mail():
 @app.route('/smtp-mail-config', methods=['GET'])
 def get_smtp_mail_config():
     try:
-        output = "no data"
+        output           = "no data"
         # Get current project
-        project = request.cookies.get('project')
+        project          = request.cookies.get('project')
         # Get SMTP Mail config parameter if provided
         smtp_mail_config = request.args.get('smtp_mail_config')
         if smtp_mail_config is not None:
@@ -272,7 +270,7 @@ def delete_smtp_mail_config():
         # Get SMTP Mail config parameter if provided
         smtp_mail_config = request.args.get('smtp_mail_config')
         # Get current project
-        project = request.cookies.get('project')
+        project          = request.cookies.get('project')
         if smtp_mail_config is not None:
             pkg.delete_config(project, smtp_mail_config)
             flash("Integration deleted.")

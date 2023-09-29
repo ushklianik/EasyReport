@@ -1,10 +1,11 @@
 import os
 import logging
 
-from flask import Flask, g, redirect, url_for, request
+from flask            import Flask, g, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, current_user
-from flask_bcrypt import Bcrypt
+from flask_login      import LoginManager, current_user
+from flask_bcrypt     import Bcrypt
+
 
 # Grabs the folder where the script runs.
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -49,6 +50,5 @@ def initialize_database():
 config_path = "./app/data/config.json"
 
 # Import routing, models and Start the App
-from app import models
-from app.views import (reporting, auth, integrations, nfrs,
-                       other, grafana, graphs)
+from app       import models
+from app.views import (reporting, auth, integrations, nfrs, other, grafana, graphs)

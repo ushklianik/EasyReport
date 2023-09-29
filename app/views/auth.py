@@ -1,15 +1,12 @@
-# Flask modules
+import traceback
+
+from app         import app, lm, db, bc
+from app.backend import pkg
+from app.models  import Users
+from app.forms   import LoginForm, RegisterForm
 from flask       import render_template, request, url_for, redirect, flash
 from flask_login import login_user, logout_user
 from jinja2      import TemplateNotFound
-
-# App modules
-from app         import app, lm, db, bc
-from app.models  import Users
-from app.forms   import LoginForm, RegisterForm
-from app.backend import pkg
-
-import traceback
 
 
 # provide login manager with load_user callback
@@ -36,11 +33,11 @@ def register():
         # check if both http method is POST and form is valid on submit
         if form.validate_on_submit():
             # assign form data to variables
-            username = request.form.get('username', '', type=str)
-            password = request.form.get('password', '', type=str) 
-            email    = request.form.get('email'   , '', type=str) 
+            username      = request.form.get('username', '', type=str)
+            password      = request.form.get('password', '', type=str) 
+            email         = request.form.get('email'   , '', type=str) 
             # filter User out of database through username
-            user = Users.query.filter_by(user=username).first()
+            user          = Users.query.filter_by(user=username).first()
             # filter User out of database through username
             user_by_email = Users.query.filter_by(email=email).first()
             if user or user_by_email:
@@ -49,7 +46,7 @@ def register():
                 pw_hash = bc.generate_password_hash(password)
                 user = Users(username, email, pw_hash)
                 user.save()
-                msg     = 'User created, please <a href="' + url_for('login') + '">login</a>'     
+                msg     = 'User created, please <a href="' + url_for('login') + '">login</a>'
                 success = True
         else:
             msg = 'Input error'     
@@ -65,7 +62,7 @@ def login():
         # Declare the login form
         form = LoginForm(request.form)
         # Flask message injected into the page, in case of any errors
-        msg = None
+        msg  = None
         # check if both http method is POST and form is valid on submit
         if form.validate_on_submit():
             # assign form data to variables
@@ -85,7 +82,7 @@ def login():
     except Exception as er:
         flash("ERROR: " + str(er))
         return redirect(url_for('login'))
-    
+
 # App main route + generic routing
 @app.route('/choose-project', methods=['GET'])
 def choose_project():
@@ -100,10 +97,10 @@ def choose_project():
 @app.route('/', defaults={'path': 'index.html'})
 @app.route('/<path>')
 def index(path):
-    # try:    
+    # try:
         project = request.cookies.get('project')
         if project != None:
-            projects = pkg.get_projects()
+            projects      = pkg.get_projects()
             project_stats = pkg.get_project_stats(project)
             return render_template( 'home/' + path, projects = projects, project_stats=project_stats)
         else:

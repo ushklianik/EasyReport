@@ -1,35 +1,30 @@
-# Python modules
-from datetime import datetime
-
-from flask                   import render_template, request, url_for, redirect, flash, jsonify
-from flask_login             import current_user
-
-# App modules
-from app                                        import app
-from app.backend                                import pkg
-from app.backend.integrations.influxdb.influxdb import influxdb
-from app.backend.reporting.perforge_html        import html_report
-from app.backend.reporting.azure_wiki           import azureport
-from app.backend.reporting.atlassian_wiki       import atlassian_wiki_report
-from app.backend.reporting.atlassian_jira       import atlassian_jira_report
-from app.backend.reporting.smtp_mail            import smtp_mail_report
-from app.forms                                  import FlowConfigForm
-
 import traceback
-import json
+
+from app                                         import app
+from app.forms                                   import FlowConfigForm
+from app.backend                                 import pkg
+from app.backend.integrations.secondary.influxdb import Influxdb
+from app.backend.reporting.html_report           import HtmlReport
+from app.backend.reporting.azure_wiki_report     import AzureWikiReport
+from app.backend.reporting.atlassian_wiki_report import AtlassianWikiReport
+from app.backend.reporting.atlassian_jira_report import AtlassianJiraReport
+from app.backend.reporting.smtp_mail_report      import SmtpMailReport
+from flask                                       import render_template, request, url_for, redirect, flash, jsonify
+from flask_login                                 import current_user
+
 
 # Route for managing flow configuration
 @app.route('/template', methods=['GET', 'POST'])
 def template():
     try:
         # Get current project
-        project   = request.cookies.get('project')
+        project       = request.cookies.get('project')
         # Get graphs
-        graphs    = pkg.get_config_names(project, "graphs")
-        templates = pkg.get_config_names(project, "templates")
-        flows     = pkg.get_config_names(project, "flows")
+        graphs        = pkg.get_config_names(project, "graphs")
+        templates     = pkg.get_config_names(project, "templates")
+        flows         = pkg.get_config_names(project, "flows")
         # get grafana parameter if provided
-        template  = request.args.get('template')
+        template      = request.args.get('template')
         template_data = []
         if template is not None:
             template_data = pkg.get_template_values(project, template)
@@ -48,7 +43,7 @@ def delete_template():
     try:
         template = request.args.get('template')
         # Get current project
-        project = request.cookies.get('project')
+        project  = request.cookies.get('project')
         if template is not None:
             pkg.delete_config(project, template)
             flash("Template is deleted.")
@@ -61,9 +56,9 @@ def delete_template():
 def template_group():
     try:
         # Get current project
-        project   = request.cookies.get('project')
-        templates = pkg.get_config_names(project, "templates")
-        template_group  = request.args.get('template_group')
+        project             = request.cookies.get('project')
+        templates           = pkg.get_config_names(project, "templates")
+        template_group      = request.args.get('template_group')
         template_group_data = []
         if template_group is not None:
             template_group_data = pkg.get_template_group_values(project, template_group)
@@ -83,7 +78,7 @@ def delete_template_group():
     try:
         template_group = request.args.get('template_group')
         # Get current project
-        project = request.cookies.get('project')
+        project        = request.cookies.get('project')
         print(template_group)
         if template_group is not None:
             pkg.delete_config(project, template_group)
@@ -105,7 +100,6 @@ def get_reporting():
         if flow.validate_on_submit():
             pkg.save_flow_config(project, request.form.to_dict())
             flash("Flow config added.")
-
         flows                 = pkg.get_config_names(project, "flows")
         templates             = pkg.get_config_names(project, "templates")
         template_groups       = pkg.get_config_names(project, "template_groups")
@@ -134,7 +128,7 @@ def save_flow():
 @app.route('/delete-flow', methods=['GET', 'POST'])
 def delete_flow():
     try:
-        flow = request.args.get('flow')
+        flow    = request.args.get('flow')
         # Get current project
         project = request.cookies.get('project')
         if flow is not None:
@@ -151,9 +145,9 @@ def get_tests():
         if not current_user.is_authenticated:
             return redirect(url_for('login'))
         # Get current project
-        project = request.cookies.get('project')  
-        influxdb_names = pkg.get_integration_config_names(project, "influxdb")
-        templates = pkg.get_config_names(project, "templates")
+        project         = request.cookies.get('project')  
+        influxdb_names  = pkg.get_integration_config_names(project, "influxdb")
+        templates       = pkg.get_config_names(project, "templates")
         template_groups = pkg.get_config_names(project, "template_groups")
         return render_template('home/tests.html', influxdb_names=influxdb_names, templates = templates, template_groups = template_groups)
     # except Exception as er:
@@ -167,9 +161,9 @@ def load_tests():
         if not current_user.is_authenticated:
             return jsonify(status="error", message="User not authenticated")
         # Get current project
-        project = request.cookies.get('project')
+        project       = request.cookies.get('project')
         influxdb_name = request.args.get('influxdb_name')
-        influxdb_obj = influxdb(project=project, name=influxdb_name)
+        influxdb_obj  = Influxdb(project=project, name=influxdb_name)
         influxdb_obj.connect_to_influxdb()
         tests = influxdb_obj.get_test_log()
         if(tests):
@@ -188,7 +182,7 @@ def get_report():
         project       = request.cookies.get('project')
         runId         = request.args.get('runId')
         influxdb_name = request.args.get('influxdb_name')
-        report        = html_report(project, runId, influxdb_name)
+        report        = HtmlReport(project, runId, influxdb_name)
         report.create_report()
         return render_template('home/report.html', report=report.report)
     except Exception as er:
@@ -199,29 +193,29 @@ def get_report():
 @app.route('/generate', methods=['GET','POST'])
 def generate_report():
     # try:
-        project       = request.cookies.get('project')
+        project = request.cookies.get('project')
         if request.method == "POST":
-            data           = request.get_json()
+            data = request.get_json()
             if "templateGroup" in data: template_group = data["templateGroup"]
             else: template_group = None
             if "selectedAction" in data: action = data["selectedAction"]
             else: action = None
             result = "Wrong action: " + action
             if action == "azure_report":
-                az     = azureport(project)
+                az     = AzureWikiReport(project)
                 result = az.generate_report(data["tests"], template_group)
                 del(az)
             elif action == "atlassian_wiki_report":
-                awr    = atlassian_wiki_report(project, template)
-                result = awr.generate_report(data["tests"])
+                awr    = AtlassianWikiReport(project)
+                result = awr.generate_report(data["tests"], template_group)
                 del(awr)
             elif action == "atlassian_jira_report":
-                ajr    = atlassian_jira_report(project, template)
-                result = ajr.generate_report(data["tests"])
+                ajr    = AtlassianJiraReport(project)
+                result = ajr.generate_report(data["tests"], template_group)
                 del(ajr)
             elif action == "smtp_mail_report":
-                smr    = smtp_mail_report(project, template)
-                result = smr.generate_report(data["tests"])
+                smr    = SmtpMailReport(project)
+                result = smr.generate_report(data["tests"], template_group)
                 del(smr)
             return result
     # except Exception as er:

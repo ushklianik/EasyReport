@@ -1,6 +1,6 @@
-from app.backend.validation.validation import NFR
+from app.backend.validation import Nfr
 
-obj = NFR("default")
+obj = Nfr("default")
 result = obj.compare_with_nfrs("DEMO", "20230824-1859-DEMO")
 for r in result:
     print(r)

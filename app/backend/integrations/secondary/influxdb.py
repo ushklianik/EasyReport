@@ -1,29 +1,30 @@
-from influxdb_client import InfluxDBClient, Point
-from influxdb_client.client.write_api import SYNCHRONOUS
-from app.backend import pkg
-from app.backend.integrations.influxdb.backend_listener import custom
-from app.backend.integrations.influxdb.backend_listener import standart
-from app.backend.integrations.integration import integration
 import logging
-import json
-from os import path
 import os
-from datetime import datetime
-from dateutil import tz
+
+from app.backend                                                   import pkg
+from app.backend.integrations.secondary.influxdb_backend_listeners import custom
+from app.backend.integrations.secondary.influxdb_backend_listeners import standart
+from app.backend.integrations.integration                          import Integration
+from influxdb_client                                               import InfluxDBClient, Point
+from influxdb_client.client.write_api                              import SYNCHRONOUS
+from os                                                            import path
+from datetime                                                      import datetime
+from dateutil                                                      import tz
 
 
-class influxdb(integration):
+class Influxdb(Integration):
+
     def __init__(self, project, name = None):
         super().__init__(project)
         self.set_config(name)
         self.tmz = tz.tzutc()
-    
+
     def __str__(self):
         return f'Integration name is {self.name}, url is {self.url}'
-    
+
     def __del__(self):
         self.close_influxdb_connection()
-     
+
     def set_config(self, name):
         if path.isfile(self.config_path) is False or os.path.getsize(self.config_path) == 0:
             return {"status":"error", "message":"No config.json"}
@@ -49,7 +50,7 @@ class influxdb(integration):
             logging.warning(er)
             msg = {"status":"error", "message":er}
         return self
-    
+
     def close_influxdb_connection(self):
         try:
             self.influxdb_connection.__del__()
@@ -64,7 +65,6 @@ class influxdb(integration):
                 query = standart.get_test_log_query(self.bucket) 
             else:
                 query = custom.get_test_log_query(self.bucket)
-
             tables = self.influxdb_connection.query_api().query(query)
             # print(tables)
             for table in tables:
@@ -84,7 +84,7 @@ class influxdb(integration):
             for flux_record in flux_table:
                 results.append(flux_record)
         return results
-    
+
     def write_point(self, point):
         self.influxdb_connection.write_api(write_options=SYNCHRONOUS).write(bucket=self.bucket, org=self.org_id, record=point)
 
@@ -157,8 +157,8 @@ class influxdb(integration):
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         for flux_table in flux_tables:
             for flux_record in flux_table: 
-                tmp = datetime.strftime(flux_record['_time'],"%Y-%m-%dT%H:%M:%SZ")                 
-        return tmp 
+                tmp = datetime.strftime(flux_record['_time'],"%Y-%m-%dT%H:%M:%SZ")
+        return tmp
 
     def get_max_active_users(self, run_id, start, end):
         if self.listener == "org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient":
@@ -170,7 +170,7 @@ class influxdb(integration):
         for flux_table in flux_tables:
             for flux_record in flux_table: 
                 users = round(flux_record['_value'])
-        return users  
+        return users
 
     def get_test_name(self, run_id, start, end):
         if self.listener == "org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient":
@@ -232,10 +232,10 @@ class influxdb(integration):
         # Influxdb returns a list of tables and rows, therefore it needs to be iterated in a loop
         value=""
         for flux_table in flux_tables:
-            for flux_record in flux_table: 
+            for flux_record in flux_table:
                 value = round(flux_record['_value'], 2)
-        return 
-    
+        return
+
         # Method generates flux query to get test data based on NFR definition
     def generate_flux_query(self, test_name, run_id, start, end, bucket, nfr):
         if self.listener == "org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient":
@@ -256,7 +256,6 @@ class influxdb(integration):
                 query += constr["scope"]['request']
             else:
                 query += constr["scope"][nfr['scope']]
-
             # If the metric is rps, then add the aggregation window
             if nfr['metric'] == 'rps':
                 query += constr["aggregation"][nfr['metric']]

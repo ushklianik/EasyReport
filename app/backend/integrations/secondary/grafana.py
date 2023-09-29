@@ -1,12 +1,14 @@
-from os import path
-from app.backend import pkg
-from app.backend.integrations.integration import integration
 import os
 import requests
 import logging
 import base64
 
-class grafana(integration):
+from app.backend                          import pkg
+from app.backend.integrations.integration import Integration
+from os                                   import path
+
+
+class Grafana(Integration):
     def __init__(self, project, name = None):
         super().__init__(project)
         self.set_config(name)

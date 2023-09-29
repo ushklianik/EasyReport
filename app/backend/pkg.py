@@ -1,15 +1,17 @@
-import os
-from os import path as pt
-from werkzeug.datastructures import MultiDict
-from datetime import datetime
-import json
-from app.models import Credentials
 import app.backend.pydantic_models as md
-from app import config_path
+import os
+import json
+
+from app                     import config_path
+from app.models              import Credentials
+from os                      import path as pt
+from werkzeug.datastructures import MultiDict
+from datetime                import datetime
+
 
 def get_files_in_dir(path):
     listOfValues = os.listdir(path)
-    output = []
+    output       = []
     for elem in listOfValues:
         if ".md" not in elem:
             output.append(elem)
@@ -65,7 +67,7 @@ def validate_config(project, key1, key2 = None):
             data[key1] = []
     else:
         if key1 not in data:
-            data[key1] = {}
+            data[key1]       = {}
             data[key1][key2] = []
         else:
             if key2 not in data[key1]:
@@ -146,7 +148,7 @@ def get_integration_config_names(project, integration_name):
 def get_config_names(project, key1, key2 = None):
     result = []
     validate_config(project, key1, key2)
-    data = get_project_config(project)
+    data   = get_project_config(project)
     if (key2):
         for key in data[key1][key2]:
             result.append(key["name"])
@@ -163,7 +165,7 @@ def check_if_token(value):
 
 def get_integration_values(project, integration_name, config_name):
     validate_config(project, "integrations", integration_name)
-    data = get_project_config(project)
+    data   = get_project_config(project)
     output = MultiDict()
     for item in data["integrations"][integration_name]:
         if item["name"] == config_name:
@@ -173,7 +175,7 @@ def get_integration_values(project, integration_name, config_name):
 
 def get_json_values(project, json_name, config_name):
     validate_config(project, json_name)
-    data = get_project_config(project)
+    data   = get_project_config(project)
     output = MultiDict()
     for item in data[json_name]:
         if item["name"] == config_name:
@@ -183,8 +185,8 @@ def get_json_values(project, json_name, config_name):
 
 def save_token(data):
     if "token" in data:
-        cred = Credentials(key="token", value=data["token"])
-        value = cred.save()
+        cred          = Credentials(key="token", value=data["token"])
+        value         = cred.save()
         data["token"] = value
     return data
 
@@ -195,7 +197,7 @@ def del_csrf_token(data):
 
 def save_integration(project, newdata, integration_type):
     validate_config(project, "integrations", integration_type)
-    data = get_project_config(project)
+    data                                   = get_project_config(project)
     data["integrations"][integration_type] = save_dict(newdata, data["integrations"][integration_type], get_integration_config_names(project, integration_type))
     save_new_data(project, data)
 
@@ -219,11 +221,11 @@ def save_dict(newdata, data, list):
 ####################### INFLUXDB:
 
 def get_influxdb_config_values(project, influxdb_config):
-    output = md.influxdb_model.parse_obj(get_integration_values(project, "influxdb", influxdb_config))
+    output = md.InfluxdbModel.parse_obj(get_integration_values(project, "influxdb", influxdb_config))
     return MultiDict(output.dict())
 
 def save_influxdb(project, data):
-    data = md.influxdb_model.parse_obj(data)
+    data = md.InfluxdbModel.parse_obj(data)
     save_integration(project, data.dict(), "influxdb")
 
 def get_default_influxdb(project):
@@ -233,11 +235,11 @@ def get_default_influxdb(project):
 ####################### GRAFANA:
 
 def get_grafana_config_values(project, grafana_config):
-    output = md.grafana_model.parse_obj(get_integration_values(project, "grafana", grafana_config))
+    output = md.GrafanaModel.parse_obj(get_integration_values(project, "grafana", grafana_config))
     return output.dict()
 
 def save_grafana(project, data):
-    data = md.grafana_model.parse_obj(data)
+    data = md.GrafanaModel.parse_obj(data)
     save_integration(project, data.dict(), "grafana")
 
 def get_default_grafana(project):
@@ -245,7 +247,7 @@ def get_default_grafana(project):
 
 def get_dashboards(project):
     validate_config(project, "integrations", "grafana")
-    data = get_project_config(project)
+    data   = get_project_config(project)
     output = []
     for item in data["integrations"]["grafana"]:
         if (item["dashboards"]):
@@ -256,11 +258,11 @@ def get_dashboards(project):
 ####################### AZURE:
 
 def get_azure_config_values(project, azure_config):
-    output = md.azure_model.parse_obj(get_integration_values(project, "azure", azure_config))
+    output = md.AzureModel.parse_obj(get_integration_values(project, "azure", azure_config))
     return MultiDict(output.dict())
 
 def save_azure(project, data):
-    data = md.azure_model.parse_obj(data)
+    data = md.AzureModel.parse_obj(data)
     save_integration(project, data.dict(), "azure")
 
 def get_default_azure(project):
@@ -269,11 +271,11 @@ def get_default_azure(project):
 ####################### ATLASSIAN WIKI:
 
 def get_atlassian_wiki_config_values(project, atlassian_wiki_config):
-    output = md.atlassian_wiki_model.parse_obj(get_integration_values(project, "atlassian_wiki", atlassian_wiki_config))
+    output = md.AtlassianWikiModel.parse_obj(get_integration_values(project, "atlassian_wiki", atlassian_wiki_config))
     return MultiDict(output.dict())
 
 def save_atlassian_wiki(project, data):
-    data = md.atlassian_wiki_model.parse_obj(data)
+    data = md.AtlassianWikiModel.parse_obj(data)
     save_integration(project, data.dict(), "atlassian_wiki")
 
 def get_default_atlassian_wiki(project):
@@ -282,11 +284,11 @@ def get_default_atlassian_wiki(project):
 ####################### ATLASSIAN JIRA:
 
 def get_atlassian_jira_config_values(project, atlassian_jira_config):
-    output = md.atlassian_jira_model.parse_obj(get_integration_values(project, "atlassian_jira", atlassian_jira_config))
+    output = md.AtlassianJiraModel.parse_obj(get_integration_values(project, "atlassian_jira", atlassian_jira_config))
     return MultiDict(output.dict())
 
 def save_atlassian_jira(project, data):
-    data = md.atlassian_jira_model.parse_obj(data)
+    data = md.AtlassianJiraModel.parse_obj(data)
     save_integration(project, data.dict(), "atlassian_jira")
 
 def get_default_atlassian_jira(project):
@@ -295,11 +297,11 @@ def get_default_atlassian_jira(project):
 ####################### SMTP MAIL:
 
 def get_smtp_mail_config_values(project, smtp_mail_config):
-    output = md.smtp_mail_model.parse_obj(get_integration_values(project, "smtp_mail", smtp_mail_config))
+    output = md.SmtpMailModel.parse_obj(get_integration_values(project, "smtp_mail", smtp_mail_config))
     return output.dict()
 
 def save_smtp_mail(project, data):
-    data = md.smtp_mail_model.parse_obj(data)
+    data = md.SmtpMailModel.parse_obj(data)
     save_integration(project, data.dict(), "smtp_mail")
 
 def get_default_smtp_mail(project):
@@ -307,7 +309,7 @@ def get_default_smtp_mail(project):
 
 def get_recipients(project):
     validate_config(project, "integrations", "smtp_mail")
-    data = get_project_config(project)
+    data   = get_project_config(project)
     output = []
     for item in data["integrations"]["smtp_mail"]:
         if (item["recipients"]):
@@ -318,8 +320,8 @@ def get_recipients(project):
 ####################### OUTPUT:
 
 def get_output_configs(project):
-    result=[]
-    types = ["azure", "atlassian_wiki", "atlassian_jira", "smtp_mail"]
+    result = []
+    types  = ["azure", "atlassian_wiki", "atlassian_jira", "smtp_mail"]
     for type in types:
         result += get_config_names(project, "integrations", type)
     return result
@@ -328,12 +330,12 @@ def get_output_configs(project):
 
 def save_flow_config(project, flow):
     validate_config(project, "flows")
-    data = get_project_config(project)
+    data          = get_project_config(project)
     data["flows"] = save_dict(flow, data["flows"], get_config_names(project, "flows"))
     save_new_data(project, data)
 
 def get_flow_values(project, flow):
-    output = md.flow_model.parse_obj(get_json_values(project, "flows", flow))
+    output = md.FlowModel.parse_obj(get_json_values(project, "flows", flow))
     return output.dict()
 
 ####################### NFRS CONFIG:
@@ -352,7 +354,7 @@ def get_nfrs(project):
 
 def save_nfrs(project, nfrs):
     validate_config(project, "nfrs")
-    data = get_project_config(project)
+    data         = get_project_config(project)
     data["nfrs"] = save_dict(nfrs, data["nfrs"], get_config_names(project, "nfrs"))
     save_new_data(project, data)
 
@@ -368,24 +370,24 @@ def delete_nfr(project, name):
 ####################### TEMPLATE CONFIG: 
 
 def get_template_values(project, template):
-    output = md.template_model.parse_obj(get_json_values(project, "templates", template))
+    output = md.TemplateModel.parse_obj(get_json_values(project, "templates", template))
     return output.dict()
 
 def save_template(project, template):
-    template = md.template_model.parse_obj(template)
+    template          = md.TemplateModel.parse_obj(template)
     validate_config(project, "templates")
-    data = get_project_config(project)
+    data              = get_project_config(project)
     data["templates"] = save_dict(template.dict(), data["templates"], get_config_names(project, "templates"))
     save_new_data(project, data)
 
 def get_template_group_values(project, template_group):
-    output = md.template_group_model.parse_obj(get_json_values(project, "template_groups", template_group))
+    output = md.TemplateGroupModel.parse_obj(get_json_values(project, "template_groups", template_group))
     return output.dict()
 
 def save_template_group(project, template_group):
-    template_group = md.template_group_model.parse_obj(template_group)
+    template_group          = md.TemplateGroupModel.parse_obj(template_group)
     validate_config(project, "template_groups")
-    data = get_project_config(project)
+    data                    = get_project_config(project)
     data["template_groups"] = save_dict(template_group.dict(), data["template_groups"], get_config_names(project, "template_groups"))
     save_new_data(project, data)
 
@@ -413,7 +415,7 @@ def get_graphs(project):
 
 def save_graph(project, form):
     validate_config(project, "graphs")
-    data = get_project_config(project)
+    data           = get_project_config(project)
     data["graphs"] = save_dict(form, data["graphs"], get_config_names(project, "graphs"))
     save_new_data(project, data)
 
@@ -432,9 +434,9 @@ def sort_tests(tests):
     if len(tests) != 0:
         for test in tests:
             test["startTimestamp"] = str(int(test["startTime"].timestamp() * 1000))
-            test["endTimestamp"] = str(int(test["endTime"].timestamp() * 1000))
-            test["startTime"] = datetime.strftime(test["startTime"], "%Y-%m-%d %I:%M:%S %p")
-            test["endTime"] = datetime.strftime(test["endTime"], "%Y-%m-%d %I:%M:%S %p")
+            test["endTimestamp"]   = str(int(test["endTime"].timestamp() * 1000))
+            test["startTime"]      = datetime.strftime(test["startTime"], "%Y-%m-%d %I:%M:%S %p")
+            test["endTime"]        = datetime.strftime(test["endTime"], "%Y-%m-%d %I:%M:%S %p")
     tests.sort(key=start_time, reverse=True)
     return tests
 
