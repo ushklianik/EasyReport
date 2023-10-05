@@ -18,3 +18,5 @@ atlassian-python-api==3.32.2
 jira==3.4.1
 pydantic==1.10.7
 flask_mail==0.9.1
+reportlab==4.0.5
+Pillow==10.0.1

@@ -54,6 +54,43 @@
     });
   };
 
+  const sendDownloadRequest = (url, json) => {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: url,
+        type: "POST",
+        data: json,
+        contentType: "application/json",
+        success: function (data, textStatus, request) {
+          const contentType = request.getResponseHeader("Content-Type");
+          if (contentType === "application/pdf") {
+            const contentDisposition = request.getResponseHeader("Content-Disposition");
+            const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+            const filename = filenameMatch ? filenameMatch[1] : "demo.pdf";
+  
+            const blob = new Blob([data], { type: contentType });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            resolve();
+          } else {
+            resolve(data.redirect_url);
+          }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          reject({ jqXHR, textStatus, errorThrown });
+        },
+        xhrFields: {
+          responseType: "blob", // Set the responseType to handle binary data
+        },
+      });
+    });
+  };
+
   const sendGetRequest = (url) => {
     return new Promise((resolve, reject) => {
       $.ajax({
@@ -504,10 +541,17 @@
           if (selectedTemplateGroup.value !== "Choose template group"){
             selectedRows["templateGroup"] = selectedTemplateGroup.value;
           }
-          sendPostRequest('/generate',JSON.stringify(selectedRows)).finally(function (){
-            spinner.style.display = "none";
-            spinnerText.style.display = "";
-          });
+          if (selectedAction.value === "pdf_report"){
+            sendDownloadRequest('/generate',JSON.stringify(selectedRows)).finally(function (){
+              spinner.style.display = "none";
+              spinnerText.style.display = "";
+            });
+          }else{
+            sendPostRequest('/generate',JSON.stringify(selectedRows)).finally(function (){
+              spinner.style.display = "none";
+              spinnerText.style.display = "";
+            });
+          }
         });
       }
 

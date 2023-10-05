@@ -30,7 +30,7 @@ join1 = join(tables: {d1: maxThreads, d2: startTime}, on: ["runId", "testName"])
   |> group(columns: ["runId", "testName"])
 
 join(tables: {d1: join1, d2: endTime}, on: ["runId", "testName"])
-  |> map(fn: (r) => ({ r with duration: ((int(v: r.endTime)/1000000000 - int(v: r.startTime))/1000000000)}))
+  |> map(fn: (r) => ({ r with duration: ((int(v: r.endTime)/1000000000 - int(v: r.startTime)/1000000000))}))
   |> keep(columns: ["startTime","endTime", "runId", "testName",  "maxThreads", "duration", "dashboard"])
   |> group(columns: ["1"])
 '''

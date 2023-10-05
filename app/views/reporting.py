@@ -9,7 +9,8 @@ from app.backend.reporting.azure_wiki_report     import AzureWikiReport
 from app.backend.reporting.atlassian_wiki_report import AtlassianWikiReport
 from app.backend.reporting.atlassian_jira_report import AtlassianJiraReport
 from app.backend.reporting.smtp_mail_report      import SmtpMailReport
-from flask                                       import render_template, request, url_for, redirect, flash, jsonify
+from app.backend.reporting.pdf_report            import PdfReport
+from flask                                       import render_template, request, url_for, redirect, flash, jsonify, send_file
 from flask_login                                 import current_user
 
 
@@ -196,8 +197,7 @@ def generate_report():
         project = request.cookies.get('project')
         if request.method == "POST":
             data = request.get_json()
-            if "templateGroup" in data: template_group = data["templateGroup"]
-            else: template_group = None
+            template_group = data.get("templateGroup")
             if "selectedAction" in data: action = data["selectedAction"]
             else: action = None
             result = "Wrong action: " + action
@@ -217,6 +217,11 @@ def generate_report():
                 smr    = SmtpMailReport(project)
                 result = smr.generate_report(data["tests"], template_group)
                 del(smr)
+            elif action == "pdf_report":
+                pdf    = PdfReport(project)
+                filename = pdf.generate_report(data["tests"], template_group)
+                pdf.pdf_io.seek(0)
+                return send_file(pdf.pdf_io, mimetype="application/pdf", download_name=f'{filename}.pdf', as_attachment=True)
             return result
     # except Exception as er:
     #     flash("ERROR: " + str(er))
