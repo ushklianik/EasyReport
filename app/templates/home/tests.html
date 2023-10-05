@@ -34,13 +34,14 @@
                                         <option value="azure_report">Azure report</option>
                                         <option value="atlassian_wiki_report">Atlassian wiki report</option>
                                         <option value="atlassian_jira_report">Atlassian jira report</option>
-                                        <option value="smtp_mail_report">Google Mail report</option>
+                                        <option value="smtp_mail_report">SMTP Mail report</option>
+                                        <option value="pdf_report">PDF report</option>
                                         <option value="delete">Delete</option>
                                     </select>
                                     <select class="form-select ms-2" id="templateGroupName">
                                         <option selected="selected">Choose template group</option>
                                         {% for template_group in template_groups %}
-                                                <option value="{{ template_group }}">{{ template_group }}</option>
+                                            <option value="{{ template_group }}">{{ template_group }}</option>
                                         {% endfor %}
                                     </select>
                                     <select class="form-select ms-2" id="influxdbName">
