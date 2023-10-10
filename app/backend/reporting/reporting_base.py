@@ -61,9 +61,10 @@ class ReportingBase:
     def replace_variables(self, text):
         variables = re.findall(r"\$\{(.*?)\}", text)
         for var in variables:
-            text = text.replace("${"+var+"}", str(self.parameters[var]))
             if var == "appdex":
                 text = text.replace("${"+"appdex"+"}", str(self.add_appdex()))
+            else:
+                text = text.replace("${"+var+"}", str(self.parameters[var]))
         return text
 
     def collect_data(self, current_run_id, baseline_run_id = None):

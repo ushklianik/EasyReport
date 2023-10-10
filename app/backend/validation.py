@@ -17,7 +17,6 @@ import json
 from app                                                           import config_path
 from app.backend                                                   import pkg
 from app.backend.integrations.secondary.influxdb                   import Influxdb
-from app.backend.integrations.secondary.influxdb_backend_listeners import custom
 from os.path                                                       import isfile, getsize
 
 
@@ -26,10 +25,8 @@ class Nfr:
     def __init__(self, project):
         self.project      = project
         self.path_to_nfrs = config_path
+        self.comp_result  = None
         self.comparison   = {}
-
-    def save_nfrs(self, nfrs):
-        pkg.save_nfrs(self.project, nfrs)
 
     def delete_nfrs(self, name):
         pkg.delete_nfr(self.project, name)
@@ -148,17 +145,18 @@ class Nfr:
                     if result["weight"] == "0":
                         if (100-total_weight) > 0:
                             result['weight'] = str((100-total_weight)/empty_weight_count)
-            return comp_result
+            self.comp_result = comp_result
         except Exception:
             pass
 
     def calculate_apdex(self, test_name, run_id, start = None, end = None):
-        comp_result = self.compare_with_nfrs(test_name, run_id, start, end)
+        if self.comp_result == None:
+            self.compare_with_nfrs(test_name, run_id, start, end)
         try:
             passed = 0
             failed = 0
-            if len(comp_result) > 0:
-                for result in comp_result:
+            if len(self.comp_result) > 0:
+                for result in self.comp_result:
                     if result["result"] == "PASSED":
                         passed += float(result["weight"])
                     else:
