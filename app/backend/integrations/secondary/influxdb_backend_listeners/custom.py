@@ -224,9 +224,11 @@ def flux_constructor(app_name, run_id, start, stop, bucket, request_name = ''):
   constr["runId"]                         = '|> filter(fn: (r) => r["runId"] == "'+run_id+'")\n'
   constr["scope"]                         = {}
   constr["scope"]['all']                  = '|> group(columns: ["_field"])\n'
-  constr["scope"]['each']                 = '|> group(columns: ["requestName"])\n'
+  constr["scope"]['each']                 = '|> group(columns: ["requestName"])\n' + \
+                                            '|> rename(columns: {requestName: "transaction"})\n'
   constr["scope"]['request']              = '|> filter(fn: (r) => r["requestName"] == "'+request_name+'")\n' + \
-                                            '|> group(columns: ["requestName"])\n'
+                                            '|> group(columns: ["requestName"])\n' + \
+                                            '|> rename(columns: {requestName: "transaction"})\n'
   constr["aggregation"]                   = {}
   constr["aggregation"]['avg']            = '|> mean()\n'
   constr["aggregation"]['median']         = '|> median()\n'

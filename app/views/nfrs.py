@@ -15,7 +15,7 @@
 import traceback
 
 from app                    import app
-from app.backend.validation import Nfr
+from app.backend            import pkg
 from flask                  import render_template, request, url_for, redirect, flash, jsonify
 
 
@@ -25,8 +25,7 @@ def get_nfrs():
     try:
         # Get current project
         project   = request.cookies.get('project')
-        nfr_obj   = Nfr(project)
-        nfrs_list = nfr_obj.get_nfrs()
+        nfrs_list = pkg.get_nfrs(project)
         return render_template('home/nfrs.html', nfrs_list=nfrs_list)
     except Exception as er:
         flash("ERROR: " + str(traceback.format_exc()))
@@ -40,13 +39,11 @@ def get_nfr():
         # Get current project
         project = request.cookies.get('project')
         if request.method == "POST":
-            nfr_obj = Nfr(project)
-            nfr_obj.save_nfrs(request.get_json())
+            pkg.save_nfrs(project, request.get_json())
             flash("NFR saved.")
             return jsonify({'redirect_url': 'nfrs'})
         elif request.args.get('test_name') is not None:
-            nfr_obj = Nfr(project)
-            nfrs    = nfr_obj.get_nfr(request.args.get('test_name'))
+            nfrs    = pkg.get_nfr(project, request.args.get('test_name'))
     except Exception:
         flash("ERROR: " + str(traceback.format_exc()))
     return render_template('home/nfr.html', nfrs=nfrs)
@@ -57,8 +54,7 @@ def delete_nfrs():
     try:
         # Get current project
         project = request.cookies.get('project')
-        nfr_obj = Nfr(project)
-        nfr_obj.delete_nfrs(request.args.get('test_name'))
+        pkg.delete_nfr(project, request.args.get('test_name'))
         flash("NFR deleted.")
         return redirect(url_for('get_nfrs'))
     except Exception as er:
