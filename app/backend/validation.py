@@ -118,11 +118,11 @@ class Nfr:
                 # If InfluxDB query returns 0 rows
                 if len(results) == 0:
                     name = self.generate_name(nfr)
-                    comp_result.append({"name": name, "result": "no data"})
+                    comp_result.append({"name": name, "result": "no data", "value":"no data", "weight":"no data"})
                 # If InfluxDB query returns 1 row
                 elif len(results) == 1:
                     name = self.generate_name(nfr)
-                    comp_result.append({"name": name, "result": self.compare_value(results[0]['_value'], nfr['operation'],nfr['threshold']),"value": str(results[0]['_value']),"weight": str(nfr['weight'])})
+                    comp_result.append({"name": name, "result": self.compare_value(results[0]['_value'], nfr['operation'],nfr['threshold']),"value": str(int(results[0]['_value'])),"weight": str(nfr['weight'])})
                 # If InfluxDB query returns more than 1 row
                 elif len(results) > 1:
                     if nfr['weight'].isnumeric():
@@ -132,19 +132,21 @@ class Nfr:
                     for result in results:
                         nfr["scope"] = result['transaction']
                         name         = self.generate_name(nfr)
-                        comp_result.append({"name": name, "result": self.compare_value(result['_value'], nfr['operation'],nfr['threshold']),"value": str(result['_value']),"weight": str(nfr['weight'])})
+                        comp_result.append({"name": name, "result": self.compare_value(result['_value'], nfr['operation'],nfr['threshold']),"value": str(int(result['_value'])),"weight": str(nfr['weight'])})
             for result in comp_result:
-                if "weight" in result:
-                    if self.is_float(result["weight"]):
-                        total_weight+=float(result['weight'])
-                    else:
-                        result["weight"] = "0"
-                        empty_weight_count +=1
+                if result["weight"] != "no data":
+                    if "weight" in result:
+                        if self.is_float(result["weight"]):
+                            total_weight+=float(result['weight'])
+                        else:
+                            result["weight"] = "0"
+                            empty_weight_count +=1
             for result in comp_result:
-                if "weight" in result:
-                    if result["weight"] == "0":
-                        if (100-total_weight) > 0:
-                            result['weight'] = str((100-total_weight)/empty_weight_count)
+                if result["weight"] != "no data":
+                    if "weight" in result:
+                        if result["weight"] == "0":
+                            if (100-total_weight) > 0:
+                                result['weight'] = str(round((100-total_weight)/empty_weight_count, 2))
             self.comp_result = comp_result
         except Exception:
             pass
@@ -159,7 +161,7 @@ class Nfr:
                 for result in self.comp_result:
                     if result["result"] == "PASSED":
                         passed += float(result["weight"])
-                    else:
+                    elif result["result"] == "FAILED":
                         failed += float(result["weight"])
                 apdex = passed / (passed + failed) * 100
             else:
