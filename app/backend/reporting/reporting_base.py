@@ -37,8 +37,8 @@ class ReportingBase:
         self.title          = template_obj["title"]
         self.data           = template_obj["data"]
         self.set_flow(flow_name)
-        self.grafana_obj    = Grafana(project=self.project, name=self.grafana)
-        self.influxdb_obj   = Influxdb(project=self.project, name=self.influxdb).connect_to_influxdb()
+        self.grafana_obj  = Grafana(project=self.project, name=self.grafana)
+        self.influxdb_obj = Influxdb(project=self.project, name=self.influxdb).connect_to_influxdb()
 
     def set_template_group(self, template_group):
         template_group_obj  = pkg.get_template_group_values(self.project, template_group)
@@ -68,30 +68,33 @@ class ReportingBase:
         return text
 
     def collect_data(self, current_run_id, baseline_run_id = None):
-        self.current_run_id                     = current_run_id
-        self.baseline_run_id                    = baseline_run_id
-        self.current_start_time                 = self.influxdb_obj.get_start_time(current_run_id)
-        self.current_end_time                   = self.influxdb_obj.get_end_time(current_run_id)
-        self.current_start_timestamp            = self.influxdb_obj.get_start_tmp(current_run_id)
-        self.current_end_timestamp              = self.influxdb_obj.get_end_tmp(current_run_id)
-        self.test_name                          = self.influxdb_obj.get_test_name(current_run_id, self.current_start_time, self.current_end_time)
-        self.parameters                         = {}
-        self.parameters["test_name"]            = self.test_name
-        self.parameters["current_start_time"]   = self.influxdb_obj.get_human_start_time(current_run_id)
-        self.parameters["current_end_time"]     = self.influxdb_obj.get_human_end_time(current_run_id)
-        self.parameters["current_grafana_link"] = self.grafana_obj.get_grafana_test_link(self.current_start_timestamp, self.current_end_timestamp, self.test_name, current_run_id)
-        self.parameters["current_duration"]     = str(int((self.current_end_timestamp - self.current_start_timestamp)/1000))
-        self.parameters["current_vusers"]       = self.influxdb_obj.get_max_active_users(current_run_id, self.current_start_time, self.current_end_time)
-        if baseline_run_id != None:
-            self.baseline_start_time                 = self.influxdb_obj.get_start_time(baseline_run_id)
-            self.baseline_end_time                   = self.influxdb_obj.get_end_time(baseline_run_id)
-            self.baseline_start_timestamp            = self.influxdb_obj.get_start_tmp(baseline_run_id)
-            self.baseline_end_timestamp              = self.influxdb_obj.get_end_tmp(baseline_run_id)
+        self.current_run_id          = current_run_id
+        self.baseline_run_id         = baseline_run_id
+        self.current_start_time      = self.influxdb_obj.get_start_time(current_run_id)
+        self.current_end_time        = self.influxdb_obj.get_end_time(current_run_id)
+        self.current_start_timestamp = self.influxdb_obj.get_start_tmp(current_run_id)
+        self.current_end_timestamp   = self.influxdb_obj.get_end_tmp(current_run_id)
+        self.test_name               = self.influxdb_obj.get_test_name(current_run_id, self.current_start_time, self.current_end_time)
+        self.parameters              = {
+            "test_name": self.test_name,
+            "current_start_time": self.influxdb_obj.get_human_start_time(current_run_id),
+            "current_end_time": self.influxdb_obj.get_human_end_time(current_run_id),
+            "current_grafana_link": self.grafana_obj.get_grafana_test_link(self.current_start_timestamp, self.current_end_timestamp, self.test_name, current_run_id),
+            "current_duration": str(int((self.current_end_timestamp - self.current_start_timestamp) / 1000)),
+            "current_vusers": self.influxdb_obj.get_max_active_users(current_run_id, self.current_start_time, self.current_end_time)
+        }
+        if baseline_run_id is not None:
+            self.baseline_start_time      = self.influxdb_obj.get_start_time(baseline_run_id)
+            self.baseline_end_time        = self.influxdb_obj.get_end_time(baseline_run_id)
+            self.baseline_start_timestamp = self.influxdb_obj.get_start_tmp(baseline_run_id)
+            self.baseline_end_timestamp   = self.influxdb_obj.get_end_tmp(baseline_run_id)
 
-            self.parameters["baseline_start_time"]   = self.influxdb_obj.get_human_start_time(baseline_run_id)
-            self.parameters["baseline_end_time"]     = self.influxdb_obj.get_human_end_time(baseline_run_id)
-            self.parameters["baseline_grafana_link"] = self.grafana_obj.get_grafana_test_link(self.baseline_start_timestamp, self.baseline_end_timestamp, self.test_name, baseline_run_id)
-            self.parameters["baseline_duration"]     = str(int((self.baseline_end_timestamp - self.baseline_start_timestamp)/1000))
-            self.parameters["baseline_vusers"]       = self.influxdb_obj.get_max_active_users(baseline_run_id, self.baseline_start_time, self.baseline_end_time)
+            self.parameters.update({
+                "baseline_start_time": self.influxdb_obj.get_human_start_time(baseline_run_id),
+                "baseline_end_time": self.influxdb_obj.get_human_end_time(baseline_run_id),
+                "baseline_grafana_link": self.grafana_obj.get_grafana_test_link(self.baseline_start_timestamp, self.baseline_end_timestamp, self.test_name, baseline_run_id),
+                "baseline_duration": str(int((self.baseline_end_timestamp - self.baseline_start_timestamp) / 1000)),
+                "baseline_vusers": self.influxdb_obj.get_max_active_users(baseline_run_id, self.baseline_start_time, self.baseline_end_time)
+            })
         self.status = "Collected data from InfluxDB"
         self.progress = 25

@@ -361,7 +361,7 @@ img {
 .fixed-bottom {
     position: fixed;
     bottom: 40px;
-    left: 55px;
+    left: 50px;
 }
 
 .dropdown-menu {
