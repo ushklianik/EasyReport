@@ -41,29 +41,25 @@ class SmtpMailReport(ReportingBase):
         text = text.replace('\n', '<br>')
         return text
     
-    def add_graph(self, name, current_run_id, baseline_run_id):
+    def add_graph(self, name, current_run_id, baseline_run_id): 
         image = self.grafana_obj.render_image(name, self.current_start_timestamp, self.current_end_timestamp, self.test_name, current_run_id, baseline_run_id)
-        if(image):
+        if image: 
             timestamp  = str(round(time.time() * 1000))
-            content_id = f"{self.test_name}_{name}_{timestamp}"
-            content_id = content_id.replace(' ', '_')
+            content_id = f"{self.test_name}_{name}_{timestamp}".replace(' ', '_')
             file_name  = f"{content_id}.png"
             self.images.append({'file_name':file_name, 'data': image, 'content_id': content_id})
-            graph      = f'<img src="cid:{content_id}" width="900" alt="{content_id}" /><br>'
-        else:
-            graph      = f'Image failed to load, name: {name}'
+            graph = f'<img src="cid:{content_id}" width="900" alt="{content_id}" /><br>'
+        else: 
+            graph = f'Image failed to load, name: {name}'
         return graph
 
     def generate_path(self, isgroup):
-        if isgroup: 
-            title = self.group_title
-        else:
-            title = self.replace_variables(self.title)
-        return title
+        return self.group_title if isgroup else self.replace_variables(self.title)
 
     def generate_report(self, tests, template_group=None):
         templates_title = ""
         group_title     = None
+
         def process_test(test):
             nonlocal templates_title
             template_id = test.get('template_id')
@@ -76,6 +72,7 @@ class SmtpMailReport(ReportingBase):
                 self.report_body += self.generate(run_id, baseline_run_id)
                 if not group_title:
                     templates_title += f'{title} | '
+
         if template_group:
             self.set_template_group(template_group)
             group_title       = self.generate_path(True)
@@ -90,6 +87,7 @@ class SmtpMailReport(ReportingBase):
         else:
             for test in tests:
                 process_test(test)
+
         current_time = datetime.now()
         time_str     = current_time.strftime("%d.%m.%Y %H:%M")
         if not group_title:

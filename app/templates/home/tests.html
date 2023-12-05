@@ -29,6 +29,11 @@
                                             <span class="fas fa-search search-box-icon"></span>
                                         </div>
                                     </div>
+                                    <select class="form-select ms-2" id="influxdbName">
+                                      {% for influxdb in influxdb_names %}
+                                              <option value="{{ influxdb }}">{{ influxdb }}</option>
+                                      {% endfor %}
+                                    </select>
                                     <select class="form-select ms-2" id="selectedAction">
                                         <option selected="selected">Choose action</option>
                                         <option value="azure_report">Azure report</option>
@@ -42,11 +47,6 @@
                                         <option selected="selected">Choose template group</option>
                                         {% for template_group in template_groups %}
                                             <option value="{{ template_group }}">{{ template_group }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <select class="form-select ms-2" id="influxdbName">
-                                        {% for influxdb in influxdb_names %}
-                                                <option value="{{ influxdb }}">{{ influxdb }}</option>
                                         {% endfor %}
                                     </select>
                                     <button class="btn btn-primary ms-2" data-selected-rows="data-selected-rows" style="min-width: 86px;">

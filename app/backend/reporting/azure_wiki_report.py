@@ -42,14 +42,12 @@ class AzureWikiReport(ReportingBase):
         return graph
 
     def generate_path(self, isgroup):
-        if isgroup:
-            title = f'{self.output_obj.get_path()}{self.group_title}'
-        else:
-            title = f'{self.output_obj.get_path()}{self.replace_variables(self.title)}'
+        title = self.output_obj.get_path() + (self.group_title if isgroup else self.replace_variables(self.title))
         return title
 
     def generate_report(self, tests, template_group=None):
         path = None
+
         def process_test(test, isgroup):
             nonlocal path
             template_id = test.get('template_id')
@@ -60,6 +58,7 @@ class AzureWikiReport(ReportingBase):
                 self.report_body += self.generate(run_id, baseline_run_id)
                 if not path:
                     path = self.generate_path(isgroup)
+
         if template_group:
             self.set_template_group(template_group)
             for obj in self.template_order:
@@ -72,6 +71,7 @@ class AzureWikiReport(ReportingBase):
         else:
             for test in tests:
                 process_test(test, False)
+
         self.output_obj.create_or_update_page(path, self.report_body)
         return self.report_body
 
