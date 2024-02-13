@@ -71,6 +71,7 @@ class AtlassianJira(Integration):
     def put_image_to_jira(self, issue, image_bytes, filename, test_id):
         filename = f'{test_id}_{filename}.png'
         filename = filename.replace(" ", "-")
+        filename = filename.replace(":", "-")
         attachment = io.BytesIO(image_bytes)
         for i in range(3):
             try:

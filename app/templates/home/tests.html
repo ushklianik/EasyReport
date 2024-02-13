@@ -68,7 +68,7 @@
                                             <th>Template</th>
                                             <th class="sort" data-sort="testName">Report flow</th>
                                             <th class="sort" data-sort="duration">Duration (sec)</th>
-                                            <th class="sort" data-sort="maxThreads">Uesrs</th>
+                                            <th class="sort" data-sort="maxThreads">Users</th>
                                             <th class="sort" data-sort="startTime">Start time</th>
                                             <th class="sort" data-sort="endTime">End time</th>
                                             <th>Compare</th>
@@ -249,7 +249,7 @@
 
                         // Add the Actions column (e.g., Grafana link)
                         const actionsCell = row.insertCell();
-                        actionsCell.innerHTML = `<a class="btn btn-danger" href="/grafana-result-dashboard?runId=${test.runId}&testName=${test.testName}&startTimestamp=${test.startTimestamp}&endTimestamp=${test.endTimestamp}">Grafana dashboard</a>`;
+                        actionsCell.innerHTML = `<a class="btn btn-danger" href="/grafana-result-dashboard?startTimestamp=${test.startTimestamp}&endTimestamp=${test.endTimestamp}&testTitle=${test.runId}">Grafana dashboard</a>`;
                     });
 
                     perforge.utils.listInit();
