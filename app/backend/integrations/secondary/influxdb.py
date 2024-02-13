@@ -187,6 +187,7 @@ class Influxdb(Integration):
         return users
 
     def get_test_name(self, run_id, start, end):
+        appName = None
         if self.listener == "org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient":
             query = standart.get_app_name(run_id, start, end, self.bucket)
             flux_tables = self.influxdb_connection.query_api().query(query)

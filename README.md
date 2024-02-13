@@ -13,7 +13,7 @@ $ docker login
 > 👉 **Step #2** - From the root folder run the following command to build the Docker image and tag it
 
 ```bash
-$ docker build -t perforge/perforge-app:TAG .
+$ docker build -t perforge/perforge-app:TAG . or docker buildx build -t perforge/perforge-app:TAG
 ```
 
 <br />
