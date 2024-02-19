@@ -242,11 +242,6 @@ def delete_atlassian_jira():
             flash("Integration deleted.")
     except Exception as er:
         flash("ERROR: " + str(er))
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
     return redirect(url_for('integrations'))
 
 # Route for adding or updating SMTP Mail integration
@@ -291,16 +286,8 @@ def delete_smtp_mail_config():
         # Get current project
         project          = request.cookies.get('project')
         if smtp_mail_config is not None:
-<<<<<<< Updated upstream
-            pkg.delete_config(project, smtp_mail_config)
-            flash("Integration deleted.")
-    except Exception as er:
-        flash("ERROR: " + str(er))
-=======
             pkg.delete_smtp_mail_config(project, smtp_mail_config)
             flash("Integration deleted.")
     except Exception as er:
         flash("ERROR: " + str(er))
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     return redirect(url_for('integrations'))
