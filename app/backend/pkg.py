@@ -120,6 +120,7 @@ def get_project_stats(project):
     result["nfrs"] = len(data["nfrs"])
     return result
 
+<<<<<<< Updated upstream
 def delete_config(project, config):
     # Define the integration types as a list of dictionaries
     integration_types = [
@@ -133,14 +134,17 @@ def delete_config(project, config):
         {"list_name": "templates"},
         {"list_name": "template_groups"}
     ]
+=======
+def delete_config(project, config, list_name, type):
+>>>>>>> Stashed changes
     # Validate the config type
-    for type in integration_types:
-       if(type.get("key")):
-           validate_config(project, type.get("list_name"), type.get("key"))
-       else:
-           validate_config(project, type.get("list_name"))
+    if(type):
+        validate_config(project, list_name, type)
+    else:
+        validate_config(project, list_name)
     # Load the configuration file
     data = get_project_config(project)
+<<<<<<< Updated upstream
     # Iterate over the integration types and remove the config if it exists
     for key_obj in integration_types:
         if key_obj["list_name"] == "flows" or key_obj["list_name"] == "templates" or key_obj["list_name"] == "template_groups":
@@ -153,6 +157,17 @@ def delete_config(project, config):
                 if obj["name"] == config:
                     data[key_obj["list_name"]][key_obj["key"]].pop(idx)
                     break
+=======
+    # Remove the config if it exists
+    if list_name == "flows" or list_name == "templates" or list_name == "template_groups":
+        for idx, obj in enumerate(data[list_name]):
+            if obj["name"] == config:
+                data[list_name].pop(idx)
+    else:
+        for idx, obj in enumerate(data[list_name][type]):
+            if obj["name"] == config:
+                data[list_name][type].pop(idx)
+>>>>>>> Stashed changes
     # Save the updated configuration file
     save_new_data(project, data)
 
@@ -245,6 +260,8 @@ def save_influxdb(project, data):
 def get_default_influxdb(project):
     return get_default_integration(project, "influxdb")
 
+def delete_influxdb_config(project, config):
+    delete_config(project, config, "integrations", "influxdb")
 
 ####################### GRAFANA:
 
@@ -269,6 +286,9 @@ def get_dashboards(project):
                 output.append(id)
     return output
 
+def delete_grafana_config(project, config):
+    delete_config(project, config, "integrations", "grafana")
+
 ####################### AZURE:
 
 def get_azure_config_values(project, azure_config):
@@ -281,7 +301,18 @@ def save_azure(project, data):
 
 def get_default_azure(project):
     return get_default_integration(project, "azure")
+<<<<<<< Updated upstream
 
+=======
+<<<<<<< Updated upstream
+        
+=======
+
+def delete_azure_config(project, config):
+    delete_config(project, config, "integrations", "azure")
+
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 ####################### ATLASSIAN WIKI:
 
 def get_atlassian_wiki_config_values(project, atlassian_wiki_config):
@@ -295,6 +326,9 @@ def save_atlassian_wiki(project, data):
 def get_default_atlassian_wiki(project):
     return get_default_integration(project, "atlassian_wiki")
 
+def delete_atlassian_wiki_config(project, config):
+    delete_config(project, config, "integrations", "atlassian_wiki")
+
 ####################### ATLASSIAN JIRA:
 
 def get_atlassian_jira_config_values(project, atlassian_jira_config):
@@ -307,6 +341,15 @@ def save_atlassian_jira(project, data):
 
 def get_default_atlassian_jira(project):
     return get_default_integration(project, "atlassian_jira")
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+        
+=======
+
+def delete_atlassian_jira_config(project, config):
+    delete_config(project, config, "integrations", "atlassian_jira")
+>>>>>>> Stashed changes
 
 ####################### SMTP MAIL:
 
@@ -331,6 +374,13 @@ def get_recipients(project):
                 output.append(id)
     return output
 
+<<<<<<< Updated upstream
+=======
+def delete_smtp_mail_config(project, config):
+    delete_config(project, config, "integrations", "smtp_mail")
+
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 ####################### OUTPUT:
 
 def get_output_configs(project):
@@ -352,7 +402,18 @@ def get_flow_values(project, flow):
     output = md.FlowModel.parse_obj(get_json_values(project, "flows", flow))
     return output.dict()
 
+<<<<<<< Updated upstream
 ####################### NFRS CONFIG:
+=======
+<<<<<<< Updated upstream
+####################### NFRS CONFIG:         
+=======
+def delete_flow_config(project, config):
+    delete_config(project, config, "flows")
+
+####################### NFRS CONFIG:
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
 def get_nfr(project, name):
     validate_config(project, "nfrs")
@@ -393,6 +454,13 @@ def save_template(project, template):
     data              = get_project_config(project)
     data["templates"] = save_dict(template.dict(), data["templates"], get_config_names(project, "templates"))
     save_new_data(project, data)
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+    
+####################### GRAPHS:  
+=======
+>>>>>>> Stashed changes
 
 def get_template_group_values(project, template_group):
     output = md.TemplateGroupModel.parse_obj(get_json_values(project, "template_groups", template_group))
@@ -405,7 +473,18 @@ def save_template_group(project, template_group):
     data["template_groups"] = save_dict(template_group.dict(), data["template_groups"], get_config_names(project, "template_groups"))
     save_new_data(project, data)
 
+<<<<<<< Updated upstream
 ####################### GRAPHS:
+=======
+def delete_template_config(project, config):
+    delete_config(project, config, "templates")
+    
+def delete_template_group_config(project, config):
+    delete_config(project, config, "template_groups")
+
+####################### GRAPHS:
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
 def get_graph(project, name):
     validate_config(project, "graphs")

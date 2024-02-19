@@ -60,12 +60,17 @@ def delete_template():
         # Get current project
         project  = request.cookies.get('project')
         if template is not None:
-            pkg.delete_config(project, template)
+            pkg.delete_template_config(project, template)
             flash("Template is deleted.")
     except Exception as er:
         flash("ERROR: " + str(traceback.format_exc()))
     return redirect(url_for("get_reporting"))
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
 # Route for managing flow configuration
 @app.route('/template-group', methods=['GET', 'POST'])
 def template_group():
@@ -96,12 +101,20 @@ def delete_template_group():
         project        = request.cookies.get('project')
         print(template_group)
         if template_group is not None:
+<<<<<<< Updated upstream
             pkg.delete_config(project, template_group)
+=======
+            pkg.delete_template_group_config(project, template_group)
+>>>>>>> Stashed changes
             flash("Template group is deleted.")
     except Exception as er:
         flash("ERROR: " + str(traceback.format_exc()))
     return redirect(url_for("get_reporting"))
 
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 # Route for displaying all flow configurations
 @app.route('/reporting', methods=['GET', 'POST'])
 def get_reporting():
@@ -147,7 +160,7 @@ def delete_flow():
         # Get current project
         project = request.cookies.get('project')
         if flow is not None:
-            pkg.delete_config(project, flow)
+            pkg.delete_flow_config(project, flow)
             flash("Flow is deleted.")
     except Exception as er:
         flash("ERROR: " + str(traceback.format_exc()))

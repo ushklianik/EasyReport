@@ -76,7 +76,7 @@ def delete_influxdb():
         # Get current project
         project = request.cookies.get('project')
         if influxdb_config is not None:
-            pkg.delete_config(project, influxdb_config)
+            pkg.delete_influxdb_config(project, influxdb_config)
             flash("Integration deleted.")
     except Exception:
         flash("ERROR: " + str(traceback.format_exc()))
@@ -124,7 +124,7 @@ def delete_grafana_config():
         # Get current project
         project        = request.cookies.get('project')
         if grafana_config is not None:
-            pkg.delete_config(project, grafana_config)
+            pkg.delete_grafana_config(project, grafana_config)
             flash("Integration deleted.")
     except Exception as er:
         flash("ERROR: " + str(er))
@@ -162,7 +162,7 @@ def delete_azure_config():
         # Get current project
         project      = request.cookies.get('project')
         if azure_config is not None:
-            pkg.delete_config(project, azure_config)
+            pkg.delete_azure_config(project, azure_config)
             flash("Integration deleted.")
     except Exception as er:
         flash("ERROR: " + str(er))
@@ -200,7 +200,7 @@ def delete_atlassian_wiki():
         # Get current project
         project               = request.cookies.get('project')
         if atlassian_wiki_config is not None:
-            pkg.delete_config(project, atlassian_wiki_config)
+            pkg.delete_atlassian_wiki_config(project, atlassian_wiki_config)
             flash("Integration deleted.")
     except Exception as er:
         flash("ERROR: " + str(er))
@@ -238,10 +238,15 @@ def delete_atlassian_jira():
         # Get current project
         project               = request.cookies.get('project')
         if atlassian_jira_config is not None:
-            pkg.delete_config(project, atlassian_jira_config)
+            pkg.delete_atlassian_jira_config(project, atlassian_jira_config)
             flash("Integration deleted.")
     except Exception as er:
         flash("ERROR: " + str(er))
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
     return redirect(url_for('integrations'))
 
 # Route for adding or updating SMTP Mail integration
@@ -286,8 +291,16 @@ def delete_smtp_mail_config():
         # Get current project
         project          = request.cookies.get('project')
         if smtp_mail_config is not None:
+<<<<<<< Updated upstream
             pkg.delete_config(project, smtp_mail_config)
             flash("Integration deleted.")
     except Exception as er:
         flash("ERROR: " + str(er))
+=======
+            pkg.delete_smtp_mail_config(project, smtp_mail_config)
+            flash("Integration deleted.")
+    except Exception as er:
+        flash("ERROR: " + str(er))
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     return redirect(url_for('integrations'))
