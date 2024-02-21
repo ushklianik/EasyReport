@@ -210,10 +210,26 @@ class Influxdb(Integration):
         else: 
             end = datetime.strftime(datetime.fromtimestamp(int(end)/1000).astimezone(self.tmz),"%Y-%m-%dT%H:%M:%SZ")
         try:
-            self.influxdb_connection.delete_api().delete(start, end, '_measurement="'+measurement+'" AND runId="'+run_id+'"',bucket=self.bucket, org=self.org_id)
+            if self.listener == "org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient":
+                self.influxdb_connection.delete_api().delete(start, end, '_measurement="'+measurement+'" AND testTitle="'+run_id+'"',bucket=self.bucket, org=self.org_id)
+            else:
+                self.influxdb_connection.delete_api().delete(start, end, '_measurement="'+measurement+'" AND runId="'+run_id+'"',bucket=self.bucket, org=self.org_id)
         except Exception as er:
             logging.warning('ERROR: deleteTestPoint method failed')
             logging.warning(er)
+
+    def delete_run_id(self, run_id, start = None, end = None):
+        response = f'The attempt to delete the {run_id} was successful.'
+        try:
+            if self.listener == "org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient":
+                self.delete_test_data("jmeter", run_id, start, end)
+                self.delete_test_data("events", run_id, start, end)
+            else:
+                self.delete_test_data("virtualUsers", run_id, start, end)
+                self.delete_test_data("requestsRaw", run_id, start, end)
+        except Exception as er:
+             return f'The attempt to delete the {run_id} was unsuccessful. Error: {er}'
+        return response
 
     def get_average_rps_stats(self, run_id, start, end):
         flux_tables = self.influxdb_connection.query_api().query(custom.get_average_rps_stats(run_id, start, end, self.bucket))

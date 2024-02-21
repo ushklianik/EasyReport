@@ -66,11 +66,6 @@ def delete_template():
         flash("ERROR: " + str(traceback.format_exc()))
     return redirect(url_for("get_reporting"))
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
 # Route for managing flow configuration
 @app.route('/template-group', methods=['GET', 'POST'])
 def template_group():
@@ -101,20 +96,12 @@ def delete_template_group():
         project        = request.cookies.get('project')
         print(template_group)
         if template_group is not None:
-<<<<<<< Updated upstream
-            pkg.delete_config(project, template_group)
-=======
             pkg.delete_template_group_config(project, template_group)
->>>>>>> Stashed changes
             flash("Template group is deleted.")
     except Exception as er:
         flash("ERROR: " + str(traceback.format_exc()))
     return redirect(url_for("get_reporting"))
 
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 # Route for displaying all flow configurations
 @app.route('/reporting', methods=['GET', 'POST'])
 def get_reporting():
@@ -220,7 +207,7 @@ def get_report():
 # Route for generating a report
 @app.route('/generate', methods=['GET','POST'])
 def generate_report():
-    # try:
+    try:
         project = request.cookies.get('project')
         if request.method == "POST":
             data = request.get_json()
@@ -249,10 +236,16 @@ def generate_report():
                 filename = pdf.generate_report(data["tests"], template_group)
                 pdf.pdf_io.seek(0)
                 return send_file(pdf.pdf_io, mimetype="application/pdf", download_name=f'{filename}.pdf', as_attachment=True)
+            elif action == "delete":
+                influxdb_name = data.get("influxdbName")
+                influxdb_obj  = Influxdb(project=project, name=influxdb_name)
+                influxdb_obj.connect_to_influxdb()
+                for test in data["tests"]:
+                    result = influxdb_obj.delete_run_id(test["runId"])
             return result
-    # except Exception as er:
-    #     flash("ERROR: " + str(er))
-    #     return redirect(url_for("index"))
+    except Exception as er:
+        flash("ERROR: " + str(er))
+        return redirect(url_for("index"))
 
 # Route for displaying Grafana result dashboard
 @app.route('/grafana-result-dashboard', methods=['GET'])

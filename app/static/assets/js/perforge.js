@@ -210,9 +210,9 @@
       getSelectedRows() {
         const selectedRows = Array.from(this.bulkSelectRows).filter((row) => row.checked).map((row) => {
             const checkboxData = getData(row, "bulk-select-row");
-            if (checkboxData.template_id == "no data"){
-              checkboxData["template_id"] = checkboxData.testName;
-            }
+            // if (checkboxData.template_id == "no data"){
+            //   checkboxData["template_id"] = checkboxData.testName;
+            // }
             delete checkboxData.duration;
             delete checkboxData.startTime;
             delete checkboxData.endTime;
@@ -524,6 +524,7 @@
       //Tests
       const selectedRowsBtn = document.querySelector('[data-selected-rows]');
       const selectedAction = document.getElementById('selectedAction');
+      const selectedInfluxdb = document.getElementById('influxdbName');
       const selectedTemplateGroup = document.getElementById('templateGroupName');
       const spinner = document.getElementById("spinner-apply");
       const spinnerText = document.getElementById("spinner-apply-text");
@@ -543,6 +544,12 @@
           }
           if (selectedAction.value === "pdf_report"){
             sendDownloadRequest('/generate',JSON.stringify(selectedRows)).finally(function (){
+              spinner.style.display = "none";
+              spinnerText.style.display = "";
+            });
+          }else if (selectedAction.value === "delete"){
+            selectedRows["influxdbName"] = selectedInfluxdb.value;
+            sendPostRequest('/generate',JSON.stringify(selectedRows)).finally(function (){
               spinner.style.display = "none";
               spinnerText.style.display = "";
             });

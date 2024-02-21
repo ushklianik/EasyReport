@@ -130,7 +130,7 @@
                   <div class="invalid-feedback">Please provide a valid data.</div>
                 </div>
                 <div class="padding-10" style="display: flex;width: 5%;">
-                  <a class="btn btn-danger delete-button" href="" style="align-self: flex-start;">Delete</a>
+                  <button onclick="deleteNfrRow(this)" class="btn btn-danger delete-button" type="button" style="align-self: flex-start;">Delete</button>
                 </div>
               </div>
             `;
@@ -185,11 +185,11 @@
               addNfrRow();
             }
           
-            document.addEventListener('click', (event) => {
-              if (event.target.classList.contains('delete-button')) {
-                deleteNfrRow(event.target);
-              }
-            });
+            // document.addEventListener('click', (event) => {
+            //   if (event.target.classList.contains('delete-button')) {
+            //     deleteNfrRow(event.target);
+            //   }
+            // });
           
             (() => {
                 "use strict";

@@ -120,7 +120,7 @@ def get_project_stats(project):
     result["nfrs"] = len(data["nfrs"])
     return result
 
-def delete_config(project, config, list_name, type):
+def delete_config(project, config, list_name, type = None):
     # Validate the config type
     if(type):
         validate_config(project, list_name, type)
@@ -273,7 +273,7 @@ def get_default_azure(project):
 def delete_azure_config(project, config):
     delete_config(project, config, "integrations", "azure")
 
-####################### ATLASSIAN WIKI:
+####################### ATLASSIAN CONFLUENCE:
 
 def get_atlassian_wiki_config_values(project, atlassian_wiki_config):
     output = md.AtlassianWikiModel.parse_obj(get_integration_values(project, "atlassian_wiki", atlassian_wiki_config))
