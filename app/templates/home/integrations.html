@@ -36,13 +36,13 @@
                         <li class="nav-item nav-integrations">
                             <a class="nav-link" id="tabs-text-4-tab" data-bs-toggle="tab"
                                 href="#tabs-text-4" role="tab" aria-controls="tabs-text-4"
-                                aria-selected="false">Atlassian Wiki
+                                aria-selected="false">Confluence
                             </a>
                         </li>
                         <li class="nav-item nav-integrations">
                             <a class="nav-link" id="tabs-text-5-tab" data-bs-toggle="tab"
                                 href="#tabs-text-5" role="tab" aria-controls="tabs-text-5"
-                                aria-selected="false">Atlassian Jira
+                                aria-selected="false">Jira
                             </a>
                         </li>
                         <li class="nav-item nav-integrations">
@@ -110,18 +110,18 @@
                     <div class="tab-pane" id="tabs-text-4" role="tabpanel"
                         aria-labelledby="tabs-text-4-tab">
                         <div class="center-section">
-                            {% for atlassian_wiki_config in atlassian_wiki_configs %}
+                            {% for atlassian_confluence_config in atlassian_confluence_configs %}
                             <div class="card card-integrations">
                                 <img src="/static/assets/img/blog/confluence.jpg" class="card-img-top"
-                                    alt="conflwiki" height="200">
-                                <p style="margin-top: 10px;">{{ atlassian_wiki_config }}</p>
-                                <a href="/atlassian-wiki?atlassian_wiki_config={{ atlassian_wiki_config }}" class="btn btn-primary">Configure</a>
+                                    alt="confl" height="200">
+                                <p style="margin-top: 10px;">{{ atlassian_confluence_config }}</p>
+                                <a href="/atlassian-confluence?atlassian_confluence_config={{ atlassian_confluence_config }}" class="btn btn-primary">Configure</a>
                             </div>
                             {% endfor %}
                             <div class="card card-integrations">
                                 <img src="/static/assets/img/blog/influxdb_new.jpg" class="card-img-top"
                                     alt="New" height="245">
-                                <a href="/atlassian-wiki" class="btn btn-primary">Add new config</a>
+                                <a href="/atlassian-confluence" class="btn btn-primary">Add new config</a>
                             </div>
                         </div>
                     </div>

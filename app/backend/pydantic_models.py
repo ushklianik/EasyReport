@@ -49,6 +49,7 @@ class AtlassianJiraModel(BaseModel):
     name:             str
     email:            str
     token:            str
+    token_type:       str
     org_url:          str
     project_id:       str
     epic_field:       str
@@ -56,14 +57,15 @@ class AtlassianJiraModel(BaseModel):
     is_default:       str
 
 
-class AtlassianWikiModel(BaseModel):
-    name:             str
-    username:         str
-    token:            str
-    org_url:          str
-    parent_id:        str
-    space_key:        str
-    is_default:       str
+class AtlassianConfluenceModel(BaseModel):
+    name:                  str
+    email:                 str
+    token:                 str
+    token_type:            str
+    org_url:               str
+    space_key:             str
+    parent_id:             str
+    is_default:            str
 
 
 class SmtpMailModel(BaseModel):

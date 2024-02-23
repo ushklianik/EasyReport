@@ -120,6 +120,7 @@ def get_project_stats(project):
     result["nfrs"] = len(data["nfrs"])
     return result
 
+
 def delete_config(project, config, list_name, type = None):
     # Validate the config type
     if(type):
@@ -270,21 +271,22 @@ def save_azure(project, data):
 def get_default_azure(project):
     return get_default_integration(project, "azure")
 
+
 def delete_azure_config(project, config):
     delete_config(project, config, "integrations", "azure")
 
 ####################### ATLASSIAN CONFLUENCE:
 
-def get_atlassian_wiki_config_values(project, atlassian_wiki_config):
-    output = md.AtlassianWikiModel.parse_obj(get_integration_values(project, "atlassian_wiki", atlassian_wiki_config))
+def get_atlassian_confluence_config_values(project, atlassian_confluence_config):
+    output = md.AtlassianConfluenceModel.parse_obj(get_integration_values(project, "atlassian_confluence", atlassian_confluence_config))
     return MultiDict(output.dict())
 
-def save_atlassian_wiki(project, data):
-    data = md.AtlassianWikiModel.parse_obj(data)
-    save_integration(project, data.dict(), "atlassian_wiki")
+def save_atlassian_confluence(project, data):
+    data = md.AtlassianConfluenceModel.parse_obj(data)
+    save_integration(project, data.dict(), "atlassian_confluence")
 
-def get_default_atlassian_wiki(project):
-    return get_default_integration(project, "atlassian_wiki")
+def get_default_atlassian_confluence(project):
+    return get_default_integration(project, "atlassian_confluence")
 
 def delete_atlassian_wiki_config(project, config):
     delete_config(project, config, "integrations", "atlassian_wiki")
@@ -335,7 +337,7 @@ def delete_smtp_mail_config(project, config):
 
 def get_output_configs(project):
     result = []
-    types  = ["azure", "atlassian_wiki", "atlassian_jira", "smtp_mail"]
+    types  = ["azure", "atlassian_confluence", "atlassian_jira", "smtp_mail"]
     for type in types:
         result += get_config_names(project, "integrations", type)
     return result

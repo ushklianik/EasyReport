@@ -16,7 +16,7 @@ import traceback
 
 from app         import app
 from app.backend import pkg
-from app.forms   import InfluxDBForm, GrafanaForm, AzureForm, AtlassianWikiForm, AtlassianJiraForm, SMTPMailForm
+from app.forms   import InfluxDBForm, GrafanaForm, AzureForm, AtlassianConfluenceForm, AtlassianJiraForm, SMTPMailForm
 from flask       import render_template, request, url_for, redirect, flash
 
 
@@ -27,17 +27,17 @@ def integrations():
         # Get current project
         project = request.cookies.get('project')
         # Get integrations configs
-        influxdb_configs       = pkg.get_integration_config_names(project, "influxdb")
-        grafana_configs        = pkg.get_integration_config_names(project, "grafana")
-        azure_configs          = pkg.get_integration_config_names(project, "azure")
-        atlassian_wiki_configs = pkg.get_integration_config_names(project, "atlassian_wiki")
-        atlassian_jira_configs = pkg.get_integration_config_names(project, "atlassian_jira")
-        smtp_mail_configs      = pkg.get_integration_config_names(project, "smtp_mail")
+        influxdb_configs             = pkg.get_integration_config_names(project, "influxdb")
+        grafana_configs              = pkg.get_integration_config_names(project, "grafana")
+        azure_configs                = pkg.get_integration_config_names(project, "azure")
+        atlassian_confluence_configs = pkg.get_integration_config_names(project, "atlassian_confluence")
+        atlassian_jira_configs       = pkg.get_integration_config_names(project, "atlassian_jira")
+        smtp_mail_configs            = pkg.get_integration_config_names(project, "smtp_mail")
         return render_template('home/integrations.html',
                                influxdb_configs=influxdb_configs,
                                grafana_configs=grafana_configs,
                                azure_configs=azure_configs,
-                               atlassian_wiki_configs=atlassian_wiki_configs,
+                               atlassian_confluence_configs=atlassian_confluence_configs,
                                atlassian_jira_configs=atlassian_jira_configs,
                                smtp_mail_configs=smtp_mail_configs
                                )
@@ -168,37 +168,38 @@ def delete_azure_config():
         flash("ERROR: " + str(er))
     return redirect(url_for('integrations'))
 
-# Route for adding or updating Atlassian Wiki integration
-@app.route('/atlassian-wiki', methods=['GET', 'POST'])
-def add_atlassian_wiki():
+# Route for adding or updating Atlassian Confluence integration
+@app.route('/atlassian-confluence', methods=['GET', 'POST'])
+def add_atlassian_confluence():
     try:
-        # Declare the Atlassian Wiki form
-        form                  = AtlassianWikiForm(request.form)
+        # Declare the Atlassian Confluence form
+        form                  = AtlassianConfluenceForm(request.form)
         # Get current project
         project               = request.cookies.get('project')
-        # Get Atlassian Wiki config parameter if provided
-        atlassian_wiki_config = request.args.get('atlassian_wiki_config')
-        if atlassian_wiki_config is not None:
-            output = pkg.get_atlassian_wiki_config_values(project, atlassian_wiki_config)
-            form   = AtlassianWikiForm(output)
+        # Get Atlassian Confluence config parameter if provided
+        atlassian_confluence_config = request.args.get('atlassian_confluence_config')
+        if atlassian_confluence_config is not None:
+            output = pkg.get_atlassian_confluence_config_values(project, atlassian_confluence_config)
+            form   = AtlassianConfluenceForm(output)
         if form.validate_on_submit():
             # Assign form data to variables
-            pkg.save_atlassian_wiki(project, request.form.to_dict())
-            atlassian_wiki_config = request.form.to_dict()["name"]
+            pkg.save_atlassian_confluence(project, request.form.to_dict())
+            atlassian_confluence_config = request.form.to_dict()["name"]
             flash("Integration added.")
-        return render_template('integrations/atlassian-wiki.html', form=form, atlassian_wiki_config=atlassian_wiki_config)
+        return render_template('integrations/atlassian-confluence.html', form=form, atlassian_confluence_config=atlassian_confluence_config)
     except Exception as er:
         flash("ERROR: " + str(er))
         return redirect(url_for('integrations'))
 
-# Route for deleting Atlassian Wiki integration
-@app.route('/delete/atlassian-wiki', methods=['GET'])
-def delete_atlassian_wiki():
+# Route for deleting Atlassian Confluence integration
+@app.route('/delete/atlassian-confluence', methods=['GET'])
+def delete_atlassian_confluence():
     try:
-        # Get Atlassian Wiki config parameter if provided
-        atlassian_wiki_config = request.args.get('atlassian_wiki_config')
+        # Get Atlassian Confluence config parameter if provided
+        atlassian_confluence_config = request.args.get('atlassian_confluence_config')
         # Get current project
         project               = request.cookies.get('project')
+
         if atlassian_wiki_config is not None:
             pkg.delete_atlassian_wiki_config(project, atlassian_wiki_config)
             flash("Integration deleted.")

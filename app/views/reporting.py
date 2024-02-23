@@ -20,7 +20,7 @@ from app.backend                                 import pkg
 from app.backend.integrations.secondary.influxdb import Influxdb
 from app.backend.reporting.html_report           import HtmlReport
 from app.backend.reporting.azure_wiki_report     import AzureWikiReport
-from app.backend.reporting.atlassian_wiki_report import AtlassianWikiReport
+from app.backend.reporting.atlassian_confluence_report import AtlassianConfluenceReport
 from app.backend.reporting.atlassian_jira_report import AtlassianJiraReport
 from app.backend.reporting.smtp_mail_report      import SmtpMailReport
 from app.backend.reporting.pdf_report            import PdfReport
@@ -94,7 +94,6 @@ def delete_template_group():
         template_group = request.args.get('template_group')
         # Get current project
         project        = request.cookies.get('project')
-        print(template_group)
         if template_group is not None:
             pkg.delete_template_group_config(project, template_group)
             flash("Template group is deleted.")
@@ -219,8 +218,8 @@ def generate_report():
                 az     = AzureWikiReport(project)
                 result = az.generate_report(data["tests"], template_group)
                 del(az)
-            elif action == "atlassian_wiki_report":
-                awr    = AtlassianWikiReport(project)
+            elif action == "atlassian_confluence_report":
+                awr    = AtlassianConfluenceReport(project)
                 result = awr.generate_report(data["tests"], template_group)
                 del(awr)
             elif action == "atlassian_jira_report":

@@ -15,10 +15,11 @@
 import io
 import os
 import logging
+import uuid
 
 from app.backend                          import pkg
 from app.backend.integrations.integration import Integration
-from jira                                 import JIRA
+from atlassian                            import Jira
 from os                                   import path
 
 
@@ -41,16 +42,26 @@ class AtlassianJira(Integration):
             if "name" in config:
                 if config['name'] == name:
                     self.name             = config["name"]
+                    self.email            = config["email"]
                     self.token            = config["token"]
+                    self.token_type       = config["token_type"]
                     self.org_url          = config["org_url"]
                     self.project_id       = config["project_id"]
                     self.epic_field       = config["epic_field"]
                     self.epic_name        = config["epic_name"]
-                    self.email            = config["email"]
-                    self.auth_jira        = JIRA(
-                        basic_auth=(self.email, self.token),
-                        options={'server': self.org_url}
-                    )
+                    if self.token_type == "api_token":
+                        self.jira_auth = Jira(
+                            url      = self.org_url,
+                            username = self.email,
+                            password = self.token
+                        )
+                    elif self.token_type == "personal_access_token":
+                        self.jira_auth = Jira(
+                            url   = self.org_url,
+                            token = self.token
+                        )
+                    else:
+                        return {"status":"error", "message":"No such token type name"}
                 else:
                     return {"status":"error", "message":"No such config name"}
 
@@ -62,32 +73,31 @@ class AtlassianJira(Integration):
             self.epic_field: self.epic_name
         }
         try:
-            jira_issue = self.auth_jira.create_issue(fields=issue_dict, json=True)
-            return jira_issue
+            jira_issue = self.jira_auth.issue_create(fields=issue_dict)
+            return jira_issue['key']
         except Exception as er:
             logging.warning(er)
             return {"status":"error", "message":er}
 
-    def put_image_to_jira(self, issue, image_bytes, filename, test_id):
-        filename = f'{test_id}_{filename}.png'
-        filename = filename.replace(" ", "-")
-        filename = filename.replace(":", "-")
+    def put_image_to_jira(self, issue, image_bytes):
+        filename = f'{uuid.uuid4()}.png'
         attachment = io.BytesIO(image_bytes)
+        attachment.name = filename
         for i in range(3):
             try:
-                filename = self.auth_jira.add_attachment(issue, attachment, filename)
+                self.jira_auth.add_attachment_object(issue_key=issue, attachment=attachment)
                 return filename
             except Exception as er:
                 logging.warning('ERROR: uploading image to Jira failed')
                 logging.warning(er)
 
-    def update_jira_page(self, jira_issue, title, description):
+    def update_jira_page(self, issue, title, description):
         fields_dict = {
             'summary': title,
             'description': description
         }
         try:
-            update = jira_issue.update(fields=fields_dict)
+            update = self.jira_auth.issue_update(issue_key=issue, fields=fields_dict)
             return update
         except Exception as er:
                 logging.warning('ERROR: updating Jira issue failed')
