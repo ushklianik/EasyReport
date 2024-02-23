@@ -60,7 +60,7 @@ def delete_template():
         # Get current project
         project  = request.cookies.get('project')
         if template is not None:
-            pkg.delete_config(project, template)
+            pkg.delete_template_config(project, template)
             flash("Template is deleted.")
     except Exception as er:
         flash("ERROR: " + str(traceback.format_exc()))
@@ -95,7 +95,7 @@ def delete_template_group():
         # Get current project
         project        = request.cookies.get('project')
         if template_group is not None:
-            pkg.delete_config(project, template_group)
+            pkg.delete_template_group_config(project, template_group)
             flash("Template group is deleted.")
     except Exception as er:
         flash("ERROR: " + str(traceback.format_exc()))
@@ -146,7 +146,7 @@ def delete_flow():
         # Get current project
         project = request.cookies.get('project')
         if flow is not None:
-            pkg.delete_config(project, flow)
+            pkg.delete_flow_config(project, flow)
             flash("Flow is deleted.")
     except Exception as er:
         flash("ERROR: " + str(traceback.format_exc()))
@@ -206,7 +206,7 @@ def get_report():
 # Route for generating a report
 @app.route('/generate', methods=['GET','POST'])
 def generate_report():
-    # try:
+    try:
         project = request.cookies.get('project')
         if request.method == "POST":
             data = request.get_json()
@@ -235,10 +235,16 @@ def generate_report():
                 filename = pdf.generate_report(data["tests"], template_group)
                 pdf.pdf_io.seek(0)
                 return send_file(pdf.pdf_io, mimetype="application/pdf", download_name=f'{filename}.pdf', as_attachment=True)
+            elif action == "delete":
+                influxdb_name = data.get("influxdbName")
+                influxdb_obj  = Influxdb(project=project, name=influxdb_name)
+                influxdb_obj.connect_to_influxdb()
+                for test in data["tests"]:
+                    result = influxdb_obj.delete_run_id(test["runId"])
             return result
-    # except Exception as er:
-    #     flash("ERROR: " + str(er))
-    #     return redirect(url_for("index"))
+    except Exception as er:
+        flash("ERROR: " + str(er))
+        return redirect(url_for("index"))
 
 # Route for displaying Grafana result dashboard
 @app.route('/grafana-result-dashboard', methods=['GET'])
