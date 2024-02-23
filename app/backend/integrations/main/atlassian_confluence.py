@@ -15,7 +15,6 @@
 import os
 import logging
 import uuid
-import io
 
 from app.backend                          import pkg
 from app.backend.integrations.integration import Integration
