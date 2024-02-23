@@ -126,7 +126,7 @@ def delete_config(project, config):
         {"list_name": "integrations", "key": "influxdb"},
         {"list_name": "integrations", "key": "grafana"},
         {"list_name": "integrations", "key": "azure"},
-        {"list_name": "integrations", "key": "atlassian_wiki"},
+        {"list_name": "integrations", "key": "atlassian_confluence"},
         {"list_name": "integrations", "key": "atlassian_jira"},
         {"list_name": "integrations", "key": "smtp_mail"},
         {"list_name": "flows"},
@@ -282,18 +282,18 @@ def save_azure(project, data):
 def get_default_azure(project):
     return get_default_integration(project, "azure")
 
-####################### ATLASSIAN WIKI:
+####################### ATLASSIAN CONFLUENCE:
 
-def get_atlassian_wiki_config_values(project, atlassian_wiki_config):
-    output = md.AtlassianWikiModel.parse_obj(get_integration_values(project, "atlassian_wiki", atlassian_wiki_config))
+def get_atlassian_confluence_config_values(project, atlassian_confluence_config):
+    output = md.AtlassianConfluenceModel.parse_obj(get_integration_values(project, "atlassian_confluence", atlassian_confluence_config))
     return MultiDict(output.dict())
 
-def save_atlassian_wiki(project, data):
-    data = md.AtlassianWikiModel.parse_obj(data)
-    save_integration(project, data.dict(), "atlassian_wiki")
+def save_atlassian_confluence(project, data):
+    data = md.AtlassianConfluenceModel.parse_obj(data)
+    save_integration(project, data.dict(), "atlassian_confluence")
 
-def get_default_atlassian_wiki(project):
-    return get_default_integration(project, "atlassian_wiki")
+def get_default_atlassian_confluence(project):
+    return get_default_integration(project, "atlassian_confluence")
 
 ####################### ATLASSIAN JIRA:
 
@@ -335,7 +335,7 @@ def get_recipients(project):
 
 def get_output_configs(project):
     result = []
-    types  = ["azure", "atlassian_wiki", "atlassian_jira", "smtp_mail"]
+    types  = ["azure", "atlassian_confluence", "atlassian_jira", "smtp_mail"]
     for type in types:
         result += get_config_names(project, "integrations", type)
     return result

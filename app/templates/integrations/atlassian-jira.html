@@ -26,11 +26,13 @@
                                     {{ form.name(class="form-control") }}
                                     <label for="email" class="mt-2">Email</label>
                                     {{ form.email(class="form-control") }}
-                                    <label for="token" class="mt-2">Password</label>
+                                    <label for="token" class="mt-2">Token</label>
                                     <div class="input-group">
                                         {{ form.token(class="form-control", type="password") }}
                                         <span class="input-group-text" id="basic-addon3"><span class="fas fa-unlock-alt"></span></span>
                                     </div>
+                                    <label for="token_type" class="mt-2">Token type</label>
+                                    {{ form.token_type(class="form-control") }}
                                     <label for="org_url" class="mt-2">Jira organization url</label>
                                     {{ form.org_url(class="form-control") }}
                                     <label for="project_id" class="mt-2">Project</label>

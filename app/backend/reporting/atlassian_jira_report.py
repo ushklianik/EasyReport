@@ -39,9 +39,9 @@ class AtlassianJiraReport(ReportingBase):
 
     def add_graph(self, name, current_run_id, baseline_run_id):
         image = self.grafana_obj.render_image(name, self.current_start_timestamp, self.current_end_timestamp, self.test_name, current_run_id, baseline_run_id)
-        fileName = self.output_obj.put_image_to_jira(issue=self.issue_id, image_bytes=image, filename=name, test_id=current_run_id)
-        if(fileName):
-            graph = f'!{str(fileName)}|width=900!\n\n'
+        filename = self.output_obj.put_image_to_jira(issue=self.issue_id, image_bytes=image)
+        if(filename):
+            graph = f'!{str(filename)}|width=900!\n\n'
         else:
             graph = f'Image failed to load, name: {name}'
         return graph

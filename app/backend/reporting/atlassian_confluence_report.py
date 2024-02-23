@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from app.backend.reporting.reporting_base         import ReportingBase
-from app.backend.integrations.main.atlassian_wiki import AtlassianWiki
-from datetime                                     import datetime
+from app.backend.reporting.reporting_base               import ReportingBase
+from app.backend.integrations.main.atlassian_confluence import AtlassianConfluence
+from datetime                                           import datetime
 
 
-class AtlassianWikiReport(ReportingBase):
+class AtlassianConfluenceReport(ReportingBase):
 
     def __init__(self, project):
         super().__init__(project)
@@ -26,7 +26,7 @@ class AtlassianWikiReport(ReportingBase):
 
     def set_template(self, template):
         super().set_template(template)
-        self.output_obj = AtlassianWiki(project=self.project, name=self.output)
+        self.output_obj = AtlassianConfluence(project=self.project, name=self.output)
 
     def add_group_text(self, text):
         text += f'\n\n'
@@ -43,7 +43,7 @@ class AtlassianWikiReport(ReportingBase):
     
     def add_graph(self, name, current_run_id, baseline_run_id):
         image = self.grafana_obj.render_image(name, self.current_start_timestamp, self.current_end_timestamp, self.test_name, current_run_id, baseline_run_id)
-        fileName = self.output_obj.put_image_to_confl(image, name, self.page_id, current_run_id)
+        fileName = self.output_obj.put_image_to_confl(image, name, self.page_id)
         if(fileName):
             graph = f'<ac:image ac:align="center" ac:layout="center" ac:original-height="500" ac:original-width="1000"><ri:attachment ri:filename="{str(fileName)}" /></ac:image>\n\n'
         else:

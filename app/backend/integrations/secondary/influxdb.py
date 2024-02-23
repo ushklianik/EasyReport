@@ -80,7 +80,6 @@ class Influxdb(Integration):
             else:
                 query = custom.get_test_log_query(self.bucket)
             tables = self.influxdb_connection.query_api().query(query)
-            # print(tables)
             for table in tables:
                 for row in table.records:
                     del row.values["result"]

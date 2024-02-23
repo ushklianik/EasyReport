@@ -75,24 +75,26 @@ class GraphForm(FlaskForm):
     height     = StringField('Panel height', validators=[DataRequired()])
 
 
-class AtlassianWikiForm(FlaskForm):
+class AtlassianConfluenceForm(FlaskForm):
     name       = StringField('Name', validators=[DataRequired()])
-    token      = StringField('personalAccessToken', validators=[DataRequired()])
-    org_url    = StringField('wikiOrganizationUrl', validators=[DataRequired()])
-    parent_id  = StringField('wikiParentId', validators=[DataRequired()])
-    space_key  = StringField('wikiSpaceKey', validators=[DataRequired()])
-    username   = StringField('username', validators=[DataRequired()])
+    email      = StringField('Email', validators=[DataRequired()])
+    token      = StringField('Token', validators=[DataRequired()])
+    token_type = SelectField('Token type', choices=[('api_token', 'API Token'), ('personal_access_token', 'Personal Access Token')], default='api_token')
+    org_url    = StringField('Organization url', validators=[DataRequired()])
+    space_key  = StringField('Space key', validators=[DataRequired()])
+    parent_id  = StringField('Parent id', validators=[DataRequired()])
     is_default = SelectField('Default', choices=[('true', 'True'), ('false', 'False')], default='false')
 
 
 class AtlassianJiraForm(FlaskForm):
     name       = StringField('Name', validators=[DataRequired()])
     email      = StringField('Email', validators=[DataRequired()])
-    token      = StringField('Password', validators=[DataRequired()])
-    org_url    = StringField('jiraOrganizationUrl', validators=[DataRequired()])
-    project_id = StringField('Project', validators=[DataRequired()])
-    epic_field = StringField('EpicField')
-    epic_name  = StringField('EpicName')
+    token      = StringField('Token', validators=[DataRequired()])
+    token_type = SelectField('Token type', choices=[('api_token', 'API Token'), ('personal_access_token', 'Personal Access Token')], default='api_token')
+    org_url    = StringField('Organization url', validators=[DataRequired()])
+    project_id = StringField('Project id', validators=[DataRequired()])
+    epic_field = StringField('Epic field')
+    epic_name  = StringField('Epic name')
     is_default = SelectField('Default', choices=[('true', 'True'), ('false', 'False')], default='false')
 
 
